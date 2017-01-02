@@ -1,0 +1,16 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django compiled files
+*.log
+
+# Temporary files and apps, used for testing
+tmp_app
+
+# Editor temporary files
+*.swp
+
+# Project secret files
+local_settings.py
