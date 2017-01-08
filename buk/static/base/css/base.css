@@ -1,0 +1,119 @@
+/* line 3, body/_body.scss */
+body {
+  padding-top: 4rem;
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+  overflow-x: hidden;
+}
+@media (min-width: 800px) {
+  /* line 3, body/_body.scss */
+  body {
+    padding-top: 4rem;
+  }
+}
+
+/* line 1, header/_nav-full.scss */
+nav.menu-full {
+  width: 100%;
+  height: 4rem;
+  line-height: 4rem;
+  top: 0;
+  left: 0;
+  position: fixed;
+  background-color: white;
+}
+@media (max-width: 800px) {
+  /* line 1, header/_nav-full.scss */
+  nav.menu-full {
+    display: none;
+  }
+}
+/* line 14, header/_nav-full.scss */
+nav.menu-full * {
+  display: inline-block;
+  padding: 0 1.5vw;
+}
+/* line 18, header/_nav-full.scss */
+nav.menu-full *:not(:first-child) {
+  margin-left: 0em;
+}
+
+@media (min-width: 800px) {
+  /* line 1, header/_nav-collapsed.scss */
+  nav.menu-collapsed {
+    display: none;
+  }
+}
+/* line 6, header/_nav-collapsed.scss */
+nav.menu-collapsed > input[type='checkbox'] {
+  display: none;
+}
+/* line 10, header/_nav-collapsed.scss */
+nav.menu-collapsed > label {
+  display: block;
+  position: fixed;
+  z-index: 1500;
+  height: 4rem;
+  line-height: 4rem;
+  font-size: 1.5em;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  cursor: pointer;
+}
+/* line 24, header/_nav-collapsed.scss */
+nav.menu-collapsed > label span::after {
+  margin-left: 0.3em;
+  content: "MENY";
+}
+/* line 31, header/_nav-collapsed.scss */
+nav.menu-collapsed > input:checked ~ label span::after {
+  content: "LUKK";
+}
+/* line 35, header/_nav-collapsed.scss */
+nav.menu-collapsed > div {
+  position: fixed;
+  top: 4rem;
+  left: -100%;
+  width: 100%;
+  min-height: 100%;
+  background-color: rgba(255, 255, 255, 0.92);
+  overflow-y: scroll;
+}
+/* line 44, header/_nav-collapsed.scss */
+nav.menu-collapsed > div * {
+  display: block;
+  width: 100%;
+}
+/* line 50, header/_nav-collapsed.scss */
+nav.menu-collapsed > input:checked ~ div {
+  left: 0;
+}
+
+/* line 6, header/_nav.scss */
+nav.menu-full, nav.menu-collapsed {
+  z-index: 1000;
+  text-align: center;
+  color: #777;
+  text-transform: uppercase;
+  vertical-align: middle;
+  letter-spacing: 1px;
+  font-family: Nunito, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  cursor: pointer;
+}
+
+/* line 3, sections/_sections.scss */
+body > section {
+  padding: 5em 2em;
+}
+/* line 6, sections/_sections.scss */
+body > section:nth-of-type(2n) {
+  background-color: white;
+  color: black;
+}
+/* line 11, sections/_sections.scss */
+body > section:nth-of-type(2n+1) {
+  background-color: #222933;
+  color: white;
+}

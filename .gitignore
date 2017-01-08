@@ -6,6 +6,9 @@ __pycache__/
 # Django compiled files
 *.log
 
+# Sass/Compass
+.sass-cache
+
 # Temporary files and apps, used for testing
 tmp_app
 

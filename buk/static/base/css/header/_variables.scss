@@ -1,0 +1,31 @@
+// Colors
+$menu-text-color: #777;
+
+// Fonts
+$menu-font-family: Nunito, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+// Normal menu
+$menu-text-margin-left-not-first: 0em;
+$menu-text-padding: 0 1.5vw;
+$menu-height: 4rem;
+
+// Collapsable menu on small screens
+$collapsed-menu-width: 100%;
+$collapsed-background-color: rgba(255, 255, 255, 0.92);
+$collapsed-label-font-size: 1.5em;
+$collapsed-label-height: 4rem;
+
+// Internal
+$internal-menu-font-size: 1.4vw;
+$internal-menu-collapsed-font-size: 4vmin;
+$internal-menu-collapsed-item-margin: 1.5em 0 0 0;
+$internal-menu-collapsed-first-margin: 2em 0 0 0;
+
+// Public
+$public-menu-font-size: 1.4vw;
+$public-menu-collapsed-font-size: 3.5vh;
+$public-menu-icon-max-width: 2em;
+$public-menu-collapsed-icon-max-width: 2.5em;
+$public-menu-icon-margin: -0.4em 0 0 0;
+$public-menu-collapsed-item-margin: 4vh 0 0 0;
+$public-menu-collapsed-icon-margin: 3vh auto 1vh auto;

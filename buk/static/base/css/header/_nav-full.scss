@@ -1,0 +1,22 @@
+nav.menu-full {
+    @include breakpoint(max-width $collapse-menu) {
+        display: none;
+    }
+
+    width: 100%;
+    height: $menu-height;
+    line-height: $menu-height;
+    top: 0;
+    left: 0;
+    position: fixed;
+    background-color: white;
+
+    * {
+        display: inline-block;
+        padding: $menu-text-padding;
+
+        &:not(:first-child) {
+            margin-left: $menu-text-margin-left-not-first;
+        }
+    }
+}

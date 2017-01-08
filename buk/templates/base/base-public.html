@@ -1,0 +1,16 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'base/css/base-public.css' %}" />
+{% endblock stylesheets %}
+
+{% block menu-full %}
+{% include 'base/base-public-menu-items.html' %}
+{% endblock %}
+
+{% block menu-collapsed %}
+{% include 'base/base-public-menu-items.html' %}
+{% endblock %}

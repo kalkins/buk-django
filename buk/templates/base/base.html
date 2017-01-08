@@ -1,0 +1,78 @@
+{% comment %}
+This is the base template from which all other pages on this site are built. This template
+is not to be used directly by a view, nor to be extended (except in rare situations).
+Instead, two other templates extends this one; base_internal.html and base_public.html,
+which are to be further extended in the various apps.
+{% endcomment %}
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang='no'>
+    <head>
+        {% block head %}
+        {% block meta %}
+        <meta charset="UTF-8"/>
+        <meta name="Description" CONTENT="Bispehaugen Ungdomskorps er Trondheims eldste amatørkorps, startet i 1923. På denne siden finner du våre neste konsert, hvem som er medlem og hvordan du kan bli medlem." />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="keywords" content="Bispehaugen Ungdomskorps, Bispehaugen, Ungdomskorps, Korps, Band, Woodwind band, Trondheim, Korps Trondheim, Janitsjar, Janitsjarkorps, Janitsjarkorps Trondheim, 1923, NTNU, studentkorps, student, student korps" />
+        <meta property="og:image" content="https://bispehaugen.no/icon_logo.png"/>
+        {% endblock meta %}
+
+        {% comment %}
+        There are a few stylesheets and scripts that are needed in every page on the site,
+        but sometimes a page needs to include an aditional file. This can be done by overriding
+        the stylesheets and/or javascript block and put {{ block.super }} on the first line. This includes
+        the content of the block you're overriding from the template you're extending.
+
+        If you want to override one of these stylesheets or scripts you can omit block.super,
+        but remember that you then have to manually include all the other stylesheets/scripts
+        that were previously added by the template you are extending, that that you still want to use.
+
+        You should consider using @import and partial files in sass rather than including several sass
+        files in the template. This way you include one file from the template, and all other styling
+        logic takes place in the sass files, keeping everything cleen. The obvious exception to this
+        is when you may not always want to include the file, and therefore need to use if-statements.
+        {% endcomment %}
+        {% block stylesheets %}
+        <link rel="stylesheet" type="text/css" href="{% static 'base/css/base.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'base/css/font-awesome/css/font-awesome.min.css' %}" />
+        <link async href='https://fonts.googleapis.com/css?family=Dosis:300,400,500&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <link async href='https://fonts.googleapis.com/css?family=Nunito:400,700,300' rel='stylesheet' type='text/css'>
+        {% endblock stylesheets %}
+
+        {% block javascript %}
+        {# Always use deref unless you know what you are doing #}
+        <script type="text/javascript" src="{% static 'base/js/jquery.js' %}" deref></script>
+        {% endblock javascript %}
+
+        <title>{% block title %}Bispehaugen Ungdomskorps{% endblock %}</title>
+        {% endblock head %}
+    </head>
+
+    <body>
+        {% block body %}
+        <header>
+            {% block header %}
+            <nav class="menu-full">
+                {% block menu-full %}{% endblock %}
+            </nav>
+            
+            <nav class="menu-collapsed" role="off-screen">
+                <input id="menu-trigger" type="checkbox" autocomplete="off" />
+                <label for="menu-trigger" onclick>
+                    <span><i class="fa fa-bars"></i></span>
+                </label>
+                <div class="items">
+                    {% block menu-collapsed %}{% endblock %}
+                </div>
+            </nav>
+            {% endblock header %}
+        </header>
+
+        {% block main %}{% endblock %}
+
+        {% endblock body %}
+    </body>
+</html>

@@ -1,0 +1,53 @@
+nav.menu-collapsed {
+    @include breakpoint(min-width $collapse-menu) {
+        display: none;
+    }
+
+    > input[type='checkbox'] {
+        display: none;
+    }
+
+    > label {
+        display: block;
+        position: fixed;
+        z-index: 1500;
+        height: $collapsed-label-height;
+        line-height: $collapsed-label-height;
+        font-size: $collapsed-label-font-size;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        cursor: pointer;
+
+        span {
+            &::after {
+                margin-left: 0.3em;
+                content: "MENY";
+            }
+        }
+    }
+
+    > input:checked ~ label span::after {
+        content: "LUKK";
+    }
+
+    > div {
+        position: fixed;
+        top: $collapsed-label-height;
+        left: -$collapsed-menu-width;
+        width: $collapsed-menu-width;
+        min-height: 100%;
+        background-color: $collapsed-background-color;
+        overflow-y: scroll;
+
+        * {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    > input:checked ~ div {
+        left: 0;
+    }
+}
