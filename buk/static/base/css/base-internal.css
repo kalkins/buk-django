@@ -1,0 +1,17 @@
+/* line 3, header/_nav-internal.scss */
+nav.menu-collapsed {
+  font-size: 1.4vw;
+}
+
+/* line 7, header/_nav-internal.scss */
+nav.menu-collapsed > div {
+  font-size: 4vmin;
+}
+/* line 10, header/_nav-internal.scss */
+nav.menu-collapsed > div * {
+  margin: 1.5em 0 0 0;
+}
+/* line 13, header/_nav-internal.scss */
+nav.menu-collapsed > div *:first-child {
+  margin: 2em 0 0 0;
+}
