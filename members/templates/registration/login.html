@@ -1,0 +1,38 @@
+{% extends 'base/base-public.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'registration/css/login.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section class='login'>
+    <div>
+        <h2>Internsiden</h2>
+        <form method='post' action='{% url 'login' %}'>
+            {% csrf_token %}
+
+            <table>
+                <tr>
+                    {% if form.errors %}
+                    <p class='error'>Epost eller passord stemmer ikke</p>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>{{ form.username.label_tag }}</td>
+                    <td>{{ form.username }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.password.label_tag }}</td>
+                    <td>{{ form.password }}</td>
+                </tr>
+            </table>
+
+            <input type='submit' value='Logg inn' />
+            <input type='hidden' name='next' value='{{ next }}' />
+        </form>
+    </div>
+</section>
+{% endblock main %}

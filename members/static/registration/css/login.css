@@ -1,0 +1,13 @@
+/* line 1, login.scss */
+section.login {
+  height: 100%;
+}
+/* line 4, login.scss */
+section.login > div {
+  margin: 2em auto;
+  padding: 2em;
+  max-width: 30em;
+  width: 100%;
+  background-color: white;
+  color: black;
+}

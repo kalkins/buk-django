@@ -1,5 +1,11 @@
+/* line 1, html/_html.scss */
+html {
+  height: 100%;
+}
+
 /* line 3, body/_body.scss */
 body {
+  min-height: 100%;
   padding-top: 4rem;
   margin: 0;
   font-family: "Open Sans", sans-serif;
