@@ -1,13 +1,47 @@
 /* line 1, login.scss */
 section.login {
   height: 100%;
+  padding-top: 5em;
 }
-/* line 4, login.scss */
+/* line 5, login.scss */
 section.login > div {
-  margin: 2em auto;
+  margin: 1em auto 2em auto;
   padding: 2em;
-  max-width: 30em;
-  width: 100%;
+  width: 26em;
   background-color: white;
   color: black;
+}
+/* line 12, login.scss */
+section.login > div h2 {
+  display: inline-block;
+  margin: 0 0 1em 0;
+}
+/* line 17, login.scss */
+section.login > div #forgot-password-link {
+  display: inline-block;
+  float: right;
+  margin-top: 0.5em;
+  color: #222933;
+}
+/* line 24, login.scss */
+section.login > div form table {
+  width: 100%;
+}
+/* line 28, login.scss */
+section.login > div label > input {
+  width: 84%;
+  font-size: 1.5em;
+}
+/* line 33, login.scss */
+section.login > div input[type='submit'] {
+  width: 100%;
+  display: inline-block;
+  margin: 0.5em 0;
+  padding: 1em;
+  color: white;
+  font-family: 'Cantarell';
+  font-size: 1.5em;
+  background-color: #222933;
+  border-radius: 1em 0;
+  border: 0px;
 }

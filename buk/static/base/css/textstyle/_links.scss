@@ -1,0 +1,11 @@
+.graylink {
+    font-weight: 200;
+}
+
+body > section:nth-of-type(2n) .graylink {
+    color: rgb(34, 41, 51);
+}
+
+body > section:nth-of-type(2n+1) .graylink {
+    color: white;
+}

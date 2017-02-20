@@ -11,6 +11,7 @@
 <section class='login'>
     <div>
         <h2>Internsiden</h2>
+        <a id='forgot-password-link' class='graylink' href='{% url 'password_reset' %}'>Glemt passord?</a>
         <form method='post' action='{% url 'login' %}'>
             {% csrf_token %}
 
@@ -21,12 +22,20 @@
                     {% endif %}
                 </tr>
                 <tr>
-                    <td>{{ form.username.label_tag }}</td>
-                    <td>{{ form.username }}</td>
+                    <td>
+                        <label class='moderntextinput'>
+                            {{ form.username }}
+                            <i class='fa fa-2x fa-user'></i>
+                        </label>
+                    </td>
                 </tr>
                 <tr>
-                    <td>{{ form.password.label_tag }}</td>
-                    <td>{{ form.password }}</td>
+                    <td>
+                        <label class='moderntextinput'>
+                            {{ form.password }}
+                            <i class='fa fa-2x fa-asterisk'></i>
+                        </label>
+                    </td>
                 </tr>
             </table>
 

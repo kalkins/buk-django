@@ -1,12 +1,50 @@
 section.login {
     height: 100%;
+    padding-top: 5em;
 
     > div {
-        margin: 2em auto;
+        margin: 1em auto 2em auto;
         padding: 2em;
-        max-width: 30em;
-        width: 100%;
+        width: 26em;
         background-color: white;
         color: black;
+
+        h2 {
+            display: inline-block;
+            margin: 0 0 1em 0;
+        }
+
+        #forgot-password-link {
+            display: inline-block;
+            float: right;
+            margin-top: 0.5em;
+            color: rgb(34, 41, 51);
+        }
+
+        form table {
+            width: 100%;
+        }
+
+        label > input {
+            width: 84%;
+            font-size: 1.5em;
+        }
+
+        input[type='submit'] {
+            width: 100%;
+            display: inline-block;
+            margin: 0.5em 0;
+            padding: 1em;
+
+            // Foreground
+            color: white;
+            font-family: 'Cantarell';
+            font-size: 1.5em;
+
+            // Background
+            background-color: rgb(34, 41, 51);
+            border-radius: 1em 0;
+            border: 0px;
+        }
     }
 }

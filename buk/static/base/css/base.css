@@ -1,18 +1,53 @@
+@import url("https://fonts.googleapis.com/css?family=Dosis");
+@import url("https://fonts.googleapis.com/css?family=Droid+Sans");
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+/* line 1, textstyle/_headers.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Dosis', sans-serif;
+  font-weight: 500;
+  line-height: 1.1em;
+}
+
+/* line 7, textstyle/_headers.scss */
+h2 {
+  font-size: 1.8em;
+}
+
+/* line 1, textstyle/_paragraph.scss */
+p {
+  font-weight: 200;
+}
+
+/* line 1, textstyle/_links.scss */
+.graylink {
+  font-weight: 200;
+}
+
+/* line 5, textstyle/_links.scss */
+body > section:nth-of-type(2n) .graylink {
+  color: #222933;
+}
+
+/* line 9, textstyle/_links.scss */
+body > section:nth-of-type(2n+1) .graylink {
+  color: white;
+}
+
 /* line 1, html/_html.scss */
 html {
   height: 100%;
 }
 
-/* line 3, body/_body.scss */
+/* line 4, body/_body.scss */
 body {
-  min-height: 100%;
   padding-top: 4rem;
   margin: 0;
   font-family: "Open Sans", sans-serif;
   overflow-x: hidden;
+  background-color: #222933;
 }
 @media (min-width: 800px) {
-  /* line 3, body/_body.scss */
+  /* line 4, body/_body.scss */
   body {
     padding-top: 4rem;
   }
@@ -111,7 +146,7 @@ nav.menu-full, nav.menu-collapsed {
 
 /* line 3, sections/_sections.scss */
 body > section {
-  padding: 5em 2em;
+  padding: 2em 9%;
 }
 /* line 6, sections/_sections.scss */
 body > section:nth-of-type(2n) {
@@ -122,4 +157,39 @@ body > section:nth-of-type(2n) {
 body > section:nth-of-type(2n+1) {
   background-color: #222933;
   color: white;
+}
+
+/* line 1, form/_textinput.scss */
+label.moderntextinput {
+  position: relative;
+}
+/* line 4, form/_textinput.scss */
+label.moderntextinput input {
+  width: 10em;
+  font-size: 1.05em;
+  font-family: 'Droid Sans', Helvetica, Arial, sans-serif;
+  vertical-align: middle;
+  border: 1px solid gray;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  padding-right: 2em;
+}
+/* line 8, form/_textinput.scss */
+label.moderntextinput i {
+  position: absolute;
+  bottom: -0.1em;
+  right: 0.4em;
+  margin-right: 0.3em;
+}
+
+/* line 1, form/_button.scss */
+.modernbutton {
+  width: 10em;
+  font-size: 1.05em;
+  font-family: 'Droid Sans', Helvetica, Arial, sans-serif;
+  vertical-align: middle;
+  border: 1px solid gray;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  padding-right: 2em;
 }
