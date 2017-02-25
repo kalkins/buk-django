@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import Member, Instrument
+from .models import Member, Instrument, BoardPosition, Committee
 
 
 class UserAdmin(BaseUserAdmin):
@@ -43,7 +43,7 @@ class UserAdmin(BaseUserAdmin):
 class InstrumentAdmin(admin.ModelAdmin):
     list_display = ('name', 'group_leader')
     search_fields = ('name', 'group_leader')
-    ordering = ('name',)
+    ordering = ('order', 'name')
 
     fieldsets = (
         (None, {'fields': ('name', 'group_leader')}),
@@ -66,5 +66,22 @@ class InstrumentAdmin(admin.ModelAdmin):
             )
         return form
 
+
+class BoardPositionAdmin(admin.ModelAdmin):
+    list_display = ('title', 'holder', 'email')
+    ordering = ('order', 'title')
+
+
+class CommitteeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'leader', 'member_count')
+    ordering = ('order', 'name')
+    filter_horizontal = ('members',)
+
+    def member_count(self, obj):
+        return obj.members.count()
+    member_count.short_description = 'Antall medlemmer'
+
 admin.site.register(Member, UserAdmin)
 admin.site.register(Instrument, InstrumentAdmin)
+admin.site.register(BoardPosition, BoardPositionAdmin)
+admin.site.register(Committee, CommitteeAdmin)

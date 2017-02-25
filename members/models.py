@@ -1,6 +1,7 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.conf import settings
-from django.contrib.auth.models import BaseUserManager, AbstractUser
+from django.contrib.auth.models import BaseUserManager, AbstractUser, Group
 from django.core.exceptions import ObjectDoesNotExist
 
 from datetime import date
@@ -15,6 +16,8 @@ class Instrument(models.Model):
         blank = True,
         null = True,
     )
+    order = models.IntegerField('rekkefølge', default=0,
+            help_text='Dette angir rekkefølgen instrumentene vises i. Lavere tall kommer først.')
 
     class Meta:
         verbose_name = 'instrument'
@@ -81,7 +84,7 @@ class Member(AbstractUser):
         Instrument,
         on_delete = models.PROTECT,
         verbose_name = 'instrument',
-        related_name = 'members',
+        related_name = 'players',
     )
     birthday = models.DateField('fødselsdato', help_text='Datoer skrives på formen YYYY-MM-DD')
     joined_date = models.DateField('startet i BUK', default=date.today,
@@ -126,3 +129,129 @@ class Member(AbstractUser):
     def get_full_address(self):
         return "%s %s %s" % (self.address, self.zip_code, self.city)
     get_full_address.short_description = 'adresse'
+
+
+class BoardPosition(models.Model):
+    holder = models.OneToOneField(
+        Member,
+        on_delete = models.PROTECT,
+        verbose_name = 'innehaver',
+    )
+    title = models.CharField('tittel', max_length=50, unique=True)
+    description = models.TextField('beskrivelse', blank=True, default='')
+    email = models.EmailField(
+        verbose_name = 'e-post',
+        max_length = 255,
+        unique = True,
+    )
+    group = models.OneToOneField(Group, editable=False, null=True)
+    order = models.IntegerField('rekkefølge', default=0,
+            help_text='Dette angir rekkefølgen styrevervene vises i. Lavere tall kommer først.')
+
+    class Meta:
+        verbose_name = 'styreverv'
+        verbose_name_plural = 'styreverv'
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        board, _ = Group.objects.get_or_create(name='Styret')
+
+        if not self.group:
+            self.group = Group.objects.create(name=self.title)
+
+        if self.pk:
+            prev = BoardPosition.objects.get(pk=self.pk)
+            if self.title != prev.title:
+                self.group.update(name=self.title)
+            if self.holder != prev.holder:
+                board.user_set.remove(prev.holder)
+
+        board.user_set.add(self.holder)
+
+        super(BoardPosition, self).save(*args, **kwargs)
+
+        self.group.user_set.set([self.holder])
+
+    def delete(self, *args, **kwargs):
+        self.group.delete()
+        Group.objects.get(name='Styret').user_set.remove(self.holder)
+        super(BoardPosition, self).delete(*args, **kwargs)
+
+
+class Committee(models.Model):
+    name = models.CharField('navn', max_length=50, unique=True)
+    # A committee can be led by either a member on the board, or a regular member.
+    # Therefore one of these must be set, but not both
+    leader_board = models.OneToOneField(
+        BoardPosition,
+        on_delete = models.PROTECT,
+        verbose_name = 'leder i styret',
+        related_name = 'leader_of',
+        blank = True,
+        null = True,
+        help_text = 'Lederen for komiteen. Denne eller den under må være satt, men ikke begge.',
+    )
+    leader_member = models.OneToOneField(
+        Member,
+        on_delete = models.PROTECT,
+        verbose_name = 'leder medlem',
+        related_name = 'leader_of',
+        blank = True,
+        null = True,
+    )
+    members = models.ManyToManyField(
+        Member,
+        verbose_name = 'medlemmer',
+        blank = True,
+    )
+    group = models.OneToOneField(Group, editable=False, null=True)
+    email = models.EmailField(
+        verbose_name = 'e-post',
+        max_length = 255,
+        unique = True,
+    )
+    description = models.TextField('beskrivelse', blank=True, default='')
+    order = models.IntegerField('rekkefølge', default=0,
+            help_text='Dette angir rekkefølgen komiteene vises i. Lavere tall kommer først.')
+
+    # Use this to get the member object of the leader of the group. Use leader_board
+    # to see the associated board position (if it is set)
+    @property
+    def leader(self):
+        return self.leader_board.holder if self.leader_board_id else self.leader_member
+    leader.fget.short_description = 'leder'
+
+    class Meta:
+        verbose_name = 'komite'
+        verbose_name_plural = 'komiteer'
+
+    def __str__(self):
+        return self.name
+
+    def clean(self):
+        if not (self.leader_board_id or self.leader_member_id):
+            raise ValidationError('En komite må ha en leder')
+        if self.leader_board:
+            self.leader_member = None;
+
+    def save(self, *args, **kwargs):
+        if self.group:
+            if self.pk:
+                prev = Committee.objects.get(pk=self.pk)
+                if self.name != prev.name:
+                    self.group.update(name=self.name)
+        else:
+            self.group = Group.objects.create(name=self.name)
+
+
+        super(Committee, self).save(*args, **kwargs)
+
+        self.group.user_set.set(self.members.all())
+        self.group.user_set.add(self.leader)
+        self.members.remove(self.leader)
+
+    def delete(self, *args, **kwargs):
+        self.group.delete()
+        super(Committee, self).delete(*args, **kwargs)
