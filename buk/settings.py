@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from django import urls
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,12 +27,13 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'members',
+    'django.contrib.admin',
 ]
 
 MIDDLEWARE = [
@@ -85,6 +87,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'members.Member'
+LOGIN_URL = urls.reverse_lazy('login')
+LOGOUT_REDIRECT_URL = urls.reverse_lazy('login')
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -96,6 +102,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+TIME_ZONE = 'Europe/Oslo'
 
 
 # Static files (CSS, JavaScript, Images)

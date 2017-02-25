@@ -1,0 +1,47 @@
+{% extends 'base/base-public.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'registration/css/login.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section class='login'>
+    <div>
+        <h2>Internsiden</h2>
+        <a id='forgot-password-link' class='graylink' href='{% url 'password_reset' %}'>Glemt passord?</a>
+        <form method='post' action='{% url 'login' %}'>
+            {% csrf_token %}
+
+            <table>
+                <tr>
+                    {% if form.errors %}
+                    <p class='error'>Epost eller passord stemmer ikke</p>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td>
+                        <label class='moderntextinput'>
+                            {{ form.username }}
+                            <i class='fa fa-2x fa-user'></i>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class='moderntextinput'>
+                            {{ form.password }}
+                            <i class='fa fa-2x fa-asterisk'></i>
+                        </label>
+                    </td>
+                </tr>
+            </table>
+
+            <input type='submit' value='Logg inn' />
+            <input type='hidden' name='next' value='{{ next }}' />
+        </form>
+    </div>
+</section>
+{% endblock main %}
