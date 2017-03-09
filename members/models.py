@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.conf import settings
-from django.contrib.auth.models import BaseUserManager, AbstractUser, Group
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group
 from django.core.exceptions import ObjectDoesNotExist
 
 from datetime import date
@@ -63,13 +63,12 @@ class MemberManager(BaseUserManager):
                 birthday, phone, address, zip_code, city, password)
 
         user.is_admin = True
-        user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
 
         return user
 
-class Member(AbstractUser):
+class Member(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         verbose_name = 'e-post',
         max_length = 255,
@@ -110,6 +109,10 @@ class Member(AbstractUser):
     class Meta:
         verbose_name = 'medlem'
         verbose_name_plural = 'medlemmer'
+
+    @property
+    def is_staff(self):
+        return self.is_admin
 
     def get_full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
