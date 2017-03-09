@@ -133,6 +133,20 @@ class Member(AbstractBaseUser, PermissionsMixin):
         return "%s %s %s" % (self.address, self.zip_code, self.city)
     get_full_address.short_description = 'adresse'
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            prev = Member.objects.get(pk=self.pk)
+            # If the member has just been rendered inactive,
+            # but the quit date isn't set, set it to today
+            # If the user is becoming active, clear the quit date.
+            if prev.is_active != self.is_active:
+                if self.is_active:
+                    self.quit_date = None
+                elif not self.quit_date:
+                    self.quit_date = date.today()
+
+        super(Member, self).save(*args, **kwargs)
+
 
 class BoardPosition(models.Model):
     holder = models.OneToOneField(
