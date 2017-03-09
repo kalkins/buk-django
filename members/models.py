@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.conf import settings
-from django.contrib.auth.models import BaseUserManager, AbstractUser, Group
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group
 from django.core.exceptions import ObjectDoesNotExist
 
 from datetime import date
@@ -63,13 +63,12 @@ class MemberManager(BaseUserManager):
                 birthday, phone, address, zip_code, city, password)
 
         user.is_admin = True
-        user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
 
         return user
 
-class Member(AbstractUser):
+class Member(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         verbose_name = 'e-post',
         max_length = 255,
@@ -111,6 +110,10 @@ class Member(AbstractUser):
         verbose_name = 'medlem'
         verbose_name_plural = 'medlemmer'
 
+    @property
+    def is_staff(self):
+        return self.is_admin
+
     def get_full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
     get_full_name.short_description = 'navn'
@@ -129,6 +132,20 @@ class Member(AbstractUser):
     def get_full_address(self):
         return "%s %s %s" % (self.address, self.zip_code, self.city)
     get_full_address.short_description = 'adresse'
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            prev = Member.objects.get(pk=self.pk)
+            # If the member has just been rendered inactive,
+            # but the quit date isn't set, set it to today
+            # If the user is becoming active, clear the quit date.
+            if prev.is_active != self.is_active:
+                if self.is_active:
+                    self.quit_date = None
+                elif not self.quit_date:
+                    self.quit_date = date.today()
+
+        super(Member, self).save(*args, **kwargs)
 
 
 class BoardPosition(models.Model):
@@ -204,6 +221,7 @@ class Committee(models.Model):
     members = models.ManyToManyField(
         Member,
         verbose_name = 'medlemmer',
+        related_name = 'committees',
         blank = True,
     )
     group = models.OneToOneField(Group, editable=False, null=True)
