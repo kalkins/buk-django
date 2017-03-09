@@ -7,7 +7,18 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import Member, Instrument, BoardPosition, Committee
 
 
+class MemberForm(forms.ModelForm):
+    class Meta:
+        model = Member
+        # This attribute is required for the form to work, but it will
+        # be overwritten by the UserAdmin
+        fields = ('email',)
+
+
 class UserAdmin(BaseUserAdmin):
+    form = MemberForm
+    add_form = MemberForm
+
     # The fields to be displayed in the list view of the users
     list_display = ('email', 'is_active', 'get_full_name', 'instrument', 'phone',
             'get_full_address', 'has_car', 'has_towbar')
