@@ -24,7 +24,7 @@ class UserAdmin(BaseUserAdmin):
             'get_full_address', 'has_car', 'has_towbar')
     list_filter = ('is_active', 'instrument', 'groups')
     search_fields = ('email', 'instrument', 'first_name', 'last_name')
-    ordering = ('is_active', 'instrument', 'first_name', 'last_name')
+    ordering = ('-is_active', 'instrument', 'first_name', 'last_name')
     filter_horizontal = ('groups',)
 
     # Fieldsets for the change-user form
@@ -34,7 +34,6 @@ class UserAdmin(BaseUserAdmin):
             'joined_date', 'quit_date', 'is_active')}
         ),
         ('Praktisk informasjon', {'fields': ('has_car', 'has_towbar')}),
-        ('Grupper', {'fields': ('groups',)}),
         ('Personlig informasjon', {'fields': (
             'birthday', 'phone', 'address', 'zip_code', 'city', 'origin', 'occupation',
             'musical_background', 'about_me')

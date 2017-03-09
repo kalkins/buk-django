@@ -207,6 +207,7 @@ class Committee(models.Model):
     members = models.ManyToManyField(
         Member,
         verbose_name = 'medlemmer',
+        related_name = 'committees',
         blank = True,
     )
     group = models.OneToOneField(Group, editable=False, null=True)
