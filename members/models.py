@@ -143,6 +143,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
                     self.quit_date = None
                 elif not self.quit_date:
                     self.quit_date = date.today()
+        elif not self.joined_date:
+            # If it's a new member that doesn't have a joined date,
+            # set it to today
+            self.joined_date = date.today()
 
         super(Member, self).save(*args, **kwargs)
 
