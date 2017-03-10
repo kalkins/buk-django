@@ -31,7 +31,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields':
             ('first_name', 'last_name', 'instrument', 'email',
-            'joined_date', 'quit_date', 'is_active')}
+            'joined_date', 'quit_date', 'is_active', 'is_admin', 'is_superuser')}
         ),
         ('Praktisk informasjon', {'fields': ('has_car', 'has_towbar')}),
         ('Personlig informasjon', {'fields': (

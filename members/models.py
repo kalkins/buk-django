@@ -1,8 +1,7 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group
-from django.core.exceptions import ObjectDoesNotExist
 
 from datetime import date
 
@@ -75,7 +74,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
         unique = True,
     )
     is_active = models.BooleanField('aktiv', default=True)
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField('admin', default=False)
     first_name = models.CharField('fornavn', max_length=30)
     last_name = models.CharField('etternavn', max_length=30)
     phone = models.CharField('mobilnummer', max_length=20)
