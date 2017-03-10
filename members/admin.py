@@ -23,7 +23,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'is_active', 'get_full_name', 'instrument', 'phone',
             'get_full_address', 'has_car', 'has_towbar')
     list_filter = ('is_active', 'instrument', 'groups')
-    search_fields = ('email', 'instrument', 'first_name', 'last_name')
+    search_fields = ('email', 'first_name', 'last_name')
     ordering = ('-is_active', 'instrument', 'first_name', 'last_name')
     filter_horizontal = ('groups',)
 
@@ -31,7 +31,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields':
             ('first_name', 'last_name', 'instrument', 'email',
-            'joined_date', 'quit_date', 'is_active')}
+            'joined_date', 'quit_date', 'is_active', 'is_admin', 'is_superuser')}
         ),
         ('Praktisk informasjon', {'fields': ('has_car', 'has_towbar')}),
         ('Personlig informasjon', {'fields': (

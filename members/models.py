@@ -1,8 +1,7 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group
-from django.core.exceptions import ObjectDoesNotExist
 
 from datetime import date
 
@@ -75,7 +74,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
         unique = True,
     )
     is_active = models.BooleanField('aktiv', default=True)
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField('admin', default=False)
     first_name = models.CharField('fornavn', max_length=30)
     last_name = models.CharField('etternavn', max_length=30)
     phone = models.CharField('mobilnummer', max_length=20)
@@ -93,8 +92,8 @@ class Member(AbstractBaseUser, PermissionsMixin):
     address = models.CharField('adresse', max_length=60)
     zip_code = models.CharField('postnr.', max_length=4)
     city = models.CharField('poststed', max_length=40)
-    origin = models.CharField('kommer fra', max_length=50, blank=True, default='')
-    occupation = models.CharField('studie/yrke', max_length=100, blank=True, default='')
+    origin = models.CharField('kommer fra', max_length=100, blank=True, default='')
+    occupation = models.CharField('studie/yrke', max_length=255, blank=True, default='')
     about_me = models.TextField('litt om meg selv', blank=True, default='')
     musical_background = models.TextField('musikalsk bakgrunn', blank=True, default='')
     has_car = models.BooleanField('har bil', default=False)
@@ -144,6 +143,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
                     self.quit_date = None
                 elif not self.quit_date:
                     self.quit_date = date.today()
+        elif not self.joined_date:
+            # If it's a new member that doesn't have a joined date,
+            # set it to today
+            self.joined_date = date.today()
 
         super(Member, self).save(*args, **kwargs)
 
