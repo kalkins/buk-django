@@ -1,4 +1,5 @@
 from django.views.generic import DetailView, ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 
 from .models import Member
@@ -9,7 +10,7 @@ class MemberDetail(DetailView):
     context_object_name = 'member'
 
 
-class MemberList(ListView):
+class MemberList(LoginRequiredMixin, ListView):
     context_object_name = 'members'
 
     def get_queryset(self):
