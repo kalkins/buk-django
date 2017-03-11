@@ -90,6 +90,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'members.Member'
 LOGIN_URL = urls.reverse_lazy('login')
+LOGIN_REDIRECT_URL = urls.reverse_lazy('front_page')
 LOGOUT_REDIRECT_URL = urls.reverse_lazy('login')
 
 

@@ -16,9 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.views.generic import RedirectView
 from members import forms as member_forms, views as member_views
 
 urlpatterns = [
+    url(r'^$', RedirectView.as_view(pattern_name='member_list'), name='front_page'),
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth_views.login, {'authentication_form': member_forms.MemberAuthenticationForm}, name='login'),
     url(r'^logout/$', auth_views.logout, name='logout'),
