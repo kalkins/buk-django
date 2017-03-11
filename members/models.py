@@ -2,6 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group
+from django.urls import reverse
 
 from datetime import date
 
@@ -113,6 +114,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def is_staff(self):
         return self.is_admin
 
+    @property
+    def status(self):
+        return 'Aktiv' if self.is_active else 'Sluttet'
+
     def get_full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
     get_full_name.short_description = 'navn'
@@ -120,6 +125,9 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name
     get_short_name.short_description = 'navn'
+
+    def get_absolute_url(self):
+        return reverse('member_detail', args=[str(self.pk)])
 
     def __str__(self):
         return self.get_full_name()
