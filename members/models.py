@@ -133,7 +133,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
         return self.get_full_name()
 
     def is_group_leader(self):
-        return hasattr(self.user, 'group_leader_for')
+        return hasattr(self, 'group_leader_for')
     is_group_leader.short_description = 'er gruppeleder'
 
     def get_full_address(self):
