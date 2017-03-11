@@ -8,7 +8,11 @@ from datetime import date
 class InstrumentImport(LegacyImporter):
     model = Instrument
     table = 'instrument'
-    cols = {'name': 'instrument'}
+    cols = {
+        'name': 'instrument',
+        'order': 'instrumentid',
+    }
+    check = ['name']
 
     def convert_name(self, val):
         if val == 'Støttemedlem' or val == 'Æresmedlem':

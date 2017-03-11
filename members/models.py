@@ -22,6 +22,7 @@ class Instrument(models.Model):
     class Meta:
         verbose_name = 'instrument'
         verbose_name_plural = 'instrumenter'
+        ordering = ['order', 'name']
 
     def __str__(self):
         return self.name
@@ -109,6 +110,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'medlem'
         verbose_name_plural = 'medlemmer'
+        ordering = ['instrument', 'is_active', 'first_name']
 
     @property
     def is_staff(self):

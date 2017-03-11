@@ -51,23 +51,24 @@ class UserAdmin(BaseUserAdmin):
 
 
 class InstrumentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'group_leader')
+    list_display = ('name', 'group_leader', 'order')
     search_fields = ('name', 'group_leader')
-    ordering = ('order', 'name')
 
     fieldsets = (
-        (None, {'fields': ('name', 'group_leader')}),
+        (None, {'fields': ('name', 'order', 'group_leader')}),
     )
 
     add_fieldsets = (
-        (None, {'fields': ('name',)}),
+        (None, {'fields': ('name', 'order')}),
     )
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(InstrumentAdmin, self).get_form(request, obj, **kwargs)
         if obj and form.base_fields['group_leader']:
             # Only someone playing the instrument can be group leader
-            form.base_fields['group_leader'].queryset = Member.objects.filter(instrument=obj)
+            form.base_fields['group_leader'].queryset = Member.objects\
+                    .filter(is_active=True)\
+                    .filter(instrument=obj)
         else:
             # If it's a new instrument disable the group leader select
             form.base_fields['group_leader'].disabled = True

@@ -15,11 +15,9 @@ class MemberList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if self.kwargs['show_all']:
-            queryset = Member.objects.all()
+            return Member.objects.all()
         else:
-            queryset = Member.objects.filter(is_active=True)
-
-        return queryset.order_by('instrument', '-is_active', 'first_name')
+            return Member.objects.filter(is_active=True)
 
     def get_context_data(self, **kwargs):
         context = super(MemberList, self).get_context_data(**kwargs)
