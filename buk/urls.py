@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
     url(r'^medlem/(?P<pk>[0-9]+)$', member_views.MemberDetail.as_view(), name='member_detail'),
     url(r'^medlem/(?P<pk>[0-9]+)/endre$', member_views.ChangeMember.as_view(), name='member_change'),
+    url(r'^medlem/ny$', member_views.AddMember.as_view(), name='member_add'),
     url(r'^medlemmer/$', member_views.MemberList.as_view(), {'show_all': False}, name='member_list'),
     url(r'^medlemmer/alle$', member_views.MemberList.as_view(), {'show_all': True}, name='member_list_all'),
 ]

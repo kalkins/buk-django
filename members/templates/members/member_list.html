@@ -13,7 +13,7 @@
         <h2>Medlemmer</h2>
         <div>
             {% if perms.members.add_member %}
-            <a class='graylink' href=''>
+            <a class='graylink' href='{% url 'member_add' %}'>
                 <i class='fa fa-pluss'></i>
                 Legg til ny
             </a>

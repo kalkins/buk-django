@@ -31,3 +31,10 @@ class ChangeMember(UpdateView):
     fields = ['email', 'first_name', 'last_name', 'instrument', 'phone', 'birthday',
             'address', 'zip_code', 'city', 'origin', 'occupation', 'joined_date',
             'quit_date', 'has_car', 'has_towbar', 'musical_background', 'about_me']
+
+
+class AddMember(CreateView):
+    model = Member
+    template_name = 'members/member_add.html'
+    fields = ['email', 'first_name', 'last_name', 'instrument', 'phone', 'birthday',
+            'address', 'zip_code', 'city', 'joined_date']
