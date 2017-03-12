@@ -110,7 +110,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'medlem'
         verbose_name_plural = 'medlemmer'
-        ordering = ['instrument', 'is_active', 'first_name']
+        ordering = ['instrument', 'is_active', 'group_leader_for', 'first_name']
 
     @property
     def is_staff(self):
