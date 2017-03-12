@@ -1,0 +1,21 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'members/css/member_change.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section>
+    <h2>Rediger medlem</h2>
+    <form action={{ request.path|urlencode }} method='POST'>
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input class='modernbutton' type='submit' value='Lagre' />
+    </form>
+</section>
+{% endblock main %}

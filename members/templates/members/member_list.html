@@ -52,7 +52,7 @@
             {% endif %}
 
             {% if perms.members.change_member %}
-            <a class='graylink change_member' href=''>
+            <a class='graylink change_member' href='{% url 'member_change' member.pk %}'>
                 <i class='fa fa-edit'></i>
                 Endre
             </a>
