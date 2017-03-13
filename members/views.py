@@ -1,5 +1,5 @@
 from django.views.generic import DetailView, ListView, CreateView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
 
 from .models import Member
@@ -25,16 +25,17 @@ class MemberList(LoginRequiredMixin, ListView):
         return context
 
 
-class ChangeMember(UpdateView):
+class ChangeMember(PermissionRequiredMixin, UpdateView):
     model = Member
+    permission_required = 'members.change_member'
     template_name = 'members/member_change.html'
     fields = ['email', 'first_name', 'last_name', 'instrument', 'phone', 'birthday',
             'address', 'zip_code', 'city', 'origin', 'occupation', 'joined_date',
             'quit_date', 'has_car', 'has_towbar', 'musical_background', 'about_me']
 
 
-class AddMember(CreateView):
+class AddMember(PermissionRequiredMixin, CreateView):
     model = Member
-    template_name = 'members/member_add.html'
+    template_name = 'members/add_member.html'
     fields = ['email', 'first_name', 'last_name', 'instrument', 'phone', 'birthday',
             'address', 'zip_code', 'city', 'joined_date']
