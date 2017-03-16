@@ -1,0 +1,14 @@
+/* line 3, member_list.scss */
+section div:first-child h2 {
+  display: inline-block;
+}
+/* line 7, member_list.scss */
+section div:first-child h3 {
+  display: inline-block;
+  float: right;
+  margin-top: 1.6em;
+}
+/* line 12, member_list.scss */
+section div:first-child h3 a {
+  margin-left: 1em;
+}

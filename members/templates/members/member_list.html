@@ -11,26 +11,28 @@
 <section>
     <div>
         <h2>Medlemmer</h2>
-        <div>
-            {% if perms.members.add_member %}
-            <a class='graylink' href='{% url 'member_add' %}'>
-                <i class='fa fa-pluss'></i>
-                Legg til ny
-            </a>
-            {% endif %}
+        <h3>
+          <div>
+              {% if perms.members.add_member %}
+              <a class='graylink' href='{% url 'member_add' %}'>
+                  <i class='fa fa-plus'></i>
+                  Legg til ny
+              </a>
+              {% endif %}
 
-            {% if show_all %}
-            <a class='graylink' href='{% url 'member_list' %}'>
-                <i class='fa fa-user'></i>
-                Vis kun aktive
-            </a>
-            {% else %}
-            <a class='graylink' href='{% url 'member_list_all' %}'>
-                <i class='fa fa-users'></i>
-                Vis også sluttede
-            </a>
-            {% endif %}
-        </div>
+              {% if show_all %}
+              <a class='graylink' href='{% url 'member_list' %}'>
+                  <i class='fa fa-user'></i>
+                  Vis kun aktive
+              </a>
+              {% else %}
+              <a class='graylink' href='{% url 'member_list_all' %}'>
+                  <i class='fa fa-users'></i>
+                  Vis også sluttede
+              </a>
+              {% endif %}
+          </div>
+        </h2>
     </div>
 
     <div>

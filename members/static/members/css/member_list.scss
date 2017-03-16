@@ -1,0 +1,17 @@
+section {
+    div:first-child {
+        h2 {
+            display: inline-block;
+        }
+
+        h3 {
+            display: inline-block;
+            float: right;
+            margin-top: 1.6em;
+
+            a {
+                margin-left: 1em;
+            }
+        }
+    }
+}
