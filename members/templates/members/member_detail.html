@@ -42,10 +42,32 @@
             <strong>Født:</strong>
             {{ member.birthday }}
         </p>
+
+        {# If the member has only been a member for one period of time #}
+        {% if member.membership_periods.count == 1 %}
+        {% with period=member.membership_periods.first %}
         <p>
             <strong>Startet i BUK:</strong>
-            {{ member.joined_date }}
+            {{ period.start }}
         </p>
+        {% if period.end != None %}
+        <p>
+            <strong>Sluttet i BUK:</strong>
+            {{ period.end }}
+        </p>
+        {% endif %}
+        {% endwith %}
+
+        {# If the member has come back after quitting #}
+        {% else %}
+        <p>
+            <strong>Medlemskapsperioder:</strong>
+            {% for period in member.membership_periods.all %}
+            <br />{{ period }}
+            {% endfor %}
+        </p>
+        {% endif %}
+
         <p>
             <strong>Studie/yrke:</strong>
             {{ member.occupation }}

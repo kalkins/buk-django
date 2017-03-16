@@ -31,8 +31,6 @@ class MemberImport(LegacyImporter):
         'phone': ['tlfprivat', 'tlfmobil', 'tlfarbeid'],
         'instrument': ['instrument', 'instnr'],
         'birthday': 'fdato',
-        'joined_date': 'startetibuk_date',
-        'quit_date': 'sluttetibuk_date',
         'address': 'adresse',
         'zip_code': 'postnr',
         'city': 'poststed',
@@ -44,6 +42,7 @@ class MemberImport(LegacyImporter):
         'has_towbar': 'hengerfeste',
     }
     check = ['email']
+    manytomany = ['membership_periods']
 
     def convert_email(self, val):
         if val == '':
@@ -62,12 +61,6 @@ class MemberImport(LegacyImporter):
 
     def convert_birthday(self, val):
         return val if val else date(1970, 1, 1)
-
-    def convert_joined_date(self, val):
-        if val:
-            return val
-        else:
-            raise ImportSkipRow()
 
     def convert_is_active(self, val):
         return val == 'Aktiv' or val == 'Permisjon'
@@ -92,40 +85,36 @@ class MemberImport(LegacyImporter):
     def convert_city(self, val):
         return val if val else 'Ukjent'
 
+    def convert_origin(self, val):
+        return val if val else 'Ukjent'
+
+    def convert_occupation(self, val):
+        return val if val else 'Ukjent'
+
     def convert_about_me(self, val):
         return val if val else ''
 
     def convert_musical_background(self, val):
         return val if val else ''
 
-    def ucreate_instance(self, params):
-        defaults = params.pop('defaults')
-        params = {**params, **defaults}
 
-        is_active = params.pop('is_active')
-        origin = params.pop('origin')
-        occupation = params.pop('occupation')
-        about_me = params.pop('about_me')
-        musical_background = params.pop('musical_background')
-        has_car = params.pop('has_car')
-        has_towbar = params.pop('has_towbar')
-        quit_date = params.pop('quit_date')
+class MembershipPeriodImport(LegacyImporter):
+    model = MembershipPeriod
+    table = 'medlemmer'
+    cols = {
+        'start': 'startetibuk_date',
+        'end': 'sluttetibuk_date',
+        'member': 'email',
+    }
+    check = ['member']
 
-        try:
-            obj = self.model.objects.get(email=params['email'])
-            update = {}
-            for col in self.update:
-                update[col] = params[col]
-            self.model.objects.filter(pk=obj.pk).update(**update)
-        except ObjectDoesNotExist:
-            obj = self.model.objects.create_user(**params)
-        
-        obj.is_active = is_active
-        obj.origin = origin
-        obj.occupation = occupation
-        obj.about_me = about_me
-        obj.musical_background = musical_background
-        obj.has_car = has_car
-        obj.has_towbar = has_towbar
-        obj.quit_date = quit_date
-        obj.save()
+    def convert_start(self, val):
+        if not val:
+            raise ImportSkipRow()
+        return val
+
+    def convert_member(self, val):
+        members = Member.objects.filter(email=val)
+        if len(members) == 1:
+            return members[0]
+        raise ImportSkipRow()

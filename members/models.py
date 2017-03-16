@@ -6,6 +6,8 @@ from django.urls import reverse
 
 from datetime import date
 
+from base.models import Period
+
 class Instrument(models.Model):
     name = models.CharField('navn', max_length=30, unique=True)
     group_leader = models.OneToOneField(
@@ -44,7 +46,6 @@ class MemberManager(BaseUserManager):
             email = self.normalize_email(email),
             first_name = first_name,
             last_name = last_name,
-            joined_date = joined_date,
             instrument = instrument,
             birthday = birthday,
             phone = phone,
@@ -54,6 +55,8 @@ class MemberManager(BaseUserManager):
         )
         user.set_password(password)
         user.save(using=self._db)
+
+        MembershipPeriod.objects.create(start=joined_date, member=user)
 
         return user
 
@@ -87,10 +90,6 @@ class Member(AbstractBaseUser, PermissionsMixin):
         related_name = 'players',
     )
     birthday = models.DateField('fødselsdato', help_text='Datoer skrives på formen YYYY-MM-DD')
-    joined_date = models.DateField('startet i BUK', default=date.today,
-            help_text='Datoer skrives på formen YYYY-MM-DD')
-    quit_date = models.DateField('sluttet i BUK', null=True, blank=True, default=None,
-            help_text='Datoer skrives på formen YYYY-MM-DD')
     address = models.CharField('adresse', max_length=60)
     zip_code = models.CharField('postnr.', max_length=4)
     city = models.CharField('poststed', max_length=40)
@@ -104,13 +103,13 @@ class Member(AbstractBaseUser, PermissionsMixin):
     objects = MemberManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone', 'instrument', 'birthday', 'joined_date',
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone', 'instrument', 'birthday',
             'address', 'zip_code', 'city']
 
     class Meta:
         verbose_name = 'medlem'
         verbose_name_plural = 'medlemmer'
-        ordering = ['instrument', 'is_active', 'group_leader_for', 'first_name']
+        ordering = ['instrument', '-is_active', 'group_leader_for', 'first_name', 'last_name']
 
     @property
     def is_staff(self):
@@ -142,23 +141,17 @@ class Member(AbstractBaseUser, PermissionsMixin):
         return "%s %s %s" % (self.address, self.zip_code, self.city)
     get_full_address.short_description = 'adresse'
 
-    def save(self, *args, **kwargs):
-        if self.pk:
-            prev = Member.objects.get(pk=self.pk)
-            # If the member has just been rendered inactive,
-            # but the quit date isn't set, set it to today
-            # If the user is becoming active, clear the quit date.
-            if prev.is_active != self.is_active:
-                if self.is_active:
-                    self.quit_date = None
-                elif not self.quit_date:
-                    self.quit_date = date.today()
-        elif not self.joined_date:
-            # If it's a new member that doesn't have a joined date,
-            # set it to today
-            self.joined_date = date.today()
 
-        super(Member, self).save(*args, **kwargs)
+class MembershipPeriod(Period):
+    member = models.ForeignKey(
+        Member,
+        on_delete = models.CASCADE,
+        related_name = 'membership_periods',
+    )
+
+    class Meta(Period.Meta):
+        verbose_name = 'medlemskapsperiode'
+        verbose_name_plural = 'medlemskapsperioder'
 
 
 class BoardPosition(models.Model):

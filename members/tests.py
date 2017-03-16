@@ -1,33 +1,42 @@
 from django.test import TestCase
 from django.core.management import call_command
 from django.utils.six import StringIO
-from .models import Member, Instrument
+from .models import *
+from datetime import date
 
 test_member = {
     'email': 'test@example.com',
     'first_name': 'Test',
     'last_name': 'Testson',
-    'joined_date': '2017-01-01',
-    'birthday': '1996-03-05',
+    'joined_date': date(2017, 1, 1),
+    'birthday': date(1996, 3, 5),
     'phone': '94857205',
     'address': 'Teststreet 42',
     'zip_code': '8472',
     'city': 'Testheim',
 }
 
+
 class MemberTestCase(TestCase):
     def setUp(self):
-        Instrument.objects.create(name='Testolin')
+        test_member['instrument'] = Instrument.objects.create(name='Testolin')
 
-    def test_create_member(self):
-        test_member['instrument'] = Instrument.objects.get(name='Testolin')
-        Member.objects.create_user(**test_member)
+    def test_create(self):
+        member = Member.objects.create_user(**test_member)
+        self.assertEqual(member.membership_periods.count(), 1)
+        self.assertEqual(member.membership_periods.first().start, test_member['joined_date'])
+        self.assertIsNone(member.membership_periods.first().end)
+
+    def test_create_without_joined_date(self):
+        local_test_member = dict(test_member)
+        del local_test_member['joined_date']
+        member = Member.objects.create(**local_test_member)
+        self.assertEqual(member.membership_periods.count(), 0)
 
 
 class MakeSuperuserTestCase(TestCase):
     def setUp(self):
-        Instrument.objects.create(name='Testolin')
-        test_member['instrument'] = Instrument.objects.get(name='Testolin')
+        test_member['instrument'] = Instrument.objects.create(name='Testolin')
         self.member = Member.objects.create_user(**test_member)
 
     def test_failure(self):
