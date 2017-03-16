@@ -2,8 +2,11 @@ from django.db import models
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group
+from django.urls import reverse
 
 from datetime import date
+
+from base.models import Period
 
 class Instrument(models.Model):
     name = models.CharField('navn', max_length=30, unique=True)
@@ -21,6 +24,7 @@ class Instrument(models.Model):
     class Meta:
         verbose_name = 'instrument'
         verbose_name_plural = 'instrumenter'
+        ordering = ['order', 'name']
 
     def __str__(self):
         return self.name
@@ -42,7 +46,6 @@ class MemberManager(BaseUserManager):
             email = self.normalize_email(email),
             first_name = first_name,
             last_name = last_name,
-            joined_date = joined_date,
             instrument = instrument,
             birthday = birthday,
             phone = phone,
@@ -52,6 +55,8 @@ class MemberManager(BaseUserManager):
         )
         user.set_password(password)
         user.save(using=self._db)
+
+        MembershipPeriod.objects.create(start=joined_date, member=user)
 
         return user
 
@@ -85,10 +90,6 @@ class Member(AbstractBaseUser, PermissionsMixin):
         related_name = 'players',
     )
     birthday = models.DateField('fødselsdato', help_text='Datoer skrives på formen YYYY-MM-DD')
-    joined_date = models.DateField('startet i BUK', default=date.today,
-            help_text='Datoer skrives på formen YYYY-MM-DD')
-    quit_date = models.DateField('sluttet i BUK', null=True, blank=True, default=None,
-            help_text='Datoer skrives på formen YYYY-MM-DD')
     address = models.CharField('adresse', max_length=60)
     zip_code = models.CharField('postnr.', max_length=4)
     city = models.CharField('poststed', max_length=40)
@@ -102,16 +103,21 @@ class Member(AbstractBaseUser, PermissionsMixin):
     objects = MemberManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone', 'instrument', 'birthday', 'joined_date',
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone', 'instrument', 'birthday',
             'address', 'zip_code', 'city']
 
     class Meta:
         verbose_name = 'medlem'
         verbose_name_plural = 'medlemmer'
+        ordering = ['instrument', '-is_active', 'group_leader_for', 'first_name', 'last_name']
 
     @property
     def is_staff(self):
         return self.is_admin
+
+    @property
+    def status(self):
+        return 'Aktiv' if self.is_active else 'Sluttet'
 
     def get_full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
@@ -121,34 +127,31 @@ class Member(AbstractBaseUser, PermissionsMixin):
         return self.first_name
     get_short_name.short_description = 'navn'
 
+    def get_absolute_url(self):
+        return reverse('member_detail', args=[str(self.pk)])
+
     def __str__(self):
         return self.get_full_name()
 
     def is_group_leader(self):
-        return hasattr(self.user, 'group_leader_for')
+        return hasattr(self, 'group_leader_for')
     is_group_leader.short_description = 'er gruppeleder'
 
     def get_full_address(self):
         return "%s %s %s" % (self.address, self.zip_code, self.city)
     get_full_address.short_description = 'adresse'
 
-    def save(self, *args, **kwargs):
-        if self.pk:
-            prev = Member.objects.get(pk=self.pk)
-            # If the member has just been rendered inactive,
-            # but the quit date isn't set, set it to today
-            # If the user is becoming active, clear the quit date.
-            if prev.is_active != self.is_active:
-                if self.is_active:
-                    self.quit_date = None
-                elif not self.quit_date:
-                    self.quit_date = date.today()
-        elif not self.joined_date:
-            # If it's a new member that doesn't have a joined date,
-            # set it to today
-            self.joined_date = date.today()
 
-        super(Member, self).save(*args, **kwargs)
+class MembershipPeriod(Period):
+    member = models.ForeignKey(
+        Member,
+        on_delete = models.CASCADE,
+        related_name = 'membership_periods',
+    )
+
+    class Meta(Period.Meta):
+        verbose_name = 'medlemskapsperiode'
+        verbose_name_plural = 'medlemskapsperioder'
 
 
 class BoardPosition(models.Model):

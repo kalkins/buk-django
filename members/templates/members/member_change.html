@@ -1,0 +1,65 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'members/css/member_change.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section>
+    <h2>Rediger medlem</h2>
+    <form action={{ request.path|urlencode }} method='POST'>
+        {% csrf_token %}
+        <h3>Medlemskapsperioder</h3>
+        {{ membership_period_formset.management_form }}
+        <table class='membership_period'>
+            <tr><td>Start</td><td>Slutt</td>
+            {% for membership_form in membership_period_formset %}
+
+            {% if membership_form.non_field_errors %}
+            <tr>
+                <td colspan=2>
+                    {{ membership_form.non_field_errors }}
+                </td>
+            </tr>
+            {% endif %}
+
+            {% if membership_form.errors %}
+            <tr>
+                <td>
+                    {% for error in membership_form.start.errors %}
+                    <strong>{{ error|escape }}</strong>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for error in membership_form.end.errors %}
+                    <strong>{{ error|escape }}</strong>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endif %}
+
+            <tr>
+                <td>{{ membership_form.start }}</td>
+                <td>
+                    {{ membership_form.end }}
+                    {% for hidden in membership_form.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br />
+        <br />
+
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input class='modernbutton' type='submit' value='Lagre' />
+    </form>
+</section>
+{% endblock main %}

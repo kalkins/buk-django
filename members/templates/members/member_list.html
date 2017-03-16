@@ -1,0 +1,64 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'members/css/member_list.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section>
+    <div>
+        <h2>Medlemmer</h2>
+        <div>
+            {% if perms.members.add_member %}
+            <a class='graylink' href='{% url 'member_add' %}'>
+                <i class='fa fa-pluss'></i>
+                Legg til ny
+            </a>
+            {% endif %}
+
+            {% if show_all %}
+            <a class='graylink' href='{% url 'member_list' %}'>
+                <i class='fa fa-user'></i>
+                Vis kun aktive
+            </a>
+            {% else %}
+            <a class='graylink' href='{% url 'member_list_all' %}'>
+                <i class='fa fa-users'></i>
+                Vis også sluttede
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        {% for member in members %}
+        {% ifchanged %}<h3>{{ member.instrument.name }}</h3>{% endifchanged %}
+        <div class='member'>
+            <a class='graylink name' href='{{ member.get_absolute_url}}' >{{ member.get_full_name }}</a>
+            <a class='graylink phone' href='tel:{{ member.phone }}'>
+                <i class='fa fa-phone'></i>
+                {{ member.phone }}
+            </a>
+
+            {% if member.is_group_leader %}
+            <span class='tag group_leader'>Gruppeleder</span>
+            {% endif %}
+
+            {% if not member.is_active %}
+            <span class='tag quit'>Sluttet</span>
+            {% endif %}
+
+            {% if perms.members.change_member %}
+            <a class='graylink change_member' href='{% url 'member_change' member.pk %}'>
+                <i class='fa fa-edit'></i>
+                Endre
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock main %}

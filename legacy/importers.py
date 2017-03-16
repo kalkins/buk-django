@@ -36,6 +36,10 @@ class LegacyImporter:
     # necessary if overwrite if True
     update = {}
 
+    # The columns that are many-to-many fields. Any columns in this list
+    # requires a conversion method.
+    manytomany = []
+
     # The SQL to execute. This will be generated if not provided
     sql = ''
 
@@ -83,6 +87,8 @@ class LegacyImporter:
                 update[col] = params[col]
             self.model.objects.filter(pk=obj.pk).update(**update)
 
+        return obj
+
     def execute(self):
         try:
             self.cursor = connections[self.db].cursor()
@@ -107,6 +113,7 @@ class LegacyImporter:
 
     def foreach(self, row):
         params = {'defaults': {}}
+        manytomany = {}
         i = 0
         for newcol, oldcol in self.cols.items():
             if isinstance(oldcol, str):
@@ -134,11 +141,16 @@ class LegacyImporter:
                         ("Column '%s' is dependent on several columns in the old database, " \
                         +"but no conversion function was provided.") % newcol)
 
-            if newcol in self.check:
+            if newcol in self.manytomany:
+                manytomany[newcol] = val
+            elif newcol in self.check:
                 if newcol == 'defaults':
                     newcol = 'defaults__exact'
                 params[newcol] = val
             else:
                 params['defaults'][newcol] = val
 
-        self.create_instance(params)
+        obj = self.create_instance(params)
+        
+        for field in manytomany:
+            getattr(obj, field).add(manytomany[field])

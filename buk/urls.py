@@ -16,9 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from members import forms as member_forms
+from django.views.generic import RedirectView
+from members import forms as member_forms, views as member_views
 
 urlpatterns = [
+    url(r'^$', RedirectView.as_view(pattern_name='member_list'), name='front_page'),
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth_views.login, {'authentication_form': member_forms.MemberAuthenticationForm}, name='login'),
     url(r'^logout/$', auth_views.logout, name='logout'),
@@ -30,4 +32,9 @@ urlpatterns = [
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         auth_views.password_reset_confirm, name='password_reset_confirm'),
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
+    url(r'^medlem/(?P<pk>[0-9]+)$', member_views.MemberDetail.as_view(), name='member_detail'),
+    url(r'^medlem/(?P<pk>[0-9]+)/endre$', member_views.ChangeMember.as_view(), name='member_change'),
+    url(r'^medlem/ny$', member_views.AddMember.as_view(), name='member_add'),
+    url(r'^medlemmer/$', member_views.MemberList.as_view(), {'show_all': False}, name='member_list'),
+    url(r'^medlemmer/alle$', member_views.MemberList.as_view(), {'show_all': True}, name='member_list_all'),
 ]
