@@ -79,6 +79,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
         unique = True,
     )
     is_active = models.BooleanField('aktiv', default=True)
+    is_on_leave = models.BooleanField('i permisjon', default=False)
     is_admin = models.BooleanField('admin', default=False)
     first_name = models.CharField('fornavn', max_length=30)
     last_name = models.CharField('etternavn', max_length=30)
@@ -109,7 +110,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'medlem'
         verbose_name_plural = 'medlemmer'
-        ordering = ['instrument', '-is_active', 'group_leader_for', 'first_name', 'last_name']
+        ordering = ['instrument', '-is_active', 'is_on_leave', 'group_leader_for', 'first_name', 'last_name']
 
     @property
     def is_staff(self):
@@ -117,7 +118,12 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     @property
     def status(self):
-        return 'Aktiv' if self.is_active else 'Sluttet'
+        if self.is_on_leave:
+            return 'Permisjon'
+        elif self.is_active:
+            return 'Aktiv'
+        else:
+            return 'Sluttet'
 
     def get_full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
@@ -152,6 +158,34 @@ class MembershipPeriod(Period):
     class Meta(Period.Meta):
         verbose_name = 'medlemskapsperiode'
         verbose_name_plural = 'medlemskapsperioder'
+
+    def save(self, *args, **kwargs):
+        super(MembershipPeriod, self).save(*args, **kwargs)
+
+        member = self.member
+
+        # If there are open periods, i.e the member has not quit, the member is active
+        member.is_active = member.membership_periods.filter(end=None).exists()
+        member.save()
+
+
+class LeavePeriod(Period):
+    member = models.ForeignKey(
+        Member,
+        on_delete = models.CASCADE,
+        related_name = 'leave_periods',
+    )
+
+    class Meta(Period.Meta):
+        verbose_name = 'permisjonsperioder'
+        verbose_name_plural = 'permisjonsperioder'
+
+    def save(self, *args, **kwargs):
+        super(LeavePeriod, self).save(*args, **kwargs)
+
+        member = self.member
+        member.is_on_leave = member.leave_periods.filter(end=None).exists()
+        member.save()
 
 
 class BoardPosition(models.Model):

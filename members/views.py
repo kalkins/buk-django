@@ -2,8 +2,8 @@ from django.views.generic import DetailView, ListView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
 
-from .models import Member, MembershipPeriod
-from .forms import MembershipPeriodFormset
+from .models import Member, MembershipPeriod, LeavePeriod
+from .forms import *
 
 
 class MemberDetail(DetailView):
@@ -38,16 +38,20 @@ class ChangeMember(PermissionRequiredMixin, UpdateView):
         context = super(ChangeMember, self).get_context_data(**kwargs)
         if self.request.POST:
             context['membership_period_formset'] = MembershipPeriodFormset(self.request.POST, instance=self.object)
+            context['leave_period_formset'] = LeavePeriodFormset(self.request.POST, instance=self.object)
         else:
             context['membership_period_formset'] = MembershipPeriodFormset(instance=self.object)
+            context['leave_period_formset'] = LeavePeriodFormset(instance=self.object)
         return context
 
     def form_valid(self, form):
         response = super(ChangeMember, self).form_valid(form)
         context = self.get_context_data()
         membership_formset = context['membership_period_formset']
-        if membership_formset.is_valid():
+        leave_formset = context['leave_period_formset']
+        if membership_formset.is_valid() and leave_formset.is_valid():
             membership_formset.save()
+            leave_formset.save()
             return response
         else:
             return self.render_to_response(self.get_context_data(form=form))
@@ -55,7 +59,6 @@ class ChangeMember(PermissionRequiredMixin, UpdateView):
 
 class AddMember(PermissionRequiredMixin, CreateView):
     model = Member
+    form_class = MemberAddForm
     permission_required = 'members.change_member'
     template_name = 'members/member_add.html'
-    fields = ['email', 'first_name', 'last_name', 'instrument', 'phone', 'birthday',
-            'address', 'zip_code', 'city']

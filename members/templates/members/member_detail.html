@@ -30,7 +30,10 @@
         <p>
             <strong>Instrument:</strong>
             {{ member.instrument.name }}
+
+            {% if member.is_group_leader %}
             <span class='tag gruppeleder'>Gruppeleder</span>
+            {% endif %}
         </p>
         <p>
             <strong>Status:</strong>
