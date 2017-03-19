@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.shortcuts import render
 
 from .models import Member, MembershipPeriod
-from .forms import MembershipPeriodFormset
+from .forms import MembershipPeriodFormset, MemberAddForm
 
 
 class MemberDetail(DetailView):
@@ -55,7 +55,6 @@ class ChangeMember(PermissionRequiredMixin, UpdateView):
 
 class AddMember(PermissionRequiredMixin, CreateView):
     model = Member
+    form_class = MemberAddForm
     permission_required = 'members.change_member'
     template_name = 'members/member_add.html'
-    fields = ['email', 'first_name', 'last_name', 'instrument', 'phone', 'birthday',
-            'address', 'zip_code', 'city']

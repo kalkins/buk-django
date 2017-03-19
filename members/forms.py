@@ -13,6 +13,20 @@ class MemberPasswordResetForm(PasswordResetForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'E-post'}))
 
 
+class MemberAddForm(forms.ModelForm):
+    joined_date = forms.DateField(label='Startet i BUK:', required=True)
+
+    class Meta:
+        model = Member
+        fields = ['email', 'first_name', 'last_name', 'instrument', 'phone', 'joined_date', 'birthday',
+                'address', 'zip_code', 'city']
+
+    def save(self, *args, **kwargs):
+        obj = super(MemberAddForm, self).save(*args, **kwargs)
+        MembershipPeriod.objects.create(member=obj, start=self.cleaned_data['joined_date'])
+        return obj
+
+
 MembershipPeriodFormset = forms.inlineformset_factory(
     Member,
     MembershipPeriod,
