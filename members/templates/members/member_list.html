@@ -48,6 +48,10 @@
             {% if member.is_group_leader %}
             <span class='tag group_leader'>Gruppeleder</span>
             {% endif %}
+            
+            {% if member.is_on_leave %}
+            <span class='tag on_leave'>Permisjon</span>
+            {% endif %}
 
             {% if not member.is_active %}
             <span class='tag quit'>Sluttet</span>

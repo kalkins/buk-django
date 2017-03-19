@@ -34,3 +34,12 @@ MembershipPeriodFormset = forms.inlineformset_factory(
     extra = 1,
     fields = ('start', 'end'),
 )
+
+
+LeavePeriodFormset = forms.inlineformset_factory(
+    Member,
+    LeavePeriod,
+    formset = BasePeriodFormset,
+    extra = 1,
+    fields = ('start', 'end'),
+)

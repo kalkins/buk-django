@@ -118,3 +118,27 @@ class MembershipPeriodImport(LegacyImporter):
         if len(members) == 1:
             return members[0]
         raise ImportSkipRow()
+
+
+class LeavePeriodImport(LegacyImporter):
+    model = LeavePeriod
+    table = 'medlemmer'
+    cols = {
+        'start': 'status',
+        'member': 'email',
+    }
+    check = ['member']
+
+    # The old database didn't record when members went on leave, so we
+    # just have to set a random startdate and fix it later.
+    def convert_start(self, val):
+        if val == 'Permisjon':
+            return date.today()
+        else:
+            raise ImportSkipRow()
+
+    def convert_member(self, val):
+        members = Member.objects.filter(email=val)
+        if len(members) == 1:
+            return members[0]
+        raise ImportSkipRow()

@@ -21,6 +21,13 @@
                     {% include 'base/period_formset.html' with formset=membership_period_formset only %}
                 </td>
             </tr>
+
+            <tr>
+                <th>Permisjonsperioder:</th>
+                <td>
+                    {% include 'base/period_formset.html' with formset=leave_period_formset only %}
+                </td>
+            </tr>
         </table>
         <input class='modernbutton' type='submit' value='Lagre' />
     </form>

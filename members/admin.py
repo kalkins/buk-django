@@ -12,6 +12,11 @@ class MembershipPeriodInline(admin.TabularInline):
     extra = 1
 
 
+class LeavePeriodInline(admin.TabularInline):
+    model = LeavePeriod
+    extra = 1
+
+
 class MemberForm(forms.ModelForm):
     class Meta:
         model = Member
@@ -55,7 +60,8 @@ class UserAdmin(BaseUserAdmin):
     )
 
     inlines = [
-        MembershipPeriodInline
+        MembershipPeriodInline,
+        LeavePeriodInline
     ]
 
 
