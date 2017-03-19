@@ -33,6 +33,19 @@ class MemberTestCase(TestCase):
         member = Member.objects.create(**local_test_member)
         self.assertEqual(member.membership_periods.count(), 0)
 
+    def test_is_active(self):
+        member = Member.objects.create_user(**test_member)
+        self.assertTrue(member.is_active)
+        period = member.membership_periods.first()
+        period.end = date.today()
+        period.save()
+        self.assertFalse(member.is_active)
+        member.membership_periods.create(start=date.today())
+        self.assertTrue(member.is_active)
+        period.end = date(2017, 2, 3)
+        period.save()
+        self.assertTrue(member.is_active)
+
 
 class MakeSuperuserTestCase(TestCase):
     def setUp(self):

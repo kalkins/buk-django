@@ -153,6 +153,15 @@ class MembershipPeriod(Period):
         verbose_name = 'medlemskapsperiode'
         verbose_name_plural = 'medlemskapsperioder'
 
+    def save(self, *args, **kwargs):
+        super(MembershipPeriod, self).save(*args, **kwargs)
+
+        member = self.member
+
+        # If there are open periods, i.e the member has not quit, the member is active
+        member.is_active = MembershipPeriod.objects.filter(member=member, end=None).exists()
+        member.save()
+
 
 class BoardPosition(models.Model):
     holder = models.OneToOneField(
