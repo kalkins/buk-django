@@ -12,13 +12,15 @@
     <h2>Rediger medlem</h2>
     <form action={{ request.path|urlencode }} method='POST'>
         {% csrf_token %}
-        <h3>Medlemskapsperioder</h3>
-        {% include 'base/period_formset.html' with formset=membership_period_formset only %}
-        <br />
-        <br />
-
         <table>
             {{ form.as_table }}
+
+            <tr>
+                <th>Medlemskapsperioder:</th>
+                <td>
+                    {% include 'base/period_formset.html' with formset=membership_period_formset only %}
+                </td>
+            </tr>
         </table>
         <input class='modernbutton' type='submit' value='Lagre' />
     </form>
