@@ -53,9 +53,7 @@ ROOT_URLCONF = 'buk.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            'buk/templates/',
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,10 +111,6 @@ TIME_ZONE = 'Europe/Oslo'
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'buk/static'),
-]
 
 
 # Import a local settings file that can override any setting in this file.
