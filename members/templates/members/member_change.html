@@ -13,55 +13,7 @@
     <form action={{ request.path|urlencode }} method='POST'>
         {% csrf_token %}
         <h3>Medlemskapsperioder</h3>
-        {{ membership_period_formset.management_form }}
-        <table class='membership_period'>
-            <tr><td>Start</td><td>Slutt</td><td>Slett</td></tr>
-
-            {% if membership_period_formset.non_form_errors %}
-            <tr>
-                <td colspan=2>
-                    {{ membership_period_formset.non_form_errors }}
-                </td>
-            </tr>
-            {% endif %}
-
-            {% for membership_form in membership_period_formset %}
-
-            {% if membership_form.non_field_errors %}
-            <tr>
-                <td colspan=2>
-                    {{ membership_form.non_field_errors }}
-                </td>
-            </tr>
-            {% endif %}
-
-            {% if membership_form.errors %}
-            <tr>
-                <td>
-                    {% for error in membership_form.start.errors %}
-                    <strong>{{ error|escape }}</strong>
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for error in membership_form.end.errors %}
-                    <strong>{{ error|escape }}</strong>
-                    {% endfor %}
-                </td>
-            </tr>
-            {% endif %}
-
-            <tr>
-                <td>{{ membership_form.start }}</td>
-                <td>{{ membership_form.end }}</td>
-                <td>{{ membership_form.DELETE}}</td>
-
-                {% for hidden in membership_form.hidden_fields %}
-                {{ hidden }}
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </table>
-
+        {% include 'base/period_formset.html' with formset=membership_period_formset only %}
         <br />
         <br />
 

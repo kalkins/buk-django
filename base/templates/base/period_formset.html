@@ -1,0 +1,48 @@
+{{ formset.management_form }}
+<table class='period period'>
+    <tr><td>Start</td><td>Slutt</td><td>Slett</td></tr>
+
+    {% if formset.non_form_errors %}
+    <tr>
+        <td colspan=2>
+            {{ formset.non_form_errors }}
+        </td>
+    </tr>
+    {% endif %}
+
+    {% for form in formset %}
+
+    {% if form.non_field_errors %}
+    <tr>
+        <td colspan=2>
+            {{ form.non_field_errors }}
+        </td>
+    </tr>
+    {% endif %}
+
+    {% if form.errors %}
+    <tr>
+        <td>
+            {% for error in form.start.errors %}
+            <strong>{{ error|escape }}</strong>
+            {% endfor %}
+        </td>
+        <td>
+            {% for error in form.end.errors %}
+            <strong>{{ error|escape }}</strong>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endif %}
+
+    <tr>
+        <td>{{ form.start }}</td>
+        <td>{{ form.end }}</td>
+        <td>{{ form.DELETE}}</td>
+
+        {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
