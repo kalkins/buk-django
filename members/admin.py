@@ -4,7 +4,12 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import Member, Instrument, BoardPosition, Committee
+from .models import *
+
+
+class MembershipPeriodInline(admin.TabularInline):
+    model = MembershipPeriod
+    extra = 1
 
 
 class MemberForm(forms.ModelForm):
@@ -31,7 +36,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields':
             ('first_name', 'last_name', 'instrument', 'email',
-            'joined_date', 'quit_date', 'is_active', 'is_admin', 'is_superuser')}
+            'is_admin', 'is_superuser')}
         ),
         ('Praktisk informasjon', {'fields': ('has_car', 'has_towbar')}),
         ('Personlig informasjon', {'fields': (
@@ -44,10 +49,14 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'instrument', 'birthday', 'phone', 'joined_date',
+            'fields': ('email', 'first_name', 'last_name', 'instrument', 'birthday', 'phone',
                 'address', 'zip_code', 'city')
         }),
     )
+
+    inlines = [
+        MembershipPeriodInline
+    ]
 
 
 class InstrumentAdmin(admin.ModelAdmin):
