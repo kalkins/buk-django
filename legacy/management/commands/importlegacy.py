@@ -57,5 +57,10 @@ class Command(BaseCommand):
                 self.run_importer(dep)
             name = obj.name if obj.name else obj.model._meta.verbose_name_plural
             self.stdout.write('Importing ' + name)
-            obj.execute()
+            try:
+                obj.execute()
+            except Exception as e:
+                self.stderr.write("Exception occured while importing %s" % str(obj))
+                self.stderr.write("SQL: %s" % obj.sql)
+                raise e
             self.done.append(cls)
