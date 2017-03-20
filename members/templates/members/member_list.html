@@ -48,6 +48,13 @@
             {% if member.is_group_leader %}
             <span class='tag group_leader'>Gruppeleder</span>
             {% endif %}
+
+            {% if member.board_position %}
+            <a class='graylink email' href='mailto:{{ member.board_position.email }}'>
+                <i class='fa fa-envelope-o' title='Send e-post'></i>
+                {{ member.board_position.title }}
+            </a>
+            {% endif %}
             
             {% if member.is_on_leave %}
             <span class='tag on_leave'>Permisjon</span>
