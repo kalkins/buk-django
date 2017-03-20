@@ -9,6 +9,7 @@ from inspect import getmembers, isclass
 
 class Command(BaseCommand):
     help = 'Imports data from the old database'
+    done = []
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -45,14 +46,21 @@ class Command(BaseCommand):
                 mod = import_module(mod_name)
                 classes = getmembers(mod, lambda member: isclass(member) and member.__module__ == mod_name)
                 for name, cls in classes:
-                    if issubclass(cls, LegacyImporter):
-                        #try:
-                        obj = cls()
-                        self.stdout.write('Importing ' + obj.model._meta.verbose_name_plural)
-                        obj.execute()
-                        #except Exception as e:
-                        #    self.stderr.write(str(e))
-                        #    self.stderr.write('Aborting import.')
-                        #    return
+                    self.run_importer(cls)
             except ModuleNotFoundError:
                 self.stderr.write("App '%s' does not have a 'import_legacy.py' file. Skipping." % config.name)
+
+    def run_importer(self, cls):
+        if issubclass(cls, LegacyImporter) and cls not in self.done:
+            obj = cls()
+            for dep in obj.dependencies:
+                self.run_importer(dep)
+            name = obj.name if obj.name else obj.model._meta.verbose_name_plural
+            self.stdout.write('Importing ' + name)
+            try:
+                obj.execute()
+            except Exception as e:
+                self.stderr.write("Exception occured while importing %s" % str(obj))
+                self.stderr.write("SQL: %s" % obj.sql)
+                raise e
+            self.done.append(cls)

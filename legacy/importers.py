@@ -9,6 +9,12 @@ class LegacyImporter:
     # The database to import from
     db = 'legacy'
 
+    # The importers that this importer relies on
+    dependencies = []
+
+    # The name to show in the log
+    name = ''
+
     # Whether to overwrite existing entries or not
     overwrite = False
 
@@ -70,10 +76,7 @@ class LegacyImporter:
 
         where = ''
         if self.where:
-            if 'where' in self.where or 'WHERE' in self.where:
-                where = self.where
-            else:
-                where = 'WHERE %s' % self.where
+            where = 'WHERE %s' % self.where
 
         self.sql = 'SELECT %s FROM %s %s' % (columns, tables, where)
 

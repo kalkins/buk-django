@@ -21,6 +21,7 @@ class InstrumentImport(LegacyImporter):
 
 
 class MemberImport(LegacyImporter):
+    dependencies = [InstrumentImport]
     model = Member
     table = 'medlemmer'
     cols = {
@@ -98,7 +99,35 @@ class MemberImport(LegacyImporter):
         return val if val else ''
 
 
+class GroupLeaderImport(LegacyImporter):
+    dependencies = [MemberImport]
+    model = Instrument
+    table = 'medlemmer'
+    name = 'gruppeledere'
+    cols = {
+        'name': 'email',
+        'group_leader': ['email', 'grleder'],
+    }
+    check = ['name']
+    update = ['group_leader']
+
+    def convert_name(self, email):
+        members = Member.objects.filter(email=email)
+        if members:
+            return members[0].instrument.name
+        else:
+            raise ImportSkipRow()
+
+    def convert_group_leader(self, email, grleder):
+        members = Member.objects.filter(email=email)
+        if members and grleder:
+            return members[0]
+        else:
+            raise ImportSkipRow()
+
+
 class MembershipPeriodImport(LegacyImporter):
+    dependencies = [MemberImport]
     model = MembershipPeriod
     table = 'medlemmer'
     cols = {
@@ -121,6 +150,7 @@ class MembershipPeriodImport(LegacyImporter):
 
 
 class LeavePeriodImport(LegacyImporter):
+    dependiencies = [MemberImport]
     model = LeavePeriod
     table = 'medlemmer'
     cols = {
@@ -142,3 +172,29 @@ class LeavePeriodImport(LegacyImporter):
         if len(members) == 1:
             return members[0]
         raise ImportSkipRow()
+
+
+class BoardPositionImport(LegacyImporter):
+    dependencies = [MemberImport]
+    model = BoardPosition
+    table = ['verv', 'medlemmer']
+    where = 'verv.medlemsid = medlemmer.medlemsid'
+    cols = {
+        'email': 'epost',
+        'holder': 'email',
+        'title': 'tittel',
+        'description': 'beskrivelse',
+        'order': 'posisjon',
+    }
+
+    def convert_email(self, val):
+        if val:
+            return val
+        else:
+            raise ImportSkipRow()
+
+    def convert_holder(self, val):
+        try:
+            return Member.objects.get(email=val)
+        except ObjectDoesNotExist:
+            raise ImportSkipRow()

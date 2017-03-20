@@ -40,13 +40,16 @@
         {% ifchanged %}<h3>{{ member.instrument.name }}</h3>{% endifchanged %}
         <div class='member'>
             <a class='graylink name' href='{{ member.get_absolute_url}}' >{{ member.get_full_name }}</a>
-            <a class='graylink phone' href='tel:{{ member.phone }}'>
-                <i class='fa fa-phone'></i>
-                {{ member.phone }}
-            </a>
 
             {% if member.is_group_leader %}
             <span class='tag group_leader'>Gruppeleder</span>
+            {% endif %}
+
+            {% if member.board_position %}
+            <a class='graylink email' href='mailto:{{ member.board_position.email }}'>
+                <i class='fa fa-envelope-o' title='Send e-post'></i>
+                {{ member.board_position.title }}
+            </a>
             {% endif %}
             
             {% if member.is_on_leave %}
@@ -56,6 +59,11 @@
             {% if not member.is_active %}
             <span class='tag quit'>Sluttet</span>
             {% endif %}
+
+            <a class='graylink phone' href='tel:{{ member.phone }}'>
+                <i class='fa fa-phone'></i>
+                {{ member.phone }}
+            </a>
 
             {% if perms.members.change_member %}
             <a class='graylink change_member' href='{% url 'member_change' member.pk %}'>
