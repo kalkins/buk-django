@@ -192,6 +192,7 @@ class BoardPosition(models.Model):
     holder = models.OneToOneField(
         Member,
         on_delete = models.PROTECT,
+        related_name = 'board_position',
         verbose_name = 'innehaver',
     )
     title = models.CharField('tittel', max_length=50, unique=True)
