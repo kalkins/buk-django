@@ -172,3 +172,29 @@ class LeavePeriodImport(LegacyImporter):
         if len(members) == 1:
             return members[0]
         raise ImportSkipRow()
+
+
+class BoardPositionImport(LegacyImporter):
+    dependencies = [MemberImport]
+    model = BoardPosition
+    table = ['verv', 'medlemmer']
+    where = 'verv.medlemsid = medlemmer.medlemsid'
+    cols = {
+        'email': 'epost',
+        'holder': 'email',
+        'title': 'tittel',
+        'description': 'beskrivelse',
+        'order': 'posisjon',
+    }
+
+    def convert_email(self, val):
+        if val:
+            return val
+        else:
+            raise ImportSkipRow()
+
+    def convert_holder(self, val):
+        try:
+            return Member.objects.get(email=val)
+        except ObjectDoesNotExist:
+            raise ImportSkipRow()
