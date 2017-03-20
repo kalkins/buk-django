@@ -99,6 +99,33 @@ class MemberImport(LegacyImporter):
         return val if val else ''
 
 
+class GroupLeaderImport(LegacyImporter):
+    dependencies = [MemberImport]
+    model = Instrument
+    table = 'medlemmer'
+    name = 'gruppeledere'
+    cols = {
+        'name': 'email',
+        'group_leader': ['email', 'grleder'],
+    }
+    check = ['name']
+    update = ['group_leader']
+
+    def convert_name(self, email):
+        members = Member.objects.filter(email=email)
+        if members:
+            return members[0].instrument.name
+        else:
+            raise ImportSkipRow()
+
+    def convert_group_leader(self, email, grleder):
+        members = Member.objects.filter(email=email)
+        if members and grleder:
+            return members[0]
+        else:
+            raise ImportSkipRow()
+
+
 class MembershipPeriodImport(LegacyImporter):
     dependencies = [MemberImport]
     model = MembershipPeriod
