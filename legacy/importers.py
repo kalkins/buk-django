@@ -9,6 +9,12 @@ class LegacyImporter:
     # The database to import from
     db = 'legacy'
 
+    # The importers that this importer relies on
+    dependencies = []
+
+    # The name to show in the log
+    name = ''
+
     # Whether to overwrite existing entries or not
     overwrite = False
 

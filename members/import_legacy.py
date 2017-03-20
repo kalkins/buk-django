@@ -21,6 +21,7 @@ class InstrumentImport(LegacyImporter):
 
 
 class MemberImport(LegacyImporter):
+    dependencies = [InstrumentImport]
     model = Member
     table = 'medlemmer'
     cols = {
@@ -99,6 +100,7 @@ class MemberImport(LegacyImporter):
 
 
 class MembershipPeriodImport(LegacyImporter):
+    dependencies = [MemberImport]
     model = MembershipPeriod
     table = 'medlemmer'
     cols = {
@@ -121,6 +123,7 @@ class MembershipPeriodImport(LegacyImporter):
 
 
 class LeavePeriodImport(LegacyImporter):
+    dependiencies = [MemberImport]
     model = LeavePeriod
     table = 'medlemmer'
     cols = {
