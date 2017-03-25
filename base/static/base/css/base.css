@@ -143,6 +143,10 @@ nav.menu-full, nav.menu-collapsed {
   font-family: Nunito, "Helvetica Neue", Helvetica, Arial, sans-serif;
   cursor: pointer;
 }
+/* line 16, header/_nav.scss */
+nav.menu-full a:link, nav.menu-full a:active, nav.menu-full a:visited, nav.menu-full a:hover, nav.menu-collapsed a:link, nav.menu-collapsed a:active, nav.menu-collapsed a:visited, nav.menu-collapsed a:hover {
+  color: #777;
+}
 
 /* line 3, sections/_sections.scss */
 body > section {
