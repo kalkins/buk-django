@@ -70,12 +70,12 @@ nav.menu-full {
   }
 }
 /* line 14, header/_nav-full.scss */
-nav.menu-full * {
+nav.menu-full > *:not(.dropdown) {
   display: inline-block;
   padding: 0 1.5vw;
 }
 /* line 18, header/_nav-full.scss */
-nav.menu-full *:not(:first-child) {
+nav.menu-full > *:not(.dropdown):not(:first-child) {
   margin-left: 0em;
 }
 

@@ -1,3 +1,27 @@
 <a href='{% url 'member_list' %}'>
     Medlemmer
 </a>
+
+<div id='user-dropdown' class='dropdown'>
+    <input id='user-dropdown-trigger' class='dropdown-trigger' type='checkbox' />
+    <label for='user-dropdown-trigger' class='dropdown-label'>
+        {{ user.first_name }}
+        <i class='fa fa-caret-down'></i>
+    </label>
+
+    <ul class='dropdown-options'>
+        <li class='dropdown-option'>
+            <a href='{% url 'member_change' user.pk %}'>
+                <i class='fa fa-fw fa-user'></i>
+                Endre profil
+            </a>
+        </li>
+
+        <li class='dropdown-option'>
+            <a href='{% url 'logout' %}'>
+                <i class='fa fa-fw fa-sign-out'></i>
+                Logg ut
+            </a>
+        </li>
+    </ul>
+</div>
