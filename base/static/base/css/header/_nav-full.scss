@@ -11,7 +11,7 @@ nav.menu-full {
     position: fixed;
     background-color: white;
 
-    * {
+    > *:not(.dropdown) {
         display: inline-block;
         padding: $menu-text-padding;
 

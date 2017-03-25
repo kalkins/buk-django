@@ -12,4 +12,8 @@ nav.menu-full, nav.menu-collapsed {
     letter-spacing: 1px;
     font-family: $menu-font-family;
     cursor: pointer;
+
+    a:link, a:active, a:visited, a:hover {
+        color: $menu-text-color;
+    }
 }
