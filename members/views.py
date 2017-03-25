@@ -1,5 +1,8 @@
+import csv
+
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from django.db.models import Q
 
@@ -77,6 +80,33 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
             form = MemberStatisticsForm(request.GET)
             if form.is_valid():
                 context['tables'] = self.get_tables(form)
+
+                if 'csv' in request.GET:
+                    start = form.cleaned_data['start']
+                    end = form.cleaned_data['end']
+                    filename = 'statistikk-%s--%s' % (start, end)
+
+                    response = HttpResponse(content_type='text/csv')
+                    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+
+                    writer = csv.writer(response)
+                    writer.writerow(['Medlemsstatistikk for perioden %s til %s' % (start, end)])
+                    writer.writerow([])
+                    writer.writerow([])
+
+                    for table in context['tables']:
+                        writer.writerow([table['name']])
+                        if table['num']:
+                            writer.writerow(table['cols'])
+                            for row in table['rows']:
+                                writer.writerow(row)
+                            writer.writerow(['Totalt:', table['num']])
+                        else:
+                            writer.writerow(['Ingen'])
+                        writer.writerow([])
+                        writer.writerow([])
+
+                    return response
         else:
             form = MemberStatisticsForm()
 
