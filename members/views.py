@@ -133,6 +133,19 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 table['num'] += 1
             tables.append(table)
 
+        if form.cleaned_data['members_end']:
+            table = {
+                'name': form.fields['members_end'].label,
+                'cols': ['Navn', 'Startet', 'Sluttet'],
+                'rows': [],
+                'num': 0,
+            }
+
+            for period in MembershipPeriod.objects.filter(Q(end=None) | Q(end__gt=end), start__lt=end):
+                table['rows'].append([period.member.get_full_name(), period.start, period.end])
+                table['num'] += 1
+            tables.append(table)
+
         if form.cleaned_data['new']:
             table = {
                 'name': form.fields['new'].label,
