@@ -1,6 +1,7 @@
-from django.views.generic import DetailView, ListView, CreateView, UpdateView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render
+from django.db.models import Q
 
 from .models import Member, MembershipPeriod, LeavePeriod
 from .forms import *
@@ -62,3 +63,137 @@ class AddMember(PermissionRequiredMixin, CreateView):
     form_class = MemberAddForm
     permission_required = 'members.change_member'
     template_name = 'members/member_add.html'
+
+
+class MemberStatistics(PermissionRequiredMixin, TemplateView):
+    permission_required = 'members.statistics'
+    template_name = 'members/member_statistics.html'
+    form_class = MemberStatisticsForm
+
+    def get(self, request):
+        context = self.get_context_data()
+
+        if 'start' in request.GET:
+            form = MemberStatisticsForm(request.GET)
+            if form.is_valid():
+                context['tables'] = self.get_tables(form)
+        else:
+            form = MemberStatisticsForm()
+
+        context['form'] = form
+
+        return self.render_to_response(context)
+
+
+    def get_tables(self, form):
+        tables = []
+        start = form.cleaned_data['start']
+        end = form.cleaned_data['end']
+
+        if form.cleaned_data['members_start']:
+            table = {
+                'name': form.fields['members_start'].label,
+                'cols': ['Navn', 'Startet', 'Sluttet'],
+                'rows': [],
+                'num': 0,
+            }
+
+            for period in MembershipPeriod.objects.filter(Q(end=None) | Q(end__gt=start), start__lt=start):
+                table['rows'].append([period.member.get_full_name(), period.start, period.end])
+                table['num'] += 1
+            tables.append(table)
+
+        if form.cleaned_data['new']:
+            table = {
+                'name': form.fields['new'].label,
+                'cols': ['Navn', 'Startet'],
+                'rows': [],
+                'num': 0,
+            }
+
+            for period in MembershipPeriod.objects.filter(start__range=(start, end), end=None):
+                table['rows'].append([period.member.get_full_name(), period.start])
+                table['num'] += 1
+            tables.append(table)
+
+        if form.cleaned_data['quit']:
+            table = {
+                'name': form.fields['quit'].label,
+                'cols': ['Navn', 'Startet', 'Sluttet'],
+                'rows': [],
+                'num': 0,
+            }
+
+            for period in MembershipPeriod.objects.filter(end__range=(start, end)):
+                table['rows'].append([period.member.get_full_name(), period.start, period.end])
+                table['num'] += 1
+            tables.append(table)
+
+        if form.cleaned_data['joined_quit']:
+            table = {
+                'name': form.fields['joined_quit'].label,
+                'cols': ['Navn', 'Startet', 'Sluttet'],
+                'rows': [],
+                'num': 0,
+            }
+
+            for period in MembershipPeriod.objects.filter(start__range=(start, end), end__range=(start, end)):
+                table['rows'].append([period.member.get_full_name(), period.start, period.end])
+                table['num'] += 1
+            tables.append(table)
+
+        if form.cleaned_data['leave_start']:
+            table = {
+                'name': form.fields['leave_start'].label,
+                'cols': ['Navn', 'Gikk i permisjon', 'Gikk ut av permisjon'],
+                'rows': [],
+                'num': 0,
+            }
+
+            for period in LeavePeriod.objects.filter(start__lt=start, end__range=(start, end)):
+                table['rows'].append([period.member.get_full_name(), period.start, period.end])
+                table['num'] += 1
+            tables.append(table)
+
+        if form.cleaned_data['leave_end']:
+            table = {
+                'name': form.fields['leave_end'].label,
+                'cols': ['Navn', 'Gikk i permisjon', 'Gikk ut av permisjon'],
+                'rows': [],
+                'num': 0,
+            }
+
+            for period in LeavePeriod.objects\
+                    .filter(start__range=(start, end))\
+                    .filter(Q(end__gt=end) | Q(end=None)):
+                table['rows'].append([period.member.get_full_name(), period.start, period.end])
+                table['num'] += 1
+            tables.append(table)
+
+        if form.cleaned_data['leave_whole']:
+            table = {
+                'name': form.fields['leave_whole'].label,
+                'cols': ['Navn', 'Gikk i permisjon', 'Gikk ut av permisjon'],
+                'rows': [],
+                'num': 0,
+            }
+
+            for period in LeavePeriod.objects.filter(start__lt=start, end__gt=end):
+                table['rows'].append([period.member.get_full_name(), period.start, period.end])
+                table['num'] += 1
+            tables.append(table)
+
+        if form.cleaned_data['leave_part']:
+            table = {
+                'name': form.fields['leave_part'].label,
+                'cols': ['Navn', 'Gikk i permisjon', 'Gikk ut av permisjon'],
+                'rows': [],
+                'num': 0,
+            }
+
+            for period in LeavePeriod.objects.filter(start__gte=start, end__lt=end):
+                table['rows'].append([period.member.get_full_name(), period.start, period.end])
+                table['num'] += 1
+            tables.append(table)
+
+        return tables

@@ -1,0 +1,87 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'members/css/member_statistics.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section>
+    <h1>Medlemsstatistikk</h1>
+
+    <div class='form-container'>
+        <form method="GET">
+            {{ form.non_field_errors }}
+
+            <table>
+                <tr>
+                    <td>{{ form.start.errors }}</td>
+                    <td>{{ form.end.errors }}</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        {{ form.start.label_tag }}
+                        {{ form.start }}
+                    </td>
+
+                    <td>
+                        {{ form.end.label_tag }}
+                        {{ form.end }}
+                    </td>
+                </tr>
+            </table>
+
+            {% for field in form %}
+            {% if field != form.start and field != form.end %}
+            <p>
+                {{ field }}
+                {{ field.label_tag }}
+            </p>
+            {% endif %}
+            {% endfor %}
+
+            <input type='submit' class='modernbutton' value='Oppdater tabeller'/>
+        </form>
+    </div>
+    
+    {% for table in tables %}
+    <div class='table'>
+        <h1>{{ table.name }}</h1>
+
+        {% if table.num %}
+        <table>
+            <tr>
+                {% for col in table.cols %}
+                <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+
+            {% for row in table.rows %}
+            <tr>
+                {% for col in row %}
+                <td>
+                    {% if col %}
+                    {{ col }}
+                    {% else %}
+                    --
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        <p class='total'>
+            <strong>Totalt: </strong>
+            {{ table.num }}
+        </p>
+        {% else %}
+        <p class='none'>Ingen</p>
+        {% endif %}
+
+        {% endfor %}
+    </div>
+</section>
+{% endblock main %}
