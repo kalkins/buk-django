@@ -20,9 +20,9 @@ class MemberList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if self.kwargs['show_all']:
-            return Member.objects.all()
+            return Member.objects.all().prefetch_related('instrument', 'board_position', 'group_leader_for')
         else:
-            return Member.objects.filter(is_active=True)
+            return Member.objects.filter(is_active=True).prefetch_related('instrument', 'board_position', 'group_leader_for')
 
     def get_context_data(self, **kwargs):
         context = super(MemberList, self).get_context_data(**kwargs)
