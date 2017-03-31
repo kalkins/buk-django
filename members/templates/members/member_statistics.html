@@ -11,6 +11,12 @@
 <section>
     <h1>Medlemsstatistikk</h1>
 
+    <p>
+        Her kan du se en oversikt over medlemmene i korpset på et bestemt tidsintervall.
+        Sett tidsintervallet ved å sette 'start' og 'stopp' til en dato på formen 'YYYY-MM-DD',
+        kryss av de tabellene du vil se og trykk på 'Oppdater tabeller'.
+    </p>
+
     <div class='form-container'>
         <form method="GET">
             {{ form.non_field_errors }}
@@ -39,6 +45,11 @@
             <p>
                 {{ field }}
                 {{ field.label_tag }}
+
+                {% if field.help_text %}
+                <br />
+                <span class='help-text'>{{ field.help_text }}</span>
+                {% endif %}
             </p>
             {% endif %}
             {% endfor %}
@@ -46,7 +57,6 @@
             <input type='submit' class='modernbutton' value='Oppdater tabeller'/>
             <input type='submit' class='modernbutton' value='Eksporter til excel' name='csv'/>
         </form>
-
     </div>
     
     {% for table in tables %}
