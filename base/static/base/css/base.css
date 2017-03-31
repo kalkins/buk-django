@@ -1,6 +1,15 @@
-@import url("https://fonts.googleapis.com/css?family=Dosis");
-@import url("https://fonts.googleapis.com/css?family=Droid+Sans");
-@import url("https://fonts.googleapis.com/css?family=Nunito");
+@font-face {
+  font-family: 'Dosis';
+  src: url("/static/base/fonts/Dosis/Dosis.woff2") format("woff2"), url("/static/base/fonts/Dosis/Dosis-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: 'Droid Sans';
+  src: url("/static/base/fonts/Droid_Sans/Droid_Sans.ttf") format("truetype");
+}
+@font-face {
+  font-family: 'Nunito';
+  src: url("/static/base/fonts/Nunito/Nunito-Regular.ttf") format("truetype");
+}
 /* line 1, textstyle/_headers.scss */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Dosis', sans-serif;
