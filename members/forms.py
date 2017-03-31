@@ -43,3 +43,20 @@ LeavePeriodFormset = forms.inlineformset_factory(
     extra = 1,
     fields = ('start', 'end'),
 )
+
+
+class MemberStatisticsForm(forms.Form):
+    start = forms.DateField(label='Start', required=True)
+    end = forms.DateField(label='Slutt', required=True)
+
+    members_start = forms.BooleanField(label='Medlemsliste ved starten av perioden', label_suffix='', required=False, initial=True)
+    members_end = forms.BooleanField(label='Medlemsliste ved utgangen av perioden', label_suffix='', required=False, initial=True)
+    new = forms.BooleanField(label='Medlemmer som begynte denne perioden', label_suffix='', required=False, initial=True,
+            help_text='Inkluderer ikke de som sluttet og begynte i løpet av perioden')
+    quit = forms.BooleanField(label='Medlemmer som sluttet denne perioden', label_suffix='', required=False, initial=True,
+            help_text='Inkluderer ikke de som sluttet og begynte i løpet av perioden')
+    joined_quit = forms.BooleanField(label='Medlemmer som begynte og sluttet denne perioden', label_suffix='', required=False, initial=True)
+    leave_start = forms.BooleanField(label='Medlemmer i permisjon ved inngangen til denne perioden', label_suffix='', required=False)
+    leave_end = forms.BooleanField(label='Medlemmer i permisjon ved utgangen av denne perioden', label_suffix='', required=False, initial=True)
+    leave_whole = forms.BooleanField(label='Medlemmer i permisjon i hele perioden', label_suffix='', required=False)
+    leave_part = forms.BooleanField(label='Medlemmer i permisjon i løpet av perioden', label_suffix='', required=False)

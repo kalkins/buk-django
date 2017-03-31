@@ -13,6 +13,13 @@
         <h2>Medlemmer</h2>
         <h3>
           <div>
+              {% if perms.members.statistics %}
+              <a class='graylink' href='{% url 'member_statistics' %}'>
+                  <i class='fa fa-line-chart'></i>
+                  Statistikk
+              </a>
+              {% endif %}
+
               {% if perms.members.add_member %}
               <a class='graylink' href='{% url 'member_add' %}'>
                   <i class='fa fa-plus'></i>

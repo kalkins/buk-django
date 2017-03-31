@@ -111,6 +111,9 @@ class Member(AbstractBaseUser, PermissionsMixin):
         verbose_name = 'medlem'
         verbose_name_plural = 'medlemmer'
         ordering = ['instrument', '-is_active', 'is_on_leave', 'group_leader_for', 'first_name', 'last_name']
+        permissions = (
+            ('statistics', 'Kan se statistikk for medlemmer'),
+        )
 
     @property
     def is_staff(self):

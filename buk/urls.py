@@ -37,4 +37,5 @@ urlpatterns = [
     url(r'^medlem/ny$', member_views.AddMember.as_view(), name='member_add'),
     url(r'^medlemmer/$', member_views.MemberList.as_view(), {'show_all': False}, name='member_list'),
     url(r'^medlemmer/alle$', member_views.MemberList.as_view(), {'show_all': True}, name='member_list_all'),
+    url(r'^medlemmer/statistikk$', member_views.MemberStatistics.as_view(), name='member_statistics'),
 ]
