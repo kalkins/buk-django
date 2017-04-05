@@ -6,6 +6,8 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from django.db.models import Q
 
+from base.models import EditableContent
+
 from .models import Member, MembershipPeriod, LeavePeriod
 from .forms import *
 
@@ -247,3 +249,16 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
             tables.append(table)
 
         return tables
+
+
+class Practical(LoginRequiredMixin, TemplateView):
+    template_name = 'practical/practical.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Practical, self).get_context_data(**kwargs)
+        context['content'] = EditableContent.objects.get_or_create(name='practical')[0].text
+
+        context['board_positions'] = BoardPosition.objects.all()
+        context['committees'] = Committee.objects.all()
+
+        return context

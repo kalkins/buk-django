@@ -24,3 +24,13 @@ class Period(models.Model):
         if self.end:
             result += str(self.end)
         return result
+
+
+class EditableContent(models.Model):
+    name = models.CharField(max_length=30)
+    text = models.TextField(blank=True, default='')
+
+    class Meta:
+        permissions = (
+            ('edit_content', 'Kan redigere redigerbare områder'),
+        )
