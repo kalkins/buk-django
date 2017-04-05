@@ -128,7 +128,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in MembershipPeriod.objects.filter(Q(end=None) | Q(end__gt=start), start__lt=start):
+            for period in MembershipPeriod.objects.filter(Q(end=None) | Q(end__gt=start), start__lt=start)\
+                    .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)
@@ -141,7 +142,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in MembershipPeriod.objects.filter(Q(end=None) | Q(end__gt=end), start__lt=end):
+            for period in MembershipPeriod.objects.filter(Q(end=None) | Q(end__gt=end), start__lt=end)\
+                    .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)
@@ -154,7 +156,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in MembershipPeriod.objects.filter(start__range=(start, end), end=None):
+            for period in MembershipPeriod.objects.filter(start__range=(start, end), end=None)\
+                    .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start])
                 table['num'] += 1
             tables.append(table)
@@ -167,7 +170,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in MembershipPeriod.objects.filter(end__range=(start, end)):
+            for period in MembershipPeriod.objects.filter(end__range=(start, end))\
+                    .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)
@@ -180,7 +184,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in MembershipPeriod.objects.filter(start__range=(start, end), end__range=(start, end)):
+            for period in MembershipPeriod.objects.filter(start__range=(start, end), end__range=(start, end))\
+                    .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)
@@ -193,7 +198,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in LeavePeriod.objects.filter(start__lt=start, end__range=(start, end)):
+            for period in LeavePeriod.objects.filter(start__lt=start, end__range=(start, end))\
+                    .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)
@@ -208,7 +214,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
 
             for period in LeavePeriod.objects\
                     .filter(start__range=(start, end))\
-                    .filter(Q(end__gt=end) | Q(end=None)):
+                    .filter(Q(end__gt=end) | Q(end=None))\
+                    .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)
@@ -221,7 +228,7 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in LeavePeriod.objects.filter(start__lt=start, end__gt=end):
+            for period in LeavePeriod.objects.filter(start__lt=start, end__gt=end).prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)
@@ -234,7 +241,7 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in LeavePeriod.objects.filter(start__gte=start, end__lt=end):
+            for period in LeavePeriod.objects.filter(start__gte=start, end__lt=end).prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)
