@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django import views
 
-from .models import EditableContent
+from .models import EditableContent, EditableContentImage
 
 class EditableContentSave(PermissionRequiredMixin, views.View):
     permission_required = 'base.edit_content'
@@ -19,5 +19,20 @@ class EditableContentSave(PermissionRequiredMixin, views.View):
                 return JsonResponse({'success': True})
             except ObjectDoesNotExist:
                 pass
+
+        return JsonResponse({'success': False})
+
+
+class EditableContentSaveImage(PermissionRequiredMixin, views.View):
+    permission_required = 'base.edit_content'
+
+    def post(self, request):
+        if 'name' in request.POST and 'blobname' in request.POST:
+            content = EditableContent.objects.get_or_create(name=request.POST['name'])[0]
+            blob_name = request.POST['blobname']
+            image = EditableContentImage(content=content, image=request.FILES[blob_name])
+            image.save()
+
+            return JsonResponse({'success': True, 'location': image.image.url})
 
         return JsonResponse({'success': False})

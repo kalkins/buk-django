@@ -9,6 +9,9 @@ __pycache__/
 # Sass/Compass
 .sass-cache
 
+# Development media root
+media-root
+
 # Temporary files and apps, used for testing
 tmp_app
 

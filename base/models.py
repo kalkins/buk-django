@@ -34,3 +34,16 @@ class EditableContent(models.Model):
         permissions = (
             ('edit_content', 'Kan redigere redigerbare områder'),
         )
+
+
+def editable_content_image_path(instance, filename):
+    return 'images/content_{0}/{1}'.format(instance.content.name, filename)
+
+class EditableContentImage(models.Model):
+    content = models.ForeignKey(
+        EditableContent,
+        on_delete = models.CASCADE,
+    )
+    image = models.ImageField(
+        upload_to = editable_content_image_path,
+    )

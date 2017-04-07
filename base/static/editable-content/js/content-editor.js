@@ -144,6 +144,7 @@ $(document).ready(function() {
                                         xhr = new XMLHttpRequest();
                                         xhr.withCredentials = false;
                                         xhr.open('POST', '/endre-innhold/bilde');
+                                        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
 
                                         xhr.onload = function() {
                                             if (error) {
@@ -177,7 +178,7 @@ $(document).ready(function() {
                                         };
 
                                         formData = new FormData();
-                                        formData.append('navn', navn);
+                                        formData.append('name', navn);
                                         var blobname = "blob" + i;
                                         formData.append('blobname', blobname);
                                         formData.append(blobname, blob);
