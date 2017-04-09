@@ -13,10 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import url, include
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
+
+from base import views as base_views
 from members import forms as member_forms, views as member_views
 
 urlpatterns = [
@@ -38,4 +42,10 @@ urlpatterns = [
     url(r'^medlemmer/$', member_views.MemberList.as_view(), {'show_all': False}, name='member_list'),
     url(r'^medlemmer/alle$', member_views.MemberList.as_view(), {'show_all': True}, name='member_list_all'),
     url(r'^medlemmer/statistikk$', member_views.MemberStatistics.as_view(), name='member_statistics'),
+    url(r'^praktisk$', member_views.Practical.as_view(), name='practical'),
+    url(r'^endre-innhold/$', base_views.EditableContentSave.as_view()),
+    url(r'^endre-innhold/bilde$', base_views.EditableContentSaveImage.as_view()),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

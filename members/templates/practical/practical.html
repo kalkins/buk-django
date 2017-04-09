@@ -1,0 +1,41 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'editable-content/js/tinymce/tinymce.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'editable-content/js/content-editor.js' %}"></script>
+{% endblock javascript %}
+
+{% block main %}
+<section>
+    {% include 'editable-content/editable-content.html' with name='practical' %}
+
+    <h1>Styret og komiteer</h1>
+    <h3>Styret</h3>
+    {% for position in board_positions %}
+    <p>
+        <b>{{ position.title }}:</b>
+        {{ position.holder.get_full_name }}
+    </p>
+    {% endfor %}
+
+    {% for committee in committees %}
+    <br />
+    <h3>{{ committee.name }}:</h3>
+    <p>
+        {% if committee.leader_board_id %}
+        {{ committee.leader_board.title }};&nbsp;
+        {% endif %}
+
+        {{ committee.leader.get_full_name }} (leder)
+    </p>
+
+    {% for member in committee.members.all %}
+    <p>{{ member.get_full_name }} (medlem)</p>
+    {% endfor %}
+
+    {% endfor %}
+</section>
+{% endblock main %}

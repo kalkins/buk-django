@@ -112,6 +112,8 @@ TIME_ZONE = 'Europe/Oslo'
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+
 
 # Import a local settings file that can override any setting in this file.
 # This allows this file, containing most settings, to be committed to version control,

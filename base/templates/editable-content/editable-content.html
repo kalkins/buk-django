@@ -1,0 +1,9 @@
+{% if perms.base.edit_content %}
+<{{ tag|default:'div' }} id='editable-{{ name }}' class='editable-content {{ class }}' data-name='{{ name }}'>
+{% else %}
+<{{ tag|default:'div' }}>
+{% endif %}
+
+    {{ content|safe }}
+
+</{{ tag|default:'div' }}>
