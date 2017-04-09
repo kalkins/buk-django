@@ -1,3 +1,6 @@
+import string
+import random
+
 from django.db import models
 from django.core.exceptions import ValidationError
 
@@ -36,13 +39,17 @@ class EditableContent(models.Model):
         )
 
 
-def editable_content_image_path(instance, filename):
+def editable_content_image_path(instance, _):
+    # Generates a random filename to avoid conflicts
+    filename = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(10)])
     return 'images/content_{0}/{1}'.format(instance.content.name, filename)
+
 
 class EditableContentImage(models.Model):
     content = models.ForeignKey(
         EditableContent,
         on_delete = models.CASCADE,
+        related_name = 'images',
     )
     image = models.ImageField(
         upload_to = editable_content_image_path,

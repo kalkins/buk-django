@@ -1,3 +1,5 @@
+import os
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render
@@ -15,6 +17,11 @@ class EditableContentSave(PermissionRequiredMixin, views.View):
                 obj = EditableContent.objects.get(name=request.POST['name'])
                 obj.text = request.POST['content']
                 obj.save()
+
+                for image in obj.images.all():
+                    if os.path.basename(image.image.name) not in obj.text:
+                        image.image.delete(save=False)
+                        image.delete()
 
                 return JsonResponse({'success': True})
             except ObjectDoesNotExist:
