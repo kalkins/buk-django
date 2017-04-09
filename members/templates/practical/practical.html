@@ -17,7 +17,9 @@
     {% for position in board_positions %}
     <p>
         <b>{{ position.title }}:</b>
-        {{ position.holder.get_full_name }}
+        <a class='graylink' href='{{ position.holder.get_absolute_url }}'>
+            {{ position.holder.get_full_name }}
+        </a>
     </p>
     {% endfor %}
 
@@ -29,11 +31,19 @@
         {{ committee.leader_board.title }};&nbsp;
         {% endif %}
 
-        {{ committee.leader.get_full_name }} (leder)
+        <a class='graylink' href='{{ committee.leader.get_absolute_url }}'>
+            {{ committee.leader.get_full_name }}
+        </a>
+        &nbsp;(leder)
     </p>
 
     {% for member in committee.members.all %}
-    <p>{{ member.get_full_name }} (medlem)</p>
+    <p>
+        <a class='graylink' href='{{ member.get_absolute_url }}'>
+            {{ member.get_full_name }}
+        </a>
+        &nbsp;(medlem)
+    </p>
     {% endfor %}
 
     {% endfor %}
