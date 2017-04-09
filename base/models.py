@@ -30,7 +30,7 @@ class Period(models.Model):
 
 
 class EditableContent(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     text = models.TextField(blank=True, default='')
 
     class Meta:
