@@ -32,6 +32,48 @@ class Instrument(models.Model):
         return self.name
 
 
+class PercussionGroup(models.Model):
+    name = models.CharField('navn', max_length=50, unique=True, editable=False)
+    leader = models.OneToOneField(
+        'Member',
+        on_delete = models.PROTECT,
+        null = True,
+        related_name = 'percussion_group_leader_for',
+        verbose_name = 'gruppeleder',
+    )
+
+    class Meta:
+        verbose_name = 'slagverkbæregruppe'
+        verbose_name_plural = 'slagverkbæregrupper'
+        permissions = (
+            ('change_percussion_group', 'Kan endre slagverkbæregrupper'),
+        )
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+    def ordered_members(self):
+        return self.members.all().order_by('percussion_group_leader_for', 'is_on_leave', 'first_name', 'last_name')
+    
+    def save(self, *args, **kwargs):
+        if not self.name:
+            self.name = 'Gruppe {}'.format(PercussionGroup.objects.count() + 1)
+
+        super(PercussionGroup, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pk = self.pk
+        prev = self.name
+        super(PercussionGroup, self).delete(*args, **kwargs)
+
+        for group in PercussionGroup.objects.filter(pk__gt=pk):
+            tmp = group.name
+            group.name = prev
+            group.save()
+            prev = tmp
+
+
 class MemberManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, joined_date, instrument,
                     birthday, phone, address, zip_code, city, password=None):
@@ -100,6 +142,13 @@ class Member(AbstractBaseUser, PermissionsMixin):
         verbose_name='instrument',
         related_name='players',
     )
+    percussion_group = models.ForeignKey(
+        PercussionGroup,
+        on_delete = models.SET_NULL,
+        related_name = 'members',
+        verbose_name = 'slagverkgruppe',
+        null = True,
+    )
     birthday = models.DateField('fødselsdato', help_text='Datoer skrives på formen YYYY-MM-DD')
     address = models.CharField('adresse', max_length=60)
     zip_code = models.CharField('postnr.', max_length=4)
@@ -125,6 +174,22 @@ class Member(AbstractBaseUser, PermissionsMixin):
         permissions = (
             ('statistics', 'Kan se statistikk for medlemmer'),
         )
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            prev = Member.objects.get(pk=self.pk)
+            if self.is_active != prev.is_active:
+                self.percussion_group = None
+
+                try:
+                    group = self.percussion_group_leader_for
+                    if group:
+                        group.leader = None
+                        group.save()
+                except ObjectDoesNotExist:
+                    pass
+        
+        super(Member, self).save(*args, **kwargs)
 
     @property
     def is_staff(self):

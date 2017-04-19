@@ -1,0 +1,71 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel='stylesheet' type='text/css' href='{% static 'percussion_groups/css/change.css' %}' />
+{% endblock stylesheets %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'percussion_groups/js/change.js' %}" deref></script>
+{% endblock javascript %}
+
+{% block main %}
+<section>
+    <div class='navline'>
+        <h2 class='back-link'>
+            <a class='graylink' href='{% url 'percussion_group_list' %}' title='Slagverkgrupper'>
+                <i class='fa fa-chevron-left'></i>
+                Slagverkgrupper
+            </a>
+        </h2>
+    </div>
+
+    <h1>Endre {{ group.name }}</h1>
+    <p>
+        <span class='group-leader'>GL</span> = Gruppeleder
+        <span class='has-car'>B</span> = Har tilgang til bil
+        <span class='has-towbar'>H</span> = Har tilgang til bil med hengerfeste
+        <span class='is-on-leave'>P</span> = Er i permisjon
+    </p>
+
+    <button class='save-button'>Lagre</button>
+
+    <table class='member-list'>
+        <tr class='table-header'>
+            <td colspan='5'>{{ group.name }}</td>
+        </tr>
+        {% if not group.members.all %}
+        <tr>
+            <td colspan='5'>Ingen medlemmer</td>
+        </tr>
+        {% else %}
+        {% for member in group.ordered_members %}
+        {% include 'percussion_groups/change_list_item.html' with member=member current=True %}
+        {% endfor %}
+        {% endif %}
+        
+        <tr class='table-header'>
+            <td colspan='5'>Medlemmer uten gruppe</td>
+        </tr>
+        {% if unassigned %}
+        {% for member in unassigned %}
+        {% include 'percussion_groups/change_list_item.html' with member=member %}
+        {% endfor %}
+        {% endif %}
+
+        {% for other in other_groups %}
+        {% if other.members.all %}
+        <tr class='table-header'>
+            <td colspan='5'>{{ other.name }}</td>
+        </tr>
+        {% for member in other.ordered_members %}
+        {% include 'percussion_groups/change_list_item.html' with member=member %}
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </table>
+</section>
+{% endblock main %}

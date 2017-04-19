@@ -1,0 +1,39 @@
+{% comment 'doc' %}
+Render a member as a table row with information about their status and equipment.
+If no member is provided, or the member doesn't exist, nothing is done.
+
+Required arguments:
+    member: The object of the member to show
+{% endcomment %}
+
+{% if member %}
+<tr {% if member == user %} class='current-user' {% endif %}>
+    <td class='col-name'>
+        {{ member.get_full_name }}
+    </td>
+
+    <td class='group-leader'>
+        {% if member.percussion_group_leader_for %}
+        GL
+        {% endif %}
+    </td>
+
+    <td class='has-car'>
+        {% if member.has_car %}
+        B
+        {% endif %}
+    </td>
+
+    <td class='has-towbar'>
+        {% if member.has_towbar %}
+        H
+        {% endif %}
+    </td>
+
+    <td class='is-on-leave'>
+        {% if member.is_on_leave %}
+        P
+        {% endif %}
+    </td>
+</tr>
+{% endif %}

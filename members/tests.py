@@ -1,10 +1,12 @@
+import random
+import string
 from datetime import date
 
 from django.test import TestCase
 from django.core.management import call_command
 from django.utils.six import StringIO
 
-from .models import Member, Instrument
+from .models import Member, Instrument, PercussionGroup
 
 test_member = {
     'email': 'test@example.com',
@@ -17,6 +19,14 @@ test_member = {
     'zip_code': '8472',
     'city': 'Testheim',
 }
+
+def random_string(length):
+    return ''.join(random.choices(string.ascii_uppercase, k=length))
+
+def generate_member():
+    local_test_member = dict(test_member)
+    local_test_member['email'] = '{}@{}.com'.format(random_string(5), random_string(7))
+    return Member.objects.create_user(**local_test_member)
 
 
 class MemberTestCase(TestCase):
@@ -89,3 +99,89 @@ class MakeSuperuserTestCase(TestCase):
         out = StringIO()
         call_command('makesuperuser', self.member.email, remove=True, stdout=out)
         self.assertIn('%s removed as superuser' % self.member.get_full_name(), out.getvalue())
+
+
+class PercussionGroupTestCase(TestCase):
+    cls = PercussionGroup
+
+    def setUp(self):
+        test_member['instrument'] = Instrument.objects.create(name='Testolin')
+
+    def get_leader(self):
+        return generate_member()
+
+    def test_add_groups(self):
+        group1 = self.cls(leader=self.get_leader())
+        group1.save()
+        self.assertEqual(group1.name, 'Gruppe 1')
+
+        group2 = self.cls(leader=self.get_leader())
+        group2.save()
+        self.assertEqual(group2.name, 'Gruppe 2')
+
+    def test_without_leader(self):
+        group1 = self.cls()
+        group1.save()
+        self.assertEqual(group1.name, 'Gruppe 1')
+
+        group2 = self.cls()
+        group2.save()
+        self.assertEqual(group2.name, 'Gruppe 2')
+
+    def test_remove_groups(self):
+        group1 = self.cls(leader=self.get_leader())
+        group1.save()
+        group2 = self.cls(leader=self.get_leader())
+        group2.save()
+        group3 = self.cls(leader=self.get_leader())
+        group3.save()
+
+        self.assertEqual(group3.name, 'Gruppe 3')
+        group2.delete()
+        group3.refresh_from_db()
+        self.assertEqual(group3.name, 'Gruppe 2')
+
+    def test_delete_and_add(self):
+        group1 = self.cls(leader=self.get_leader())
+        group1.save()
+        group2 = self.cls(leader=self.get_leader())
+        group2.save()
+        group3 = self.cls(leader=self.get_leader())
+        group3.save()
+
+        self.assertEqual(group3.name, 'Gruppe 3')
+        group3.delete()
+
+        group4 = self.cls(leader=self.get_leader())
+        group4.save()
+        self.assertEqual(group4.name, 'Gruppe 3')
+
+    def test_member_quit(self):
+        group = self.cls()
+        group.save()
+
+        member = generate_member()
+        member.percussion_group = group
+        member.save()
+
+        self.assertEqual(group.members.count(), 1)
+
+        member.is_active = False
+        member.save()
+
+        self.assertEqual(group.members.count(), 0)
+
+    def test_leader_quit(self):
+        member = generate_member()
+        member.save()
+
+        group = self.cls(leader=member)
+        group.save()
+
+        self.assertEqual(group.leader, member)
+
+        member.is_active = False
+        member.save()
+
+        group.refresh_from_db()
+        self.assertIsNone(group.leader)

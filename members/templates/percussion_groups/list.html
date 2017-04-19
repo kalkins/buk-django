@@ -1,0 +1,53 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel='stylesheet' type='text/css' href='{% static 'percussion_groups/css/list.css' %}' />
+{% endblock stylesheets %}
+
+{% block main %}
+<section>
+    <h1>Slagverkbæregrupper</h1>
+    <p>
+        <span class='group-leader'>GL</span> = Gruppeleder
+        <span class='has-car'>B</span> = Har tilgang til bil
+        <span class='has-towbar'>H</span> = Har tilgang til bil med hengerfeste
+        <span class='is-on-leave'>P</span> = Er i permisjon
+    </p>
+
+    <a href='{% url 'percussion_group_add' %}' class='graylink add-group'>
+        Ny slagverkgruppe
+    </a>
+
+    <div class='groups'>
+        {% for group in groups %}
+        <div class='group'>
+            <h2>{{ group.name }}</h2>
+
+            <a href='{% url 'percussion_group_change' group.pk %}' class='graylink change-group'>
+                <i class='fa fa-edit'></i>
+                Endre
+            </a>
+
+            <table class='member-list'>
+                {% for member in group.ordered_members %}
+                {% include 'percussion_groups/list_item.html' with member=member %}
+                {% endfor %}
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class='unassigned'>
+        <h1>Medlemmer uten gruppe</h1>
+
+        <table class='member-list'>
+            {% for member in unassigned %}
+            {% include 'percussion_groups/list_item.html' with member=member %}
+            {% endfor %}
+        </table>
+    </div>
+</section>
+{% endblock main %}
