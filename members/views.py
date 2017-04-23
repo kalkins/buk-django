@@ -1,15 +1,16 @@
 import csv
 
+from django.db.models import Q
+from django.http import HttpResponse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render
-from django.db.models import Q
 
 from base.models import EditableContent
 
-from .models import Member, MembershipPeriod, LeavePeriod
-from .forms import *
+from .models import (Member, MembershipPeriod, LeavePeriod,
+                     Committee, BoardPosition)
+from .forms import (MemberAddForm, MemberStatisticsForm,
+                    MembershipPeriodFormset, LeavePeriodFormset)
 
 
 class MemberDetail(DetailView):
@@ -22,9 +23,11 @@ class MemberList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if self.kwargs['show_all']:
-            return Member.objects.all().prefetch_related('instrument', 'board_position', 'group_leader_for')
+            return Member.objects.all().prefetch_related(
+                    'instrument', 'board_position', 'group_leader_for')
         else:
-            return Member.objects.filter(is_active=True).prefetch_related('instrument', 'board_position', 'group_leader_for')
+            return Member.objects.filter(is_active=True).prefetch_related(
+                    'instrument', 'board_position', 'group_leader_for')
 
     def get_context_data(self, **kwargs):
         context = super(MemberList, self).get_context_data(**kwargs)
@@ -36,15 +39,17 @@ class ChangeMember(PermissionRequiredMixin, UpdateView):
     model = Member
     permission_required = 'members.change_member'
     template_name = 'members/member_change.html'
-    fields = ['email', 'first_name', 'last_name', 'instrument', 'phone', 'birthday',
-        'address', 'zip_code', 'city', 'origin', 'occupation', 'has_car', 'has_towbar',
-        'musical_background', 'about_me']
+    fields = ['email', 'first_name', 'last_name', 'instrument', 'phone',
+              'birthday', 'address', 'zip_code', 'city', 'origin', 'occupation',
+              'has_car', 'has_towbar', 'musical_background', 'about_me']
 
     def get_context_data(self, **kwargs):
         context = super(ChangeMember, self).get_context_data(**kwargs)
         if self.request.POST:
-            context['membership_period_formset'] = MembershipPeriodFormset(self.request.POST, instance=self.object)
-            context['leave_period_formset'] = LeavePeriodFormset(self.request.POST, instance=self.object)
+            context['membership_period_formset'] = MembershipPeriodFormset(
+                    self.request.POST, instance=self.object)
+            context['leave_period_formset'] = LeavePeriodFormset(
+                    self.request.POST, instance=self.object)
         else:
             context['membership_period_formset'] = MembershipPeriodFormset(instance=self.object)
             context['leave_period_formset'] = LeavePeriodFormset(instance=self.object)
@@ -116,7 +121,6 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
 
         return self.render_to_response(context)
 
-
     def get_tables(self, form):
         tables = []
         start = form.cleaned_data['start']
@@ -130,7 +134,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in MembershipPeriod.objects.filter(Q(end=None) | Q(end__gt=start), start__lt=start)\
+            for period in MembershipPeriod.objects.filter(
+                    Q(end=None) | Q(end__gt=start), start__lt=start)\
                     .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
@@ -144,7 +149,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in MembershipPeriod.objects.filter(Q(end=None) | Q(end__gt=end), start__lt=end)\
+            for period in MembershipPeriod.objects.filter(
+                    Q(end=None) | Q(end__gt=end), start__lt=end)\
                     .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
@@ -186,7 +192,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in MembershipPeriod.objects.filter(start__range=(start, end), end__range=(start, end))\
+            for period in MembershipPeriod.objects.filter(
+                    start__range=(start, end), end__range=(start, end))\
                     .prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
@@ -230,7 +237,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in LeavePeriod.objects.filter(start__lt=start, end__gt=end).prefetch_related('member'):
+            for period in LeavePeriod.objects.filter(
+                    start__lt=start, end__gt=end).prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)
@@ -243,7 +251,8 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
                 'num': 0,
             }
 
-            for period in LeavePeriod.objects.filter(start__gte=start, end__lt=end).prefetch_related('member'):
+            for period in LeavePeriod.objects.filter(
+                    start__gte=start, end__lt=end).prefetch_related('member'):
                 table['rows'].append([period.member.get_full_name(), period.start, period.end])
                 table['num'] += 1
             tables.append(table)

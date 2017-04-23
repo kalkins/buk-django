@@ -1,8 +1,11 @@
+from datetime import date
+
 from django.core.exceptions import ObjectDoesNotExist
 from legacy.importers import LegacyImporter, ImportSkipRow
 from django.db import connections
-from .models import *
-from datetime import date
+
+from .models import (Member, Instrument, MembershipPeriod, LeavePeriod,
+                     BoardPosition)
 
 
 class InstrumentImport(LegacyImporter):

@@ -116,6 +116,7 @@ MEDIA_URL = '/media/'
 
 
 # Import a local settings file that can override any setting in this file.
-# This allows this file, containing most settings, to be committed to version control,
-# while sensitive information like database or email setup is only stored locally.
+# This allows this file, containing most settings, to be committed to
+# version control, while sensitive information like database or email
+# setup is only stored locally.
 from .local_settings import *

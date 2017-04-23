@@ -1,10 +1,11 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.apps import apps
-
-from ...importers import LegacyImporter
-
+import sys
 from importlib import import_module
 from inspect import getmembers, isclass
+
+from django.apps import apps
+from django.core.management.base import BaseCommand
+
+from ...importers import LegacyImporter
 
 
 class Command(BaseCommand):
@@ -32,7 +33,8 @@ class Command(BaseCommand):
 
             if bad_app_labels:
                 for app_label in bad_app_labels:
-                    self.stderr.write("App '%s' could not be found. Is it in INSTALLED_APPS?" % app_label)
+                    self.stderr.write(
+                            "App '%s' could not be found. Is it in INSTALLED_APPS?" % app_label)
                 sys.exit(2)
         else:
             configs = set(apps.get_app_configs())
@@ -44,11 +46,15 @@ class Command(BaseCommand):
             try:
                 mod_name = config.name + '.import_legacy'
                 mod = import_module(mod_name)
-                classes = getmembers(mod, lambda member: isclass(member) and member.__module__ == mod_name)
+                classes = getmembers(
+                        mod,
+                        lambda member: isclass(member) and member.__module__ == mod_name)
                 for name, cls in classes:
                     self.run_importer(cls)
             except ModuleNotFoundError:
-                self.stderr.write("App '%s' does not have a 'import_legacy.py' file. Skipping." % config.name)
+                self.stderr.write(
+                        "App '%s' does not have a 'import_legacy.py' file. Skipping."
+                        % config.name)
 
     def run_importer(self, cls):
         if issubclass(cls, LegacyImporter) and cls not in self.done:
