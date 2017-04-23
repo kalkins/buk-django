@@ -1,24 +1,25 @@
 from django.db import models
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.conf import settings
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group
 from django.urls import reverse
-
-from datetime import date
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser,
+                                        PermissionsMixin, Group)
 
 from base.models import Period
+
 
 class Instrument(models.Model):
     name = models.CharField('navn', max_length=30, unique=True)
     group_leader = models.OneToOneField(
         'Member',
-        on_delete = models.SET_NULL,
-        verbose_name = 'gruppeleder',
-        related_name = 'group_leader_for',
-        blank = True,
-        null = True,
+        on_delete=models.SET_NULL,
+        verbose_name='gruppeleder',
+        related_name='group_leader_for',
+        blank=True,
+        null=True,
     )
-    order = models.IntegerField('rekkefølge', default=0,
+    order = models.IntegerField(
+            'rekkefølge',
+            default=0,
             help_text='Dette angir rekkefølgen instrumentene vises i. Lavere tall kommer først.')
 
     class Meta:
@@ -29,9 +30,10 @@ class Instrument(models.Model):
     def __str__(self):
         return self.name
 
+
 class MemberManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, joined_date, instrument,
-            birthday, phone, address, zip_code, city, password=None):
+                    birthday, phone, address, zip_code, city, password=None):
         # Allow the instrument parameter to be an object, the primary key, or the name
         if not isinstance(instrument, Instrument):
             try:
@@ -43,15 +45,15 @@ class MemberManager(BaseUserManager):
                     raise ValueError('Ugyldig instrument')
 
         user = self.model(
-            email = self.normalize_email(email),
-            first_name = first_name,
-            last_name = last_name,
-            instrument = instrument,
-            birthday = birthday,
-            phone = phone,
-            address = address,
-            zip_code = zip_code,
-            city = city,
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
+            instrument=instrument,
+            birthday=birthday,
+            phone=phone,
+            address=address,
+            zip_code=zip_code,
+            city=city,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -61,7 +63,7 @@ class MemberManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, first_name, last_name, joined_date, instrument,
-            birthday, phone, address, zip_code, city, password):
+                         birthday, phone, address, zip_code, city, password):
         user = self.create_user(
                 email, first_name, last_name, joined_date, instrument,
                 birthday, phone, address, zip_code, city, password)
@@ -72,11 +74,12 @@ class MemberManager(BaseUserManager):
 
         return user
 
+
 class Member(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
-        verbose_name = 'e-post',
-        max_length = 255,
-        unique = True,
+        verbose_name='e-post',
+        max_length=255,
+        unique=True,
     )
     is_active = models.BooleanField('aktiv', default=True)
     is_on_leave = models.BooleanField('i permisjon', default=False)
@@ -86,9 +89,9 @@ class Member(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField('mobilnummer', max_length=20)
     instrument = models.ForeignKey(
         Instrument,
-        on_delete = models.PROTECT,
-        verbose_name = 'instrument',
-        related_name = 'players',
+        on_delete=models.PROTECT,
+        verbose_name='instrument',
+        related_name='players',
     )
     birthday = models.DateField('fødselsdato', help_text='Datoer skrives på formen YYYY-MM-DD')
     address = models.CharField('adresse', max_length=60)
@@ -105,12 +108,13 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'phone', 'instrument', 'birthday',
-            'address', 'zip_code', 'city']
+                       'address', 'zip_code', 'city']
 
     class Meta:
         verbose_name = 'medlem'
         verbose_name_plural = 'medlemmer'
-        ordering = ['instrument', '-is_active', 'is_on_leave', 'group_leader_for', 'first_name', 'last_name']
+        ordering = ['instrument', '-is_active', 'is_on_leave', 'group_leader_for',
+                    'first_name', 'last_name']
         permissions = (
             ('statistics', 'Kan se statistikk for medlemmer'),
         )
@@ -154,8 +158,8 @@ class Member(AbstractBaseUser, PermissionsMixin):
 class MembershipPeriod(Period):
     member = models.ForeignKey(
         Member,
-        on_delete = models.CASCADE,
-        related_name = 'membership_periods',
+        on_delete=models.CASCADE,
+        related_name='membership_periods',
     )
 
     class Meta(Period.Meta):
@@ -175,8 +179,8 @@ class MembershipPeriod(Period):
 class LeavePeriod(Period):
     member = models.ForeignKey(
         Member,
-        on_delete = models.CASCADE,
-        related_name = 'leave_periods',
+        on_delete=models.CASCADE,
+        related_name='leave_periods',
     )
 
     class Meta(Period.Meta):
@@ -194,19 +198,21 @@ class LeavePeriod(Period):
 class BoardPosition(models.Model):
     holder = models.OneToOneField(
         Member,
-        on_delete = models.PROTECT,
-        related_name = 'board_position',
-        verbose_name = 'innehaver',
+        on_delete=models.PROTECT,
+        related_name='board_position',
+        verbose_name='innehaver',
     )
     title = models.CharField('tittel', max_length=50, unique=True)
     description = models.TextField('beskrivelse', blank=True, default='')
     email = models.EmailField(
-        verbose_name = 'e-post',
-        max_length = 255,
-        unique = True,
+        verbose_name='e-post',
+        max_length=255,
+        unique=True,
     )
     group = models.OneToOneField(Group, editable=False, null=True)
-    order = models.IntegerField('rekkefølge', default=0,
+    order = models.IntegerField(
+            'rekkefølge',
+            default=0,
             help_text='Dette angir rekkefølgen styrevervene vises i. Lavere tall kommer først.')
 
     class Meta:
@@ -247,35 +253,37 @@ class Committee(models.Model):
     # Therefore one of these must be set, but not both
     leader_board = models.OneToOneField(
         BoardPosition,
-        on_delete = models.PROTECT,
-        verbose_name = 'leder i styret',
-        related_name = 'leader_of',
-        blank = True,
-        null = True,
-        help_text = 'Lederen for komiteen. Denne eller den under må være satt, men ikke begge.',
+        on_delete=models.PROTECT,
+        verbose_name='leder i styret',
+        related_name='leader_of',
+        blank=True,
+        null=True,
+        help_text='Lederen for komiteen. Denne eller den under må være satt, men ikke begge.',
     )
     leader_member = models.OneToOneField(
         Member,
-        on_delete = models.PROTECT,
-        verbose_name = 'leder medlem',
-        related_name = 'leader_of',
-        blank = True,
-        null = True,
+        on_delete=models.PROTECT,
+        verbose_name='leder medlem',
+        related_name='leader_of',
+        blank=True,
+        null=True,
     )
     members = models.ManyToManyField(
         Member,
-        verbose_name = 'medlemmer',
-        related_name = 'committees',
-        blank = True,
+        verbose_name='medlemmer',
+        related_name='committees',
+        blank=True,
     )
     group = models.OneToOneField(Group, editable=False, null=True)
     email = models.EmailField(
-        verbose_name = 'e-post',
-        max_length = 255,
-        unique = True,
+        verbose_name='e-post',
+        max_length=255,
+        unique=True,
     )
     description = models.TextField('beskrivelse', blank=True, default='')
-    order = models.IntegerField('rekkefølge', default=0,
+    order = models.IntegerField(
+            'rekkefølge',
+            default=0,
             help_text='Dette angir rekkefølgen komiteene vises i. Lavere tall kommer først.')
 
     # Use this to get the member object of the leader of the group. Use leader_board
@@ -296,7 +304,7 @@ class Committee(models.Model):
         if not (self.leader_board_id or self.leader_member_id):
             raise ValidationError('En komite må ha en leder')
         if self.leader_board:
-            self.leader_member = None;
+            self.leader_member = None
 
     def save(self, *args, **kwargs):
         if self.group:
@@ -306,7 +314,6 @@ class Committee(models.Model):
                     self.group.update(name=self.name)
         else:
             self.group = Group.objects.create(name=self.name)
-
 
         super(Committee, self).save(*args, **kwargs)
 

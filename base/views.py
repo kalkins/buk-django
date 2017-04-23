@@ -2,11 +2,11 @@ import os
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import render
 from django.http import JsonResponse
 from django import views
 
 from .models import EditableContent, EditableContentImage
+
 
 class EditableContentSave(PermissionRequiredMixin, views.View):
     permission_required = 'base.edit_content'

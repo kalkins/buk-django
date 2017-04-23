@@ -1,8 +1,10 @@
 from django.db import connections
-from django.db.utils import ConnectionDoesNotExist, DataError
+from django.db.utils import ConnectionDoesNotExist
+
 
 class ImportSkipRow(Exception):
     pass
+
 
 # A class for avoiding boilerplate code when importing from another database
 class LegacyImporter:
@@ -19,10 +21,10 @@ class LegacyImporter:
     overwrite = False
 
     # The table to import from. Can be a list.
-    #table = ''
+    table = ''
 
     # The model to import to
-    #model = None
+    model = None
 
     # The columns to import from/to, on the form
     #
@@ -31,7 +33,7 @@ class LegacyImporter:
     #   'newcol': ['oldcol1', 'oldcol2']
     #
     # If a list is used, the method 'convert_newcol' must be defined
-    #cols = {}
+    cols = {}
 
     # The columns (in the new model) to check against when determining
     # whether the object already exists in the database. Not setting this
@@ -96,7 +98,7 @@ class LegacyImporter:
         try:
             self.cursor = connections[self.db].cursor()
         except ConnectionDoesNotExist:
-            raise ValueError("Database '%s' does not exist." % db)
+            raise ValueError("Database '%s' does not exist." % self.db)
 
         if not self.sql:
             self.generate_sql()
@@ -141,8 +143,8 @@ class LegacyImporter:
                     return
             elif not isinstance(oldcol, str):
                 raise ValueError(
-                        ("Column '%s' is dependent on several columns in the old database, " \
-                        +"but no conversion function was provided.") % newcol)
+                        ("Column '%s' is dependent on several columns in the old database, "
+                         + "but no conversion function was provided.") % newcol)
 
             if newcol in self.manytomany:
                 manytomany[newcol] = val
@@ -154,6 +156,6 @@ class LegacyImporter:
                 params['defaults'][newcol] = val
 
         obj = self.create_instance(params)
-        
+
         for field in manytomany:
             getattr(obj, field).add(manytomany[field])

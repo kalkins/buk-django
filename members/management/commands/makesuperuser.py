@@ -1,6 +1,7 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.core.exceptions import ObjectDoesNotExist
 from members.models import Member
+
 
 class Command(BaseCommand):
     help = 'Turns the user with the given email address into a superuser'
@@ -9,10 +10,10 @@ class Command(BaseCommand):
         parser.add_argument('email', nargs='+', type=str)
         parser.add_argument(
             '--remove',
-            action = 'store_true',
-            dest = 'remove',
-            default = False,
-            help = 'Remove the given superusers instead of adding them.',
+            action='store_true',
+            dest='remove',
+            default=False,
+            help='Remove the given superusers instead of adding them.',
         )
 
     def handle(self, *args, **options):

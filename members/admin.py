@@ -1,10 +1,9 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import *
+from .models import (Member, Instrument, MembershipPeriod,
+                     LeavePeriod, Committee, BoardPosition)
 
 
 class MembershipPeriodInline(admin.TabularInline):
@@ -31,7 +30,7 @@ class UserAdmin(BaseUserAdmin):
 
     # The fields to be displayed in the list view of the users
     list_display = ('email', 'is_active', 'get_full_name', 'instrument', 'phone',
-            'get_full_address', 'has_car', 'has_towbar')
+                    'get_full_address', 'has_car', 'has_towbar')
     list_filter = ('is_active', 'instrument', 'groups')
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('-is_active', 'instrument', 'first_name', 'last_name')
@@ -39,14 +38,17 @@ class UserAdmin(BaseUserAdmin):
 
     # Fieldsets for the change-user form
     fieldsets = (
-        (None, {'fields':
-            ('first_name', 'last_name', 'instrument', 'email',
-            'is_admin', 'is_superuser')}
-        ),
-        ('Praktisk informasjon', {'fields': ('has_car', 'has_towbar')}),
-        ('Personlig informasjon', {'fields': (
-            'birthday', 'phone', 'address', 'zip_code', 'city', 'origin', 'occupation',
-            'musical_background', 'about_me')
+        (None, {
+            'fields': ('first_name', 'last_name', 'instrument',
+                       'email', 'is_admin', 'is_superuser')
+        }),
+        ('Praktisk informasjon', {
+            'fields': ('has_car', 'has_towbar')
+        }),
+        ('Personlig informasjon', {
+            'fields': ('birthday', 'phone', 'address', 'zip_code',
+                       'city', 'origin', 'occupation',
+                       'musical_background', 'about_me')
         }),
     )
 
@@ -54,8 +56,8 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'instrument', 'birthday', 'phone',
-                'address', 'zip_code', 'city')
+            'fields': ('email', 'first_name', 'last_name', 'instrument',
+                       'birthday', 'phone', 'address', 'zip_code', 'city')
         }),
     )
 
@@ -106,6 +108,7 @@ class CommitteeAdmin(admin.ModelAdmin):
     def member_count(self, obj):
         return obj.members.count()
     member_count.short_description = 'Antall medlemmer'
+
 
 admin.site.register(Member, UserAdmin)
 admin.site.register(Instrument, InstrumentAdmin)

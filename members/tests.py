@@ -1,8 +1,10 @@
+from datetime import date
+
 from django.test import TestCase
 from django.core.management import call_command
 from django.utils.six import StringIO
-from .models import *
-from datetime import date
+
+from .models import Member, Instrument
 
 test_member = {
     'email': 'test@example.com',

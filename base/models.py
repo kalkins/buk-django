@@ -48,9 +48,9 @@ def editable_content_image_path(instance, _):
 class EditableContentImage(models.Model):
     content = models.ForeignKey(
         EditableContent,
-        on_delete = models.CASCADE,
-        related_name = 'images',
+        on_delete=models.CASCADE,
+        related_name='images',
     )
     image = models.ImageField(
-        upload_to = editable_content_image_path,
+        upload_to=editable_content_image_path,
     )
