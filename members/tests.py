@@ -20,8 +20,10 @@ test_member = {
     'city': 'Testheim',
 }
 
+
 def random_string(length):
     return ''.join(random.choices(string.ascii_uppercase, k=length))
+
 
 def generate_member():
     local_test_member = dict(test_member)

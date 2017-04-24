@@ -384,8 +384,8 @@ class PercussionGroupList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(PercussionGroupList, self).get_context_data(**kwargs)
         context['unassigned'] = Member.objects\
-                .filter(is_active=True, percussion_group=None)\
-                .order_by('is_on_leave', 'first_name', 'last_name')
+                                      .filter(is_active=True, percussion_group=None)\
+                                      .order_by('is_on_leave', 'first_name', 'last_name')
         return context
 
 
@@ -423,9 +423,9 @@ class ChangePercussionGroup(PermissionRequiredMixin, TemplateView):
 
         # If a member is the leader for another group, remove the leadership
         PercussionGroup.objects\
-                .exclude(pk=group.pk)\
-                .filter(leader__percussion_group=group)\
-                .update(leader=None)
+                       .exclude(pk=group.pk)\
+                       .filter(leader__percussion_group=group)\
+                       .update(leader=None)
 
         return JsonResponse({
             'success': True,
@@ -435,9 +435,12 @@ class ChangePercussionGroup(PermissionRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ChangePercussionGroup, self).get_context_data(**kwargs)
         context['group'] = get_object_or_404(PercussionGroup, pk=kwargs['pk'])
-        context['other_groups'] = PercussionGroup.objects.exclude(pk=kwargs['pk']).prefetch_related('members')
+        context['other_groups'] = PercussionGroup.objects\
+                                                 .exclude(pk=kwargs['pk'])\
+                                                 .prefetch_related('members')
         context['unassigned'] = Member.objects\
-                .filter(is_active=True, percussion_group=None, percussion_group_leader_for=None)\
-                .order_by('is_on_leave', 'first_name', 'last_name')
+                                      .filter(is_active=True, percussion_group=None,
+                                              percussion_group_leader_for=None)\
+                                      .order_by('is_on_leave', 'first_name', 'last_name')
 
         return context

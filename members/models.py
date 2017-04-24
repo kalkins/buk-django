@@ -36,10 +36,10 @@ class PercussionGroup(models.Model):
     name = models.CharField('navn', max_length=50, unique=True, editable=False)
     leader = models.OneToOneField(
         'Member',
-        on_delete = models.PROTECT,
-        null = True,
-        related_name = 'percussion_group_leader_for',
-        verbose_name = 'gruppeleder',
+        on_delete=models.PROTECT,
+        null=True,
+        related_name='percussion_group_leader_for',
+        verbose_name='gruppeleder',
     )
 
     class Meta:
@@ -54,8 +54,9 @@ class PercussionGroup(models.Model):
         return self.name
 
     def ordered_members(self):
-        return self.members.all().order_by('percussion_group_leader_for', 'is_on_leave', 'first_name', 'last_name')
-    
+        return self.members.all().order_by('percussion_group_leader_for', 'is_on_leave',
+                                           'first_name', 'last_name')
+
     def save(self, *args, **kwargs):
         if not self.name:
             self.name = 'Gruppe {}'.format(PercussionGroup.objects.count() + 1)
@@ -144,10 +145,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
     )
     percussion_group = models.ForeignKey(
         PercussionGroup,
-        on_delete = models.SET_NULL,
-        related_name = 'members',
-        verbose_name = 'slagverkgruppe',
-        null = True,
+        on_delete=models.SET_NULL,
+        related_name='members',
+        verbose_name='slagverkgruppe',
+        null=True,
     )
     birthday = models.DateField('fødselsdato', help_text='Datoer skrives på formen YYYY-MM-DD')
     address = models.CharField('adresse', max_length=60)
@@ -188,7 +189,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
                         group.save()
                 except ObjectDoesNotExist:
                     pass
-        
+
         super(Member, self).save(*args, **kwargs)
 
     @property
