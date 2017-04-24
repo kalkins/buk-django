@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
@@ -26,6 +26,7 @@ from members import forms as member_forms, views as member_views
 urlpatterns = [
     url(r'^$', RedirectView.as_view(pattern_name='member_list'),
         name='front_page'),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth_views.login,
         {'authentication_form': member_forms.MemberAuthenticationForm},

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'members',
     'legacy',
     'django.contrib.admin',
+    'django.contrib.admindocs',
 ]
 
 MIDDLEWARE = [
