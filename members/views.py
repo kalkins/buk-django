@@ -14,11 +14,43 @@ from .forms import (MemberAddForm, MemberStatisticsForm,
 
 
 class MemberDetail(DetailView):
+    """
+    Display an individual :model:`members.Member`.
+
+    **Context**
+
+    ``member``
+        An instance of :model:`members.Member`.
+
+    **Template**
+
+    :template:`members/member_detail.html`
+    """
     model = Member
     context_object_name = 'member'
 
 
 class MemberList(LoginRequiredMixin, ListView):
+    """
+    Display a list of :model:`members.Member`.
+
+    The list is sorted by :model:`members.Instrument`, group leader,
+    first name and last name.
+
+    **Arguments**
+
+    ``show_all``
+        Whether to show all members, or just the currently active.
+
+    **Context**
+
+    ``members``
+        The list of :model:`members.Member`.
+
+    **Template**
+
+    :template:`members/member_list.html`
+    """
     context_object_name = 'members'
 
     def get_queryset(self):
@@ -36,6 +68,26 @@ class MemberList(LoginRequiredMixin, ListView):
 
 
 class ChangeMember(PermissionRequiredMixin, UpdateView):
+    """
+    Display a form to edit a :model:`members.Member`.
+
+    **Context**
+
+    ``form``
+        The form for editing the :model:`members.Member`.
+
+    ``membership_period_formset``
+        An inline formset for adding/editing :model:`members.MembershipPeriod`
+        related to the :model:`members.Member`.
+
+    ``leave_period_formset``
+        An inline formset for adding/editing :model:`members.LeavePeriod`
+        related to the :model:`members.Member`.
+
+    **Template**
+
+    :template:`members/member_change.html`
+    """
     model = Member
     permission_required = 'members.change_member'
     template_name = 'members/member_change.html'
@@ -69,6 +121,18 @@ class ChangeMember(PermissionRequiredMixin, UpdateView):
 
 
 class AddMember(PermissionRequiredMixin, CreateView):
+    """
+    Display a form for editing a :model:`members.Member`.
+
+    **Context**
+
+    ``form``
+        The form for editing the :model:`members.Member`.
+
+    **Template**
+
+    :template:`members/member_add.html`
+    """
     model = Member
     form_class = MemberAddForm
     permission_required = 'members.change_member'
@@ -76,6 +140,19 @@ class AddMember(PermissionRequiredMixin, CreateView):
 
 
 class MemberStatistics(PermissionRequiredMixin, TemplateView):
+    """
+    Display statistics about :model:`members.Member`, and a form
+    for changing what statistics are displayed.
+
+    **Context**
+
+    ``form``
+        The form for adding the :model:`members.Member`.
+
+    **Template**
+
+    :template:`members/member_add.html`
+    """
     permission_required = 'members.statistics'
     template_name = 'members/member_statistics.html'
     form_class = MemberStatisticsForm
@@ -261,6 +338,27 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
 
 
 class Practical(LoginRequiredMixin, TemplateView):
+    """
+    Display a page with practical information about the marching band,
+    and a list of the board and committees and their members.
+
+    The practical information can be edited inline using TinyMCE.
+
+    **Context**
+
+    ``content``
+        The practical information.
+
+    ``board_positions``
+        A list of board members.
+
+    ``committees``
+        A list of committees.
+
+    **Template**
+
+    :template:`practical/practical.html`
+    """
     template_name = 'practical/practical.html'
 
     def get_context_data(self, **kwargs):

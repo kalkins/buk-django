@@ -1,3 +1,19 @@
+{% comment 'doc' %}
+Render a region of content, that can be edited inline if the
+user has the 'base.edit_content' permission.
+
+For the editor to work, the following scripts must be imported:
+'editable-content/js/tinymce/tinymce.min.js'
+'editable-content/js/content-editor.js'
+
+Required arguments:
+    name: The unique name referencing the editable content.
+
+Optional arguments:
+    tag: The tag to put the content into. Default is 'div'.
+{% endcomment %}
+
+{% if member %}
 {% if perms.base.edit_content %}
 <{{ tag|default:'div' }} id='editable-{{ name }}' class='editable-content {{ class }}' data-name='{{ name }}'>
 {% else %}

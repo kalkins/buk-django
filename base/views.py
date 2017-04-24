@@ -9,6 +9,7 @@ from .models import EditableContent, EditableContentImage
 
 
 class EditableContentSave(PermissionRequiredMixin, views.View):
+    """Save some editable content, passed with AJAX"""
     permission_required = 'base.edit_content'
 
     def post(self, request):
@@ -31,6 +32,7 @@ class EditableContentSave(PermissionRequiredMixin, views.View):
 
 
 class EditableContentSaveImage(PermissionRequiredMixin, views.View):
+    """Save some images from editable content, passed with AJAX"""
     permission_required = 'base.edit_content'
 
     def post(self, request):
