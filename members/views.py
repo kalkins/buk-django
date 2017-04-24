@@ -375,6 +375,22 @@ class Practical(LoginRequiredMixin, TemplateView):
 
 
 class PercussionGroupList(LoginRequiredMixin, ListView):
+    """
+    Display a list of all percussion groups, including members,
+    and the members who don't have a group.
+
+    **Context**
+    ``groups``
+        A list of the percussion groups.
+
+    ``unassigned``
+        A list of the members who are not assigned to a
+        percussion group.
+
+    **Template**
+
+    :model:`percussion_groups/list.html`
+    """
     context_object_name = 'groups'
     template_name = 'percussion_groups/list.html'
 
@@ -390,6 +406,7 @@ class PercussionGroupList(LoginRequiredMixin, ListView):
 
 
 class AddPercussionGroup(PermissionRequiredMixin, RedirectView):
+    """Add a percussion group, then redirect to the list of groups."""
     permission_required = 'members.change_percussion_group'
     pattern_name = 'percussion_group_list'
 
@@ -401,6 +418,29 @@ class AddPercussionGroup(PermissionRequiredMixin, RedirectView):
 
 
 class ChangePercussionGroup(PermissionRequiredMixin, TemplateView):
+    """
+    Display a form for editing a percussion group.
+
+    The form list all members and allows for picking out individual
+    members of the current group, and its leader.
+
+    The form must rely on AJAX to submit the data.
+
+    **Context**
+    ``group``
+        The group currently being edited.
+
+    ``other_groups``
+        A list of the other percussion groups.
+
+    ``unassigned``
+        A list of the members who are not assigned to a
+        percussion group.
+
+    **Template**
+
+    :model:`percussion_groups/change.html`
+    """
     permission_required = 'members.change_percussion_group'
     template_name = 'percussion_groups/change.html'
     http_method_names = ['get', 'post']

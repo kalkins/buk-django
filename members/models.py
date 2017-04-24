@@ -33,6 +33,7 @@ class Instrument(models.Model):
 
 
 class PercussionGroup(models.Model):
+    """Store a percussion carrying group."""
     name = models.CharField('navn', max_length=50, unique=True, editable=False)
     leader = models.OneToOneField(
         'Member',
@@ -54,16 +55,26 @@ class PercussionGroup(models.Model):
         return self.name
 
     def ordered_members(self):
+        """
+        Return a list of members of the group ordered by group leader,
+        whether the member is on leave, first name and last name, in that order.
+        """
         return self.members.all().order_by('percussion_group_leader_for', 'is_on_leave',
                                            'first_name', 'last_name')
 
     def save(self, *args, **kwargs):
+        """
+        Save the object to the database.
+
+        If the objects is new a name is generated for it, on the form 'Gruppe <num>'.
+        """
         if not self.name:
             self.name = 'Gruppe {}'.format(PercussionGroup.objects.count() + 1)
 
         super(PercussionGroup, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
+        """Delete the object, and rename other groups to fill the gap."""
         pk = self.pk
         prev = self.name
         super(PercussionGroup, self).delete(*args, **kwargs)
