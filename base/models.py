@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 
 
 class Period(models.Model):
+    """Store a period of time."""
     start = models.DateField('start')
     end = models.DateField('slutt', null=True, blank=True)
 
@@ -30,6 +31,16 @@ class Period(models.Model):
 
 
 class EditableContent(models.Model):
+    """
+    Store content edited inline in TinyMCE.
+
+    To use, include :template:`editable-content/editable-content.html`
+    in the template, and import 'editable-content/js/tinymce/tinymce.min.js'
+    and 'editable-content/js/content-editor.js'.
+
+    See :model:`base.EditableContentImage` for information
+    about storing images.
+    """
     name = models.CharField(max_length=30, unique=True)
     text = models.TextField(blank=True, default='')
 
@@ -40,12 +51,20 @@ class EditableContent(models.Model):
 
 
 def editable_content_image_path(instance, _):
-    # Generates a random filename to avoid conflicts
+    """
+    Generates a random filename for :model:`base.EditableContentImage`
+    to avoid conflicts.
+    """
     filename = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(10)])
     return 'images/content_{0}/{1}'.format(instance.content.name, filename)
 
 
 class EditableContentImage(models.Model):
+    """
+    Store images from inline content edited in TinyMCE.
+
+    See :model:`base.EditableContent` for more information.
+    """
     content = models.ForeignKey(
         EditableContent,
         on_delete=models.CASCADE,

@@ -8,6 +8,7 @@ from base.models import Period
 
 
 class Instrument(models.Model):
+    """Store an instrument group."""
     name = models.CharField('navn', max_length=30, unique=True)
     group_leader = models.OneToOneField(
         'Member',
@@ -76,6 +77,12 @@ class MemberManager(BaseUserManager):
 
 
 class Member(AbstractBaseUser, PermissionsMixin):
+    """
+    Store a member.
+
+    This replaces the standard user model, and uses
+    :model:`members.MemberManager` as a custom manager.
+    """
     email = models.EmailField(
         verbose_name='e-post',
         max_length=255,
@@ -125,6 +132,11 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     @property
     def status(self):
+        """
+        Return a string describing the members status.
+
+        Can return 'Aktiv', 'Sluttet', or 'Permisjon'.
+        """
         if self.is_on_leave:
             return 'Permisjon'
         elif self.is_active:
@@ -133,29 +145,44 @@ class Member(AbstractBaseUser, PermissionsMixin):
             return 'Sluttet'
 
     def get_full_name(self):
+        """Return the full name of the member."""
         return '%s %s' % (self.first_name, self.last_name)
     get_full_name.short_description = 'navn'
 
     def get_short_name(self):
+        """Return first name of the member."""
         return self.first_name
     get_short_name.short_description = 'navn'
 
     def get_absolute_url(self):
+        """Return a link to the members profile."""
         return reverse('member_detail', args=[str(self.pk)])
 
     def __str__(self):
+        """Return the full name of the member."""
         return self.get_full_name()
 
     def is_group_leader(self):
+        """
+        Return a boolean describing whether the member
+        is an instrument group leader.
+        """
         return hasattr(self, 'group_leader_for')
     is_group_leader.short_description = 'er gruppeleder'
 
     def get_full_address(self):
+        """
+        Return the address of the member, containing the address,
+        zip code and city.
+        """
         return "%s %s %s" % (self.address, self.zip_code, self.city)
     get_full_address.short_description = 'adresse'
 
 
 class MembershipPeriod(Period):
+    """
+    Store a :model:`base.Period` of membership for a :model:`member.Member`.
+    """
     member = models.ForeignKey(
         Member,
         on_delete=models.CASCADE,
@@ -167,6 +194,10 @@ class MembershipPeriod(Period):
         verbose_name_plural = 'medlemskapsperioder'
 
     def save(self, *args, **kwargs):
+        """
+        Save the object to the database, setting the ``is_active`` field
+        of the related :model:`members.Member` in the process.
+        """
         super(MembershipPeriod, self).save(*args, **kwargs)
 
         member = self.member
@@ -177,6 +208,9 @@ class MembershipPeriod(Period):
 
 
 class LeavePeriod(Period):
+    """
+    Store a :model:`base.Period` of leave of absence for a :model:`member.Member`.
+    """
     member = models.ForeignKey(
         Member,
         on_delete=models.CASCADE,
@@ -188,6 +222,10 @@ class LeavePeriod(Period):
         verbose_name_plural = 'permisjonsperioder'
 
     def save(self, *args, **kwargs):
+        """
+        Save the object to the database, setting the ``is_on_leave`` field
+        of the related :model:`members.Member` in the process.
+        """
         super(LeavePeriod, self).save(*args, **kwargs)
 
         member = self.member
@@ -196,6 +234,7 @@ class LeavePeriod(Period):
 
 
 class BoardPosition(models.Model):
+    """Store a member of the board (styret)."""
     holder = models.OneToOneField(
         Member,
         on_delete=models.PROTECT,
@@ -223,6 +262,12 @@ class BoardPosition(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        """
+        Save the object to the database.
+
+        Also add the related :model:`members.Member` to the
+        group related to the board.
+        """
         board, _ = Group.objects.get_or_create(name='Styret')
 
         if not self.group:
@@ -242,15 +287,27 @@ class BoardPosition(models.Model):
         self.group.user_set.set([self.holder])
 
     def delete(self, *args, **kwargs):
+        """
+        Delete the object, and remove the related
+        :model:`members.Member` from the related group.
+        """
         self.group.delete()
         Group.objects.get(name='Styret').user_set.remove(self.holder)
         super(BoardPosition, self).delete(*args, **kwargs)
 
 
 class Committee(models.Model):
+    """
+    Store a committee.
+
+    A committee can be led by either a member on the board,
+    or a regular member. Therefore one of these must be set,
+    but not both.
+
+    To get the :model:`members.Member` object of the leader,
+    use the ``leader`` property.
+    """
     name = models.CharField('navn', max_length=50, unique=True)
-    # A committee can be led by either a member on the board, or a regular member.
-    # Therefore one of these must be set, but not both
     leader_board = models.OneToOneField(
         BoardPosition,
         on_delete=models.PROTECT,
@@ -290,6 +347,7 @@ class Committee(models.Model):
     # to see the associated board position (if it is set)
     @property
     def leader(self):
+        """Return the :model:`members.Member` object of the leader."""
         return self.leader_board.holder if self.leader_board_id else self.leader_member
     leader.fget.short_description = 'leder'
 
@@ -307,6 +365,13 @@ class Committee(models.Model):
             self.leader_member = None
 
     def save(self, *args, **kwargs):
+        """
+        Save the object to the database, adding its members
+        to the related group in the process.
+
+        If there's no related group, one is created with the
+        same name as the committee.
+        """
         if self.group:
             if self.pk:
                 prev = Committee.objects.get(pk=self.pk)
@@ -322,5 +387,6 @@ class Committee(models.Model):
         self.members.remove(self.leader)
 
     def delete(self, *args, **kwargs):
+        """Delete the committee and the related group."""
         self.group.delete()
         super(Committee, self).delete(*args, **kwargs)
