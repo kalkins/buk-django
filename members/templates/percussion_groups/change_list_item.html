@@ -15,7 +15,9 @@ Optional arguments:
 {% if member %}
 <tr {% if member == user %} class='current-user' {% endif %}>
     <td class='col-name'>
-        {{ member.get_full_name }}
+        <a class='graylink' href='{{ member.get_absolute_url }}'>
+            {{ member.get_full_name }}
+        </a>
     </td>
 
     <td class='group-leader'>
