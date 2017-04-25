@@ -1,7 +1,7 @@
 import csv
 
 from django.db.models import Q
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404, JsonResponse
 from django.views.generic import (DetailView, ListView, CreateView,
@@ -415,6 +415,18 @@ class AddPercussionGroup(PermissionRequiredMixin, RedirectView):
         group.save()
 
         return super(AddPercussionGroup, self).get(*args, **kwargs)
+
+
+class DeletePercussionGroup(PermissionRequiredMixin, RedirectView):
+    """Remove a percussion group, then redirect to the list of groups."""
+    permission_required = 'members.change_percussion_group'
+    url = reverse_lazy('percussion_group_list')
+
+    def get(self, *args, **kwargs):
+        group = get_object_or_404(PercussionGroup, pk=kwargs['pk'])
+        group.delete()
+
+        return super(DeletePercussionGroup, self).get(*args, **kwargs)
 
 
 class ChangePercussionGroup(PermissionRequiredMixin, TemplateView):

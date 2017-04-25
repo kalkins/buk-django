@@ -65,6 +65,8 @@ urlpatterns = [
         name='percussion_group_add'),
     url(r'^slagverkgrupper/(?P<pk>[0-9]+)/endre$', member_views.ChangePercussionGroup.as_view(),
         name='percussion_group_change'),
+    url(r'^slagverkgrupper/(?P<pk>[0-9]+)/slett$', member_views.DeletePercussionGroup.as_view(),
+        name='percussion_group_delete'),
 ]
 
 if settings.DEBUG:
