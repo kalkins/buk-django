@@ -325,7 +325,7 @@ class BoardPosition(models.Model):
         max_length=255,
         unique=True,
     )
-    group = models.OneToOneField(Group, editable=False, null=True)
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, editable=False, null=True)
     order = models.IntegerField(
             'rekkefølge',
             default=0,
@@ -368,7 +368,6 @@ class BoardPosition(models.Model):
         Delete the object, and remove the related
         :model:`members.Member` from the related group.
         """
-        self.group.delete()
         Group.objects.get(name='Styret').user_set.remove(self.holder)
         super(BoardPosition, self).delete(*args, **kwargs)
 
@@ -408,7 +407,7 @@ class Committee(models.Model):
         related_name='committees',
         blank=True,
     )
-    group = models.OneToOneField(Group, editable=False, null=True)
+    group = models.OneToOneField(Group, on_delete=models.CASCADE, editable=False, null=True)
     email = models.EmailField(
         verbose_name='e-post',
         max_length=255,
@@ -462,8 +461,3 @@ class Committee(models.Model):
         self.group.user_set.set(self.members.all())
         self.group.user_set.add(self.leader)
         self.members.remove(self.leader)
-
-    def delete(self, *args, **kwargs):
-        """Delete the committee and the related group."""
-        self.group.delete()
-        super(Committee, self).delete(*args, **kwargs)
