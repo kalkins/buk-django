@@ -1,5 +1,3 @@
-//Legg til nytt medlem og se gamle medlemmer
-
 section {
     div:first-child {
         h2 {
@@ -16,43 +14,32 @@ section {
             }
         }
     }
-}
 
-
-
-//Telfonnummer og endre bruker
-section{
-
-        a.graylink.change_member {
-            visibility: hidden;
-            float:right;
-            }
-
-         i.fa.fa-edit {
-
-            float:right;
-            margin-right: 1em;
-            visibility: visible;
-
+    .change_member {
+        visibility: hidden;
+        float: right;
     }
 
-    div.member {
+    .change_member {
+        float:right;
+        margin-right: 1em;
+        visibility: visible;
+    }
 
-        a.graylink.phone {
+    .member {
+        .phone {
             float: right;
             margin-right: 1em;
-            }
-        //legger til mellomrom mellom alles navn og gir dem et lite innrykk
+        }
+
+        //adding spaces and inblocks
         margin-bottom: 1.5em;
         margin-left: 2em;
-        }
+    }
 
-
-//legger til mer mellomrom over titlene (klarinett) og mer under
-
+    //adding more space above and underneat titles
     h3 {
-
         margin-top: 3em;
         margin-bottom: 1.5em;
-        }
+    }
 }
