@@ -1,6 +1,7 @@
 import csv
 
 from django.db.models import Q
+from django.forms import modelform_factory
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404, JsonResponse
@@ -94,9 +95,16 @@ class ChangeMember(PermissionRequiredMixin, UpdateView):
     model = Member
     permission_required = 'members.change_member'
     template_name = 'members/member_change.html'
-    fields = ['email', 'first_name', 'last_name', 'instrument', 'phone',
-              'birthday', 'address', 'zip_code', 'city', 'origin', 'occupation',
-              'has_car', 'has_towbar', 'musical_background', 'about_me']
+
+    def get_form_class(self, *args, **kwargs):
+        fields = ['email', 'first_name', 'last_name', 'instrument', 'phone',
+                  'birthday', 'address', 'zip_code', 'city', 'origin', 'occupation',
+                  'has_car', 'has_towbar', 'musical_background', 'about_me']
+
+        if self.request.user.has_perm('members.change_percussion_group'):
+            fields.insert(4, 'percussion_group')
+
+        return modelform_factory(Member, fields=fields)
 
     def get_context_data(self, **kwargs):
         context = super(ChangeMember, self).get_context_data(**kwargs)
