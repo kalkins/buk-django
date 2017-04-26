@@ -14,4 +14,32 @@ section {
             }
         }
     }
+
+    .change_member {
+        visibility: hidden;
+        float: right;
+    }
+
+    .change_member {
+        float:right;
+        margin-right: 1em;
+        visibility: visible;
+    }
+
+    .member {
+        .phone {
+            float: right;
+            margin-right: 1em;
+        }
+
+        //adding spaces and inblocks
+        margin-bottom: 1.5em;
+        margin-left: 2em;
+    }
+
+    //adding more space above and underneat titles
+    h3 {
+        margin-top: 3em;
+        margin-bottom: 1.5em;
+    }
 }
