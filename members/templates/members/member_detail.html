@@ -17,7 +17,7 @@
             </a>
         </h2>
 
-        {% if perms.members.change_member %}
+        {% if perms.members.change_member or user == member %}
         <a class='graylink' href='{% url 'member_change' member.pk %}'>
             <i class='fa fa-edit'></i>
             Endre
