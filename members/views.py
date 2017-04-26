@@ -7,7 +7,8 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, Http404, JsonResponse
 from django.views.generic import (DetailView, ListView, CreateView,
                                   UpdateView, TemplateView, RedirectView)
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (LoginRequiredMixin, PermissionRequiredMixin,
+                                        UserPassesTestMixin)
 
 from base.models import EditableContent
 
@@ -71,9 +72,12 @@ class MemberList(LoginRequiredMixin, ListView):
         return context
 
 
-class ChangeMember(PermissionRequiredMixin, UpdateView):
+class ChangeMember(UserPassesTestMixin, UpdateView):
     """
     Display a form to edit a :model:`members.Member`.
+
+    An user can access this form if it's editing its own
+    profile, or if it has the 'members.change_member' permission.
 
     **Context**
 
@@ -93,8 +97,11 @@ class ChangeMember(PermissionRequiredMixin, UpdateView):
     :template:`members/member_change.html`
     """
     model = Member
-    permission_required = 'members.change_member'
     template_name = 'members/member_change.html'
+
+    def test_func(self, *args, **kwargs):
+        user = self.request.user
+        return user.has_perm('members.change_member') or user == self.get_object()
 
     def get_form_class(self, *args, **kwargs):
         fields = ['email', 'first_name', 'last_name', 'instrument', 'phone',
