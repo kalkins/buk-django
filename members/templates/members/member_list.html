@@ -14,26 +14,26 @@
         <h3>
           <div>
               {% if perms.members.statistics %}
-              <a class='graylink' href='{% url 'member_statistics' %}'>
+              <a href='{% url 'member_statistics' %}'>
                   <i class='fa fa-line-chart'></i>
                   Statistikk
               </a>
               {% endif %}
 
               {% if perms.members.add_member %}
-              <a class='graylink' href='{% url 'member_add' %}'>
+              <a href='{% url 'member_add' %}'>
                   <i class='fa fa-plus'></i>
                   Legg til ny
               </a>
               {% endif %}
 
               {% if show_all %}
-              <a class='graylink' href='{% url 'member_list' %}'>
+              <a href='{% url 'member_list' %}'>
                   <i class='fa fa-user'></i>
                   Vis kun aktive
               </a>
               {% else %}
-              <a class='graylink' href='{% url 'member_list_all' %}'>
+              <a href='{% url 'member_list_all' %}'>
                   <i class='fa fa-users'></i>
                   Vis også sluttede
               </a>
@@ -46,14 +46,14 @@
         {% for member in members %}
         {% ifchanged %}<h3>{{ member.instrument.name }}</h3>{% endifchanged %}
         <div class='member'>
-            <a class='graylink name' href='{{ member.get_absolute_url}}' >{{ member.get_full_name }}</a>
+            <a class='name' href='{{ member.get_absolute_url}}' >{{ member.get_full_name }}</a>
 
             {% if member.is_group_leader %}
             <span class='tag group_leader'>Gruppeleder</span>
             {% endif %}
 
             {% if member.board_position %}
-            <a class='graylink email' href='mailto:{{ member.board_position.email }}'>
+            <a class='email' href='mailto:{{ member.board_position.email }}'>
                 <i class='fa fa-envelope-o' title='Send e-post'></i>
                 {{ member.board_position.title }}
             </a>
@@ -67,13 +67,13 @@
             <span class='tag quit'>Sluttet</span>
             {% endif %}
 
-            <a class='graylink phone' href='tel:{{ member.phone }}'>
+            <a class='phone' href='tel:{{ member.phone }}'>
                 <i class='fa fa-phone'></i>
                 {{ member.phone }}
             </a>
 
             {% if perms.members.change_member %}
-            <a class='graylink change_member' href='{% url 'member_change' member.pk %}'>
+            <a class='change_member' href='{% url 'member_change' member.pk %}'>
                 <i class='fa fa-edit'></i>
                 Endre
             </a>

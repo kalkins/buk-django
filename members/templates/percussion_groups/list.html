@@ -17,7 +17,7 @@
         <span class='is-on-leave'>P</span> = Er i permisjon
     </p>
 
-    <a href='{% url 'percussion_group_add' %}' class='graylink add-group'>
+    <a href='{% url 'percussion_group_add' %}' class='add-group'>
         Ny slagverkgruppe
     </a>
 
@@ -26,12 +26,12 @@
         <div class='group'>
             <h2>{{ group.name }}</h2>
 
-            <a href='{% url 'percussion_group_change' group.pk %}' class='graylink change-group'>
+            <a href='{% url 'percussion_group_change' group.pk %}' class='change-group'>
                 <i class='fa fa-edit'></i>
                 Endre
             </a>
 
-            <a href='{% url 'percussion_group_delete' group.pk %}' class='graylink delete-group'>
+            <a href='{% url 'percussion_group_delete' group.pk %}' class='delete-group'>
                 <i class='fa fa-trash-o'></i>
                 Slett
             </a>
