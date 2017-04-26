@@ -43,6 +43,7 @@ which are to be further extended in the various apps.
         {% block javascript %}
         {# Always use deref unless you know what you are doing #}
         <script type="text/javascript" src="{% static 'base/js/jquery.js' %}" deref></script>
+        <script type="text/javascript" src="{% static 'base/js/utility.js' %}" deref></script>
         {% endblock javascript %}
 
         <title>{% block title %}Bispehaugen Ungdomskorps{% endblock %}</title>

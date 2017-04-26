@@ -3,7 +3,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .models import (Member, Instrument, MembershipPeriod,
-                     LeavePeriod, Committee, BoardPosition)
+                     LeavePeriod, Committee, BoardPosition,
+                     PercussionGroup)
 
 
 class MembershipPeriodInline(admin.TabularInline):
@@ -43,7 +44,7 @@ class UserAdmin(BaseUserAdmin):
                        'email', 'is_admin', 'is_superuser')
         }),
         ('Praktisk informasjon', {
-            'fields': ('has_car', 'has_towbar')
+            'fields': ('percussion_group', 'has_car', 'has_towbar')
         }),
         ('Personlig informasjon', {
             'fields': ('birthday', 'phone', 'address', 'zip_code',
@@ -110,7 +111,16 @@ class CommitteeAdmin(admin.ModelAdmin):
     member_count.short_description = 'Antall medlemmer'
 
 
+class PercussionGroupAdmin(admin.ModelAdmin):
+    list_display = ('name', 'leader', 'member_count')
+
+    def member_count(self, obj):
+        return obj.members.count()
+    member_count.short_description = 'Antall medlemmer'
+
+
 admin.site.register(Member, UserAdmin)
 admin.site.register(Instrument, InstrumentAdmin)
 admin.site.register(BoardPosition, BoardPositionAdmin)
 admin.site.register(Committee, CommitteeAdmin)
+admin.site.register(PercussionGroup, PercussionGroupAdmin)

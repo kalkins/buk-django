@@ -1,14 +1,18 @@
 import csv
 
 from django.db.models import Q
-from django.http import HttpResponse
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, TemplateView
+from django.forms import modelform_factory
+from django.urls import reverse, reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse, Http404, JsonResponse
+from django.views.generic import (DetailView, ListView, CreateView,
+                                  UpdateView, TemplateView, RedirectView)
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from base.models import EditableContent
 
 from .models import (Member, MembershipPeriod, LeavePeriod,
-                     Committee, BoardPosition)
+                     Committee, BoardPosition, PercussionGroup)
 from .forms import (MemberAddForm, MemberStatisticsForm,
                     MembershipPeriodFormset, LeavePeriodFormset)
 
@@ -91,9 +95,16 @@ class ChangeMember(PermissionRequiredMixin, UpdateView):
     model = Member
     permission_required = 'members.change_member'
     template_name = 'members/member_change.html'
-    fields = ['email', 'first_name', 'last_name', 'instrument', 'phone',
-              'birthday', 'address', 'zip_code', 'city', 'origin', 'occupation',
-              'has_car', 'has_towbar', 'musical_background', 'about_me']
+
+    def get_form_class(self, *args, **kwargs):
+        fields = ['email', 'first_name', 'last_name', 'instrument', 'phone',
+                  'birthday', 'address', 'zip_code', 'city', 'origin', 'occupation',
+                  'has_car', 'has_towbar', 'musical_background', 'about_me']
+
+        if self.request.user.has_perm('members.change_percussion_group'):
+            fields.insert(4, 'percussion_group')
+
+        return modelform_factory(Member, fields=fields)
 
     def get_context_data(self, **kwargs):
         context = super(ChangeMember, self).get_context_data(**kwargs)
@@ -367,5 +378,129 @@ class Practical(LoginRequiredMixin, TemplateView):
 
         context['board_positions'] = BoardPosition.objects.all()
         context['committees'] = Committee.objects.all()
+
+        return context
+
+
+class PercussionGroupList(LoginRequiredMixin, ListView):
+    """
+    Display a list of all percussion groups, including members,
+    and the members who don't have a group.
+
+    **Context**
+    ``groups``
+        A list of the percussion groups.
+
+    ``unassigned``
+        A list of the members who are not assigned to a
+        percussion group.
+
+    **Template**
+
+    :model:`percussion_groups/list.html`
+    """
+    context_object_name = 'groups'
+    template_name = 'percussion_groups/list.html'
+
+    def get_queryset(self):
+        return PercussionGroup.objects.all().prefetch_related('members')
+
+    def get_context_data(self, **kwargs):
+        context = super(PercussionGroupList, self).get_context_data(**kwargs)
+        context['unassigned'] = Member.objects\
+                                      .filter(is_active=True, percussion_group=None)\
+                                      .order_by('is_on_leave', 'first_name', 'last_name')
+        return context
+
+
+class AddPercussionGroup(PermissionRequiredMixin, RedirectView):
+    """Add a percussion group, then redirect to the list of groups."""
+    permission_required = 'members.change_percussion_group'
+    pattern_name = 'percussion_group_list'
+
+    def get(self, *args, **kwargs):
+        group = PercussionGroup()
+        group.save()
+
+        return super(AddPercussionGroup, self).get(*args, **kwargs)
+
+
+class DeletePercussionGroup(PermissionRequiredMixin, RedirectView):
+    """Remove a percussion group, then redirect to the list of groups."""
+    permission_required = 'members.change_percussion_group'
+    url = reverse_lazy('percussion_group_list')
+
+    def get(self, *args, **kwargs):
+        group = get_object_or_404(PercussionGroup, pk=kwargs['pk'])
+        group.delete()
+
+        return super(DeletePercussionGroup, self).get(*args, **kwargs)
+
+
+class ChangePercussionGroup(PermissionRequiredMixin, TemplateView):
+    """
+    Display a form for editing a percussion group.
+
+    The form list all members and allows for picking out individual
+    members of the current group, and its leader.
+
+    The form must rely on AJAX to submit the data.
+
+    **Context**
+    ``group``
+        The group currently being edited.
+
+    ``other_groups``
+        A list of the other percussion groups.
+
+    ``unassigned``
+        A list of the members who are not assigned to a
+        percussion group.
+
+    **Template**
+
+    :model:`percussion_groups/change.html`
+    """
+    permission_required = 'members.change_percussion_group'
+    template_name = 'percussion_groups/change.html'
+    http_method_names = ['get', 'post']
+
+    def post(self, request, pk):
+        if 'leader' not in request.POST or 'members[]' not in request.POST:
+            raise Http404
+
+        leader = request.POST['leader']
+        group = get_object_or_404(PercussionGroup, pk=pk)
+        group.leader_id = leader
+        group.save()
+
+        members = request.POST.getlist('members[]')
+        members.append(leader)
+
+        # Remove old members, and add new ones
+        Member.objects.filter(percussion_group=group).update(percussion_group=None)
+        Member.objects.filter(pk__in=members).update(percussion_group=group)
+
+        # If a member is the leader for another group, remove the leadership
+        PercussionGroup.objects\
+                       .exclude(pk=group.pk)\
+                       .filter(leader__percussion_group=group)\
+                       .update(leader=None)
+
+        return JsonResponse({
+            'success': True,
+            'next': reverse('percussion_group_change', kwargs={'pk': pk}),
+        })
+
+    def get_context_data(self, **kwargs):
+        context = super(ChangePercussionGroup, self).get_context_data(**kwargs)
+        context['group'] = get_object_or_404(PercussionGroup, pk=kwargs['pk'])
+        context['other_groups'] = PercussionGroup.objects\
+                                                 .exclude(pk=kwargs['pk'])\
+                                                 .prefetch_related('members')
+        context['unassigned'] = Member.objects\
+                                      .filter(is_active=True, percussion_group=None,
+                                              percussion_group_leader_for=None)\
+                                      .order_by('is_on_leave', 'first_name', 'last_name')
 
         return context

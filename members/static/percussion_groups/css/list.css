@@ -1,0 +1,43 @@
+/* line 1, _colored-labels.scss */
+.colored-label, .group-leader, .has-car, .has-towbar, .is-on-leave {
+  font-weight: 400;
+}
+
+/* line 5, _colored-labels.scss */
+.group-leader {
+  color: #F11;
+}
+
+/* line 10, _colored-labels.scss */
+.has-car {
+  color: yellow;
+}
+
+/* line 15, _colored-labels.scss */
+.has-towbar {
+  color: #1F1;
+}
+
+/* line 20, _colored-labels.scss */
+.is-on-leave {
+  color: orange;
+}
+
+/* line 1, _table-style.scss */
+.member-list {
+  border-collapse: collapse;
+}
+
+/* line 5, _table-style.scss */
+.table-header > td {
+  padding: 2em 0 1em 0;
+}
+
+/* line 10, _table-style.scss */
+tr:not(.table-header):nth-of-type(2n+1) {
+  background-color: #29363D;
+}
+/* line 14, _table-style.scss */
+tr:not(.table-header) > td {
+  padding: 0.3em 1em 0.3em 2em;
+}

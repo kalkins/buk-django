@@ -1,0 +1,64 @@
+{% comment 'doc' %}
+Render a member as a table row with information about their status and equipment,
+an checkbox for choosing them for a group, and a radio button for choosing them as leader.
+If no member is provided, or the member doesn't exist, nothing is done.
+
+Required arguments:
+    member: The object of the member to show
+
+Optional arguments:
+    current: Whether the member is part of the group that's currently
+             being changed. Takes True or False. If not provided
+             it defaults to False.
+{% endcomment %}
+
+{% if member %}
+<tr {% if member == user %} class='current-user' {% endif %}>
+    <td class='col-name'>
+        <a class='graylink' href='{{ member.get_absolute_url }}'>
+            {{ member.get_full_name }}
+        </a>
+    </td>
+
+    <td class='group-leader'>
+        {% if member.percussion_group_leader_for %}
+        GL
+        {% endif %}
+    </td>
+
+    <td class='has-car'>
+        {% if member.has_car %}
+        B
+        {% endif %}
+    </td>
+
+    <td class='has-towbar'>
+        {% if member.has_towbar %}
+        H
+        {% endif %}
+    </td>
+
+    <td class='is-on-leave'>
+        {% if member.is_on_leave %}
+        P
+        {% endif %}
+    </td>
+
+    <td class='col-member-select'>
+        <label>
+            <input type='checkbox' data-id='{{ member.pk }}'
+                    {% if current %} checked='checked' {% endif %} />
+            <i class='fa fa-lg fa-check-square-o'></i>
+            <i class='fa fa-lg fa-square-o'></i>
+        </label>
+    </td>
+
+    <td class='col-group-leader-select'>
+        <label>
+            <input type='radio' name='group-leader' data-id='{{ member.pk }}'
+                    {% if current and member.percussion_group.leader == member %} checked='checked' {% endif %} />
+            <span>Leder</span>
+        </label>
+    </td>
+</tr>
+{% endif %}

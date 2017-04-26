@@ -1,0 +1,32 @@
+@import 'colored-labels';
+@import 'table-style';
+
+
+tr:not(.table-header) {
+    .col-member-select {
+        padding-left: 2em;
+
+        input, input:checked ~ .fa-square-o, input:not(:checked) ~ .fa-check-square-o {
+            display: none;
+        }
+    }
+
+    .col-group-leader-select {
+        padding-left: 2em;
+
+        input {
+            display: none;
+        }
+
+        span {
+            margin: 0.5em;
+
+            color: #AAA;
+        }
+
+        input:checked ~ span {
+            background-color: #DDD;
+            color: #000;
+        }
+    }
+}

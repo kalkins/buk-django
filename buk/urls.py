@@ -59,6 +59,14 @@ urlpatterns = [
     url(r'^praktisk$', member_views.Practical.as_view(), name='practical'),
     url(r'^endre-innhold/$', base_views.EditableContentSave.as_view()),
     url(r'^endre-innhold/bilde$', base_views.EditableContentSaveImage.as_view()),
+    url(r'^slagverkgrupper/$', member_views.PercussionGroupList.as_view(),
+        name='percussion_group_list'),
+    url(r'^slagverkgrupper/ny$', member_views.AddPercussionGroup.as_view(),
+        name='percussion_group_add'),
+    url(r'^slagverkgrupper/(?P<pk>[0-9]+)/endre$', member_views.ChangePercussionGroup.as_view(),
+        name='percussion_group_change'),
+    url(r'^slagverkgrupper/(?P<pk>[0-9]+)/slett$', member_views.DeletePercussionGroup.as_view(),
+        name='percussion_group_delete'),
 ]
 
 if settings.DEBUG:

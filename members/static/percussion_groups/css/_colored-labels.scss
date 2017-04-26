@@ -1,0 +1,23 @@
+.colored-label {
+    font-weight: 400;
+}
+
+.group-leader {
+    @extend .colored-label;
+    color: #F11;
+}
+
+.has-car {
+    @extend .colored-label;
+    color: yellow;
+}
+
+.has-towbar {
+    @extend .colored-label;
+    color: #1F1;
+}
+
+.is-on-leave {
+    @extend .colored-label;
+    color: orange;
+}
