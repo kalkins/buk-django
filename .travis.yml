@@ -2,6 +2,9 @@ language: python
 python:
     - '3.6'
 
+services:
+    - postgresql
+
 # Install dependencies
 install:
     - pip install -r requirements.txt
@@ -10,6 +13,7 @@ install:
 # Prepare the working environment
 before_script:
     - cp buk/local_settings_example.py buk/local_settings.py
+    - psql -c 'create database buk;' -U postgres
 
 # Run tests
 script:
