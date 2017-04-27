@@ -1,40 +1,39 @@
-/* line 5, member_list.scss */
+/* line 3, member_list.scss */
 section div:first-child h2 {
   display: inline-block;
 }
-/* line 9, member_list.scss */
+/* line 7, member_list.scss */
 section div:first-child h3 {
   display: inline-block;
   float: right;
   margin-top: 1.6em;
 }
-/* line 14, member_list.scss */
+/* line 12, member_list.scss */
 section div:first-child h3 a {
   margin-left: 1em;
 }
-
-/* line 26, member_list.scss */
-section a.graylink.change_member {
+/* line 18, member_list.scss */
+section .change_member {
   visibility: hidden;
   float: right;
 }
-/* line 31, member_list.scss */
-section i.fa.fa-edit {
+/* line 23, member_list.scss */
+section .change_member {
   float: right;
   margin-right: 1em;
   visibility: visible;
 }
-/* line 39, member_list.scss */
-section div.member {
+/* line 29, member_list.scss */
+section .member {
   margin-bottom: 1.5em;
   margin-left: 2em;
 }
-/* line 41, member_list.scss */
-section div.member a.graylink.phone {
+/* line 30, member_list.scss */
+section .member .phone {
   float: right;
   margin-right: 1em;
 }
-/* line 53, member_list.scss */
+/* line 41, member_list.scss */
 section h3 {
   margin-top: 3em;
   margin-bottom: 1.5em;
