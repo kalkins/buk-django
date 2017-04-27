@@ -9,13 +9,13 @@ Required arguments:
 {% if member %}
 <tr {% if member == user %} class='current-user' {% endif %}>
     <td class='col-name'>
-        <a class='graylink' href='{{ member.get_absolute_url }}'>
+        <a href='{{ member.get_absolute_url }}'>
             {{ member.get_full_name }}
         </a>
     </td>
 
     <td class='phone'>
-        <a class='graylink phone' href='tel:{{ member.phone }}'>
+        <a class='phone' href='tel:{{ member.phone }}'>
             <i class='fa fa-phone'></i>
             {{ member.phone }}
         </a>

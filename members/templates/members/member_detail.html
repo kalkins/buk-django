@@ -11,14 +11,14 @@
 <section>
     <div class='navline'>
         <h2 class='back-link'>
-            <a class='graylink' href='{% url 'member_list' %}' title='Vis medlemsliste'>
+            <a href='{% url 'member_list' %}' title='Vis medlemsliste'>
                 <i class='fa fa-chevron-left'></i>
                 Medlemmer
             </a>
         </h2>
 
         {% if perms.members.change_member or user == member %}
-        <a class='graylink' href='{% url 'member_change' member.pk %}'>
+        <a href='{% url 'member_change' member.pk %}'>
             <i class='fa fa-edit'></i>
             Endre
         </a>
@@ -86,11 +86,11 @@
         <h3>Kontaktinfo</h3>
         <p>
             <strong>Mobil:</strong>
-            <a class='graylink' href='tel:{{ member.phone }}'>{{ member.phone }}</a>
+            <a href='tel:{{ member.phone }}'>{{ member.phone }}</a>
         </p>
         <p>
             <strong>E-post:</strong>
-            <a class='graylink' href='mailto:{{ member.email }}'>{{ member.email }}</a>
+            <a href='mailto:{{ member.email }}'>{{ member.email }}</a>
         </p>
         <p>
             <strong>Adresse:</strong>

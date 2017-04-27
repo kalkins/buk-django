@@ -11,7 +11,7 @@
 <section class='login'>
     <div>
         <h2>Internsiden</h2>
-        <a id='forgot-password-link' class='graylink' href='{% url 'password_reset' %}'>Glemt passord?</a>
+        <a id='forgot-password-link' href='{% url 'password_reset' %}'>Glemt passord?</a>
         <form method='post' action='{% url 'login' %}'>
             {% csrf_token %}
 

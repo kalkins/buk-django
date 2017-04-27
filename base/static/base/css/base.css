@@ -28,17 +28,17 @@ p {
 }
 
 /* line 1, textstyle/_links.scss */
-.graylink {
+a {
   font-weight: 200;
 }
 
 /* line 5, textstyle/_links.scss */
-body > section:nth-of-type(2n) .graylink {
+body > section:nth-of-type(2n) a {
   color: #222933;
 }
 
 /* line 9, textstyle/_links.scss */
-body > section:nth-of-type(2n+1) .graylink {
+body > section:nth-of-type(2n+1) a {
   color: white;
 }
 
