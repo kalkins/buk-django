@@ -1,0 +1,12 @@
+language: python
+python:
+    - '3.6'
+
+# Install dependencies
+install:
+    - pip install -r requirements.txt
+    - pip install -r requirements_mysql.txt
+
+# Run tests
+script:
+    - python manage.py test
