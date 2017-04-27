@@ -7,6 +7,10 @@ install:
     - pip install -r requirements.txt
     - pip install -r requirements_mysql.txt
 
+# Prepare the working environment
+before_script:
+    - cp buk/local_settings_example.py buk/local_settings.py
+
 # Run tests
 script:
     - python manage.py test
