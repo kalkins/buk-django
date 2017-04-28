@@ -17,4 +17,5 @@ before_script:
 
 # Run tests
 script:
+    - python manage.py makemigrations --check
     - python manage.py test
