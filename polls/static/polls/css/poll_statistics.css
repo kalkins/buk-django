@@ -1,0 +1,9 @@
+/* line 1, poll_statistics.scss */
+.statistics {
+  display: none;
+}
+
+/* line 5, poll_statistics.scss */
+.statistics.visible {
+  display: initial;
+}

@@ -22,6 +22,7 @@ from django.views.generic import RedirectView
 
 from base import views as base_views
 from members import forms as member_forms, views as member_views
+from polls import views as poll_views
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(pattern_name='member_list'),
@@ -56,6 +57,8 @@ urlpatterns = [
         {'show_all': True}, name='member_list_all'),
     url(r'^medlemmer/statistikk$', member_views.MemberStatistics.as_view(),
         name='member_statistics'),
+    url(r'^påmelding/(?P<pk>[0-9]+)$', poll_views.PollStatistics.as_view(),
+        name='poll_statistics'),
     url(r'^praktisk$', member_views.Practical.as_view(), name='practical'),
     url(r'^endre-innhold/$', base_views.EditableContentSave.as_view()),
     url(r'^endre-innhold/bilde$', base_views.EditableContentSaveImage.as_view()),
