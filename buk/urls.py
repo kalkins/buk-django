@@ -67,6 +67,7 @@ urlpatterns = [
         name='percussion_group_change'),
     url(r'^slagverkgrupper/(?P<pk>[0-9]+)/slett$', member_views.DeletePercussionGroup.as_view(),
         name='percussion_group_delete'),
+    url(r'^forum/', include('forum.urls')),
 ]
 
 if settings.DEBUG:

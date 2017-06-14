@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'base',
     'members',
+    'forum',
     'legacy',
     'django.contrib.admin',
     'django.contrib.admindocs',
