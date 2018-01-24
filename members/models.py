@@ -87,7 +87,7 @@ class PercussionGroup(models.Model):
 
 
 class MemberManager(BaseUserManager):
-    def create_user(self, email, first_name, last_name, joined_date, instrument,
+    def create_user(self, email, first_name, last_name, instrument,
                     birthday, phone, address, zip_code, city, password=None):
         # Allow the instrument parameter to be an object, the primary key, or the name
         if not isinstance(instrument, Instrument):
@@ -113,14 +113,12 @@ class MemberManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
 
-        MembershipPeriod.objects.create(start=joined_date, member=user)
-
         return user
 
-    def create_superuser(self, email, first_name, last_name, joined_date, instrument,
+    def create_superuser(self, email, first_name, last_name, instrument,
                          birthday, phone, address, zip_code, city, password):
         user = self.create_user(
-                email, first_name, last_name, joined_date, instrument,
+                email, first_name, last_name, instrument,
                 birthday, phone, address, zip_code, city, password)
 
         user.is_admin = True
