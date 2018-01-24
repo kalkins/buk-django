@@ -20,3 +20,8 @@ tmp_app
 
 # Project secret files
 local_settings.py
+
+# SQLite database
+*.sqlite3
+*.sql
+db/
