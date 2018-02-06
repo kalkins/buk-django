@@ -1,0 +1,11 @@
+coverage:
+	ignore:
+		- manage.py
+		- buk/settings.py
+		- buk/local_settings.py
+		- buk/local_settings_example.py
+		- **/apps.py
+		- **/tests.py
+		- **/wsgi.py
+		- **/migrations
+		- **/urls.py

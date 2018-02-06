@@ -1,0 +1,20 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+Django = "==1.11"
+"psycopg2" = "==2.7.1"
+Pillow = "==4.1.0"
+docutils = "==0.13.1"
+
+[dev-packages]
+mysqlclient = "==1.3.10"
+codecov = "*"
+
+[requires]
+python_version = "3.6"
