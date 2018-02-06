@@ -10,8 +10,8 @@ This has to be included inside a form to work.
 {% endcomment %}
 
 <div class='poll-form-container'>
-    {{ poll_form.toggle }} {{ poll_form.toggle.label_tag }}
-    <input id='poll-form-toggle' type='checkbox'>
+    <input id='poll-form-toggle' name='poll-form-toggle' type='checkbox'
+        {% if poll_form_toggle %} checked='true' {% endif %}>
     <label for='poll-form-toggle'>
         {{ toggle_label|default:'Påmelding' }}
     </label>
@@ -19,6 +19,12 @@ This has to be included inside a form to work.
     <div class='poll-form'>
         <table>
             {{ poll_form.as_table }}
+
+			<tr class='seperator'>
+			  <td colspan='2'>
+				<h3>Valg:</h3>
+			  </td>
+			</tr>
 
             {{ poll_option_formset }}
         </table>

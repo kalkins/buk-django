@@ -2,10 +2,13 @@ import os
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic.detail import SingleObjectMixin
 from django.http import JsonResponse
 from django import views
 
+from utils.views import MultiFormView
 from .models import EditableContent, EditableContentImage
+from .forms import BaseCommentForm
 
 
 class EditableContentSave(PermissionRequiredMixin, views.View):
@@ -45,3 +48,15 @@ class EditableContentSaveImage(PermissionRequiredMixin, views.View):
             return JsonResponse({'success': True, 'location': image.image.url})
 
         return JsonResponse({'success': False})
+
+
+class CommentFormView(SingleObjectMixin, MultiFormView):
+    forms = [
+        {'name': 'comment_form', 'form': BaseCommentForm},
+    ]
+
+    def save_comment_form(self, form):
+        comment = form.save(commit=False)
+        comment.post = self.get_object()
+        comment.poster = self.request.user
+        comment.save()

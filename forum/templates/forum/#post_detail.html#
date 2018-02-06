@@ -5,13 +5,12 @@
 {% block stylesheets %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'forum/css/post_detail.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% static 'polls/css/poll_inline.css' %}" />
 {% endblock stylesheets %}
 
 {% block main %}
 <section>
     <h2>{{ post.title }}</h2>
-    <a class='edit' href='{% url 'forum_post_update' forum=post.forum pk=post.pk %}'>
+    <a class='edit' href='{% url 'forum_post_update' forum=post.forum_short pk=post.pk %}'>
         <i class='fa fa-edit'></i>
         Endre
     </a>
@@ -27,8 +26,6 @@
         </div>
     </div>
 
-	{% include 'polls/poll_inline.html' with poll=post.poll poll_answer_form=poll_answer_form %}
-
     <h2>Kommentarer</h2>
     {% for comment in post.comments.all %}
     <div class='comment'>
@@ -38,7 +35,7 @@
         </div>
 
         <div class='content'>
-            {{ comment.comment }}
+            {{ comment.content }}
         </div>
     </div>
     {% endfor %}

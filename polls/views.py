@@ -1,53 +1,50 @@
 from django.views.generic import DetailView
-from django.views.generic.edit import ModelFormMixin
+from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from utils.views import MultiFormView
 from .models import Poll
-from .forms import PollForm, PollOptionFormset
+from .forms import PollForm, PollOptionFormset, PollAnswerForm
 
 
-class PollFormMixin(ModelFormMixin):
-    poll = None
-    poll_form = None
-    poll_option_formset = None
+class PollCreateFormView(MultiFormView):
+    forms = [
+        {'name': 'poll_form', 'form': PollForm},
+        {'name': 'poll_option_formset', 'form': PollOptionFormset},
+    ]
 
-    def get_form(self, *args, **kwargs):
-        form = super(PollFormMixin, self).get_form(*args, **kwargs)
+    def include_poll(self):
+        return self.request.method == 'GET' or 'poll-form-toggle' in self.request.POST
 
-        if self.form.instance:
-            self.poll = self.form.instance.poll
+    def include_poll_form(self):
+        return self.include_poll()
 
-        if 'poll_form_toggle' in self.request.POST:
-            self.poll_form = PollForm(request.POST, instance=self.poll)
+    def include_poll_option_formset(self):
+        return self.include_poll()
 
-            if self.poll_form.is_valid():
-                self.poll = self.poll_form.instance
+    def save_poll_option_formset(self, formset):
+        options = formset.save(commit=False)
+        for option in options:
+            option.poll = self.form_instances['poll_form'].instance
+            option.save()
 
-                self.poll_option_formset = PollOptionFormset(request.POST)
-                if not self.poll_option_formset.is_valid():
-                    return self.form_invalid()
-            else:
-                return self.form_invalid()
-        
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(PollFormMixin, self).get_context_data(*args, **kwargs)
-        context['poll_form'] = PollForm(self.request.POST, instance=self.poll)
-        context['poll_option_formset'] = PollOptionFormset(self.request.POST,
-                                                           instance=self.poll)
+class PollAnswerFormView(SingleObjectMixin, MultiFormView):
+    forms = [
+        {'name': 'poll_answer_form', 'form': PollAnswerForm},
+    ]
 
-        return context
+    def include_poll_answer_form(self):
+        return bool(self.get_object().poll)
 
-    def form_valid(self, form):
-        if self.poll:
-            self.poll.save()
-            form.instance.poll = self.poll
+    def get_poll_answer_form_kwargs(self):
+        return {
+            'member': self.request.user,
+            'poll': self.get_object().poll,
+        }
 
-            for instance in self.poll_option_formset.save(commit=False):
-                instance.poll = self.poll
-                instance.save()
-
-        return super(PollFormMixin, self).form_valid(form)
+    def process_poll_answer_form(self, form):
+        form.save(self.request.user)
 
 
 class PollStatistics(LoginRequiredMixin, DetailView):

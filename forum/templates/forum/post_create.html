@@ -5,6 +5,7 @@
 {% block stylesheets %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'forum/css/post_form.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'polls/css/poll_form.css' %}" />
 {% endblock stylesheets %}
 
 {% block main %}
@@ -13,7 +14,7 @@
     <form method='POST'>
         {% csrf_token %}
         <table>
-            {{ form.as_table }}
+            {{ post_form.as_table }}
         </table>
 
         {% include 'polls/poll_form.html' %}

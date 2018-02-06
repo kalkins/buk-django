@@ -1,14 +1,16 @@
-from django import forms
+from django.forms import ModelForm
 
-from .models import Comment
+from base.forms import BaseCommentForm
+
+from .models import Post, ForumComment
 
 
-class CommentForm(forms.ModelForm):
+class PostForm(ModelForm):
     class Meta:
-        model = Comment
-        fields = ('content', 'post', 'poster')
-        widgets = {
-            'content': forms.Textarea(attrs={'placeholder': 'Din kommentar...'}),
-            'post': forms.HiddenInput(),
-            'poster': forms.HiddenInput(),
-        }
+        model = Post
+        fields = ('title', 'content', 'forum')
+
+
+class ForumCommentForm(BaseCommentForm):
+    class Meta(BaseCommentForm.Meta):
+        model = ForumComment

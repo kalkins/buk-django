@@ -1,14 +1,14 @@
 from django.http import Http404
-from django.views import View
 from django.shortcuts import get_object_or_404
-from django.views.generic.edit import CreateView, UpdateView, FormMixin
-from django.views.generic.detail import DetailView
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.list import ListView
 from django.contrib.auth.mixins import UserPassesTestMixin
 
-from polls.views import PollFormMixin
+from utils.views import MultiFormView
+from polls.views import PollCreateFormView, PollAnswerFormView
 
 from .models import Post
-from .forms import CommentForm
+from .forms import PostForm, ForumCommentForm
 
 
 class UserCanAccessForumMixin(UserPassesTestMixin):
@@ -19,82 +19,93 @@ class UserCanAccessForumMixin(UserPassesTestMixin):
             return False
 
         kwargs = self.request.resolver_match.kwargs
-        for forum in Post.FORUM_SHORTNAME:
-            if forum[1] == kwargs['forum']:
+
+        # If there is no forum specified in the URL, it is optional
+        # and we allow access
+        if 'forum' not in kwargs:
+            return True
+
+        for forum in Post.FORUM_CHOICES:
+            if forum[0] == kwargs['forum']:
                 if 'pk' in kwargs:
                     post = get_object_or_404(Post, pk=kwargs['pk'])
                     if post.forum != forum[0]:
-                        break
+                        raise Http404("Ugyldig URL")
 
                 if Post.user_can_access_forum(user, forum[0]):
                     return True
 
-        raise Http404
+        raise Http404("Du har ikke tilgang til dette forumet")
 
 
-class ForumEditingMixin(FormMixin):
-    def get_form(self, *args, **kwargs):
-        form = super(ForumEditingMixin, self).get_form(*args, **kwargs)
-        form.fields['forum'].choices = Post.available_forums(self.request.user)
-        return form
+class PostForm(MultiFormView):
+    batch = True
+    forms = [
+        {'name': 'post_form', 'form': PostForm},
+    ]
 
-    def get_initial(self, *args, **kwargs):
-        initial = super(ForumEditingMixin, self).get_initial(*args, **kwargs)
-
-        forum_short = self.request.resolver_match.kwargs['forum']
-
-        for forum in Post.FORUM_SHORTNAME:
-            if forum[1] == forum_short:
-                initial['forum'] = forum[0]
-                break
-
-        return initial
-
-    def form_valid(self, form):
-        form.instance.poster = self.request.user
-        return super(ForumEditingMixin, self).form_valid(form)
+    def save_post_form(self, form):
+        post = form.save(commit=False)
+        post.poster = self.request.user
+        if 'poll_form' in self.form_instances:
+            post.poll = self.form_instances['poll_form'].instance
+        post.save()
+        self.success_url = post.get_absolute_url()
 
 
-class PostCreate(UserCanAccessForumMixin, ForumEditingMixin, PollFormMixin, CreateView):
+class PostCreate(UserCanAccessForumMixin, PollCreateFormView, PostForm):
+    template_name = 'forum/post_create.html'
+
+
+class PostUpdate(UserCanAccessForumMixin, SingleObjectMixin, PollCreateFormView, PostForm):
     model = Post
-    fields = ('title', 'content', 'forum')
-    template_name_suffix = '_create'
+    template_name = 'forum/post_update.html'
+
+    def get_post_form_instance(self):
+        return self.get_object()
+
+    def get_context_data(self, **kwargs):
+        self.object = self.get_object()
+        return super().get_context_data(**kwargs)
 
 
-class PostUpdate(UserCanAccessForumMixin, ForumEditingMixin, PollFormMixin, UpdateView):
-    model = Post
-    fields = ('title', 'content', 'forum')
-    template_name_suffix = '_update'
-
-
-class PostDisplay(DetailView):
+class PostDetail(UserCanAccessForumMixin, PollAnswerFormView):
     model = Post
     context_object_name = 'post'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(PostDisplay, self).get_context_data(*args, **kwargs)
-        context['comment_form'] = CommentForm(initial={
-                                                'post': self.object,
-                                                'poster': self.request.user})
-        return context
-
-
-class PostComment(CreateView):
-    form_class = CommentForm
+    forms = [
+        {'name': 'comment_form', 'form': ForumCommentForm},
+    ]
     template_name = 'forum/post_detail.html'
-    context_object_name = 'comment_form'
+
+    def save_comment_form(self, form):
+        comment = form.save(commit=False)
+        comment.post = self.get_object()
+        comment.poster = self.request.user
+        comment.save()
+
+    def get_context_data(self, **kwargs):
+        self.object = self.get_object()
+        return super().get_context_data(**kwargs)
+
+
+class PostList(UserCanAccessForumMixin, ListView):
+    model = Post
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        kwargs = self.request.resolver_match.kwargs
+        self.forum = kwargs['forum'] if 'forum' in kwargs else Post.VARIOUS
+        return Post.objects.filter(forum=self.forum).prefetch_related('poster')
 
     def get_context_data(self, *args, **kwargs):
-        context = super(PostDisplay, self).get_context_data(*args, **kwargs)
-        pk = self.request.resolver_match.kwargs['pk']
-        context['post'] = get_object_or_404(Post, pk=pk)
+        context = super(PostList, self).get_context_data(*args, **kwargs)
 
+        for forum in Post.FORUM_CHOICES:
+            if forum[0] == self.forum:
+                context['forum_name'] = forum[1]
+                break
 
-class PostDetail(UserCanAccessForumMixin, View):
-    def get(self, *args, **kwargs):
-        view = PostDisplay.as_view()
-        return view(*args, **kwargs)
+        context['forums'] = Post.FORUM_CHOICES
+        context['posts'] = Post.objects.filter(forum=self.forum)
 
-    def post(self, *args, **kwargs):
-        view = PostComment.as_view()
-        return view(*args, **kwargs)
+        return context

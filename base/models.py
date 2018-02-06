@@ -73,3 +73,23 @@ class EditableContentImage(models.Model):
     image = models.ImageField(
         upload_to=editable_content_image_path,
     )
+
+
+class BaseComment(models.Model):
+    """An abstract implementation of a comment."""
+    poster = models.ForeignKey('members.Member')
+    comment = models.TextField('kommentar')
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+        verbose_name = 'kommentar'
+        verbose_name_plural = 'kommentarer'
+        ordering = ('created',)
+
+    def __str__(self):
+        """Return the content of the comment."""
+        return self.comment
+
+    def get_absolute_url(self):
+        return self.post.get_absolute_url()

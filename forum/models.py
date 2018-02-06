@@ -1,6 +1,7 @@
 from django.urls import reverse
 from django.db import models
 
+from base.models import BaseComment
 from members.models import Member
 from polls.models import Poll
 
@@ -16,14 +17,11 @@ class Post(models.Model):
 
     Access to the board forum is restricted by permission.
     """
-    MUSIC = 'MU'
-    VARIOUS = 'VA'
-    BOARD = 'BO'
-    FORUM_SHORTNAME = (
-        (MUSIC, 'musikk'),
-        (VARIOUS, 'diverse'),
-        (BOARD, 'styret'),
-    )
+    # The names in the constants are used in the database and urls,
+    # while the alternatives in FORUM_CHOICES are displayed on the page
+    MUSIC = 'musikk'
+    VARIOUS = 'diverse'
+    BOARD = 'styret'
     FORUM_CHOICES = (
         (MUSIC, 'Musikk og noter'),
         (VARIOUS, 'Diverse'),
@@ -32,7 +30,7 @@ class Post(models.Model):
 
     title = models.CharField('tittel', max_length=255)
     content = models.TextField('innlegg')
-    forum = models.CharField('forum', max_length=2,
+    forum = models.CharField('forum', max_length=10,
                              choices=FORUM_CHOICES, default=VARIOUS)
     poster = models.ForeignKey(Member)
     poll = models.OneToOneField(Poll, null=True)
@@ -51,14 +49,8 @@ class Post(models.Model):
         """Return the title of the post."""
         return self.title
 
-    @property
-    def forum_short(self):
-        for forum in self.FORUM_SHORTNAME:
-            if self.forum == forum[0]:
-                return forum[1]
-
     def get_absolute_url(self):
-        return reverse('forum_post_detail', kwargs={'pk': self.pk, 'forum': self.forum_short})
+        return reverse('forum_post_detail', kwargs={'pk': self.pk, 'forum': self.forum})
 
     @classmethod
     def user_can_access_forum(cls, user, forum):
@@ -80,21 +72,9 @@ class Post(models.Model):
         return result
 
 
-class Comment(models.Model):
+class ForumComment(BaseComment):
     """Store a comment for a :model:`forum.Post`."""
     post = models.ForeignKey(Post, related_name='comments')
-    poster = models.ForeignKey(Member)
-    content = models.TextField('kommentar')
-    created = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = 'kommentar'
-        verbose_name_plural = 'kommentarer'
-        ordering = ('created',)
-
-    def __str__(self):
-        """Return the content of the comment."""
-        return self.content
 
     def save(self, *args, **kwargs):
         """
@@ -102,10 +82,7 @@ class Comment(models.Model):
         the last_activity timestamp on the related
         :model:`forum.Post`.
         """
-        super(Comment, self).save(*args, **kwargs)
+        super(ForumComment, self).save(*args, **kwargs)
         post = self.post
         post.last_activity = self.created
         post.save()
-
-    def get_absolute_url(self):
-        return self.post.get_absolute_url()

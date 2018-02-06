@@ -1,0 +1,19 @@
+.poll-form-container {
+	padding: 2em 0;
+
+	.poll-form {
+		padding: 1em 0 0 0;
+
+		.seperator {
+			font-size: 1.3em;
+
+			> td > * {
+				margin: 0.5em;
+			}
+		}
+	}
+
+	#poll-form-toggle:not(:checked) ~ .poll-form {
+		display: none;
+	}
+}

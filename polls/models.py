@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.urls import reverse
 
@@ -26,6 +28,11 @@ class Poll(models.Model):
         """Return a link to the members profile."""
         return reverse('poll_statistics', args=[str(self.pk)])
 
+    @property
+    def is_past_deadline(self):
+        """Return whether the deadline for the poll has passed."""
+        return datetime.now(self.deadline.tzinfo) > self.deadline if self.deadline else False
+
 
 class PollOption(models.Model):
     """
@@ -34,7 +41,7 @@ class PollOption(models.Model):
     """
     poll = models.ForeignKey(Poll, related_name='options')
     members = models.ManyToManyField(Member)
-    title = models.CharField(max_length=20)
+    title = models.CharField('tittel', max_length=20)
 
     class Meta:
         verbose_name = 'valg'
