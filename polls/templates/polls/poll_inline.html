@@ -1,0 +1,48 @@
+{% comment doc %}
+This file renders a poll with title and options, inside
+a larger page. Users can choose one of the options, and
+submit their answer. It also contains a link to a page
+with the statistics of the poll.
+
+Expects two variables; 'poll', and instance of Poll,
+and 'poll_form', an instance of PollAnswerForm. These can
+either be given directly to this template, or can be
+generated automatically be setting the 'poll_path' attribute
+in the class. Check PollInlineMixin for details.
+If these variables arn't set, nothing is displayed.
+
+Requires the 'polls/poll_inline.scss' stylesheet, and the
+PollInlineMixin class to work.
+{% endcomment %}
+
+{% if poll and poll_answer_form %}
+<div class='poll-inline-container'>
+	<h3>{{ poll.title }}</h3>
+
+	{% if poll.deadline %}
+	<p class="deadline">Frist: {{ poll.deadline }}</p>
+	{% endif %}
+
+	<form method="POST" action="">
+		{% csrf_token %}
+
+		<div class="poll-options">
+			{% for option in poll_answer_form.options %}
+			<label for="{{ option.id_for_label }}" class="poll-option-label">
+				{{ option.tag }}
+				<span class="poll-option-text">
+					{{ option.choice_label }}
+				</span>
+			</label>
+			{% endfor %}
+		</div>
+
+		{% if poll.is_past_deadline %}
+		<p class="past-deadline-notice">Du kan ikke lengre svare på denne påmeldingen.</p>
+		{% else %}
+		<input type="submit" value="Send" class="poll-form-submit">
+		{% endif %}
+	</form>
+	<a href="{{ poll.get_absolute_url }}" class="poll-link">Se påmeldte</a>
+</div>
+{% endif %}

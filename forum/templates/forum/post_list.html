@@ -1,0 +1,48 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'forum/css/post_list.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section>
+    <ul class='forums'>
+        {% for forum in forums %}
+        <li>
+            <a href='{% url 'forum_post_list' forum.0 %}'
+			   {% if forum.1 == forum_name %} class='forum-list-current' {% endif %}>
+                {{ forum.1 }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+
+	<table class='posts'>
+        {% for post in posts %}
+		<tr>
+		    <td>
+			    <i class='fa fa-envelope-o'></i>
+		    </td>
+			<td>
+                <a class='post-title' href='{{ post.get_absolute_url }}'>
+				    {{ post.title }}
+				</a>
+			</td>
+			<td>
+			    <div class='post-info'>
+				    <p class='poster-name'>
+					    {{ post.poster.get_full_name }}
+					</p>
+					<p class='post-timestamp'>
+					    {{ post.created }}
+					</p>
+				</div>
+			</td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endblock main %}

@@ -1,0 +1,25 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'forum/css/post_form.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'polls/css/poll_form.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section>
+    <h2>Endre forumpost</h2>
+    <form method='POST'>
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+
+        {% include 'polls/poll_form.html' %}
+
+        <input class='modernbutton' type='submit' value='Lagre' />
+    </form>
+</section>
+{% endblock main %}

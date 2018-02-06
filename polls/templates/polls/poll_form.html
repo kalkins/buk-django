@@ -1,0 +1,32 @@
+{% comment doc %}
+This file renders a form for creating polls that are associated with
+other objects, like forum posts or activities.
+
+Requires the 'polls/poll_form.css' stylesheet and the PollForm and
+PollOptionFormset classes. It also expect the context variables
+'poll_form' and 'poll_option_formset'.
+
+This has to be included inside a form to work.
+{% endcomment %}
+
+<div class='poll-form-container'>
+    <input id='poll-form-toggle' name='poll-form-toggle' type='checkbox'
+        {% if poll_form_toggle %} checked='true' {% endif %}>
+    <label for='poll-form-toggle'>
+        {{ toggle_label|default:'Påmelding' }}
+    </label>
+
+    <div class='poll-form'>
+        <table>
+            {{ poll_form.as_table }}
+
+			<tr class='seperator'>
+			  <td colspan='2'>
+				<h3>Valg:</h3>
+			  </td>
+			</tr>
+
+            {{ poll_option_formset }}
+        </table>
+    </div>
+</div>

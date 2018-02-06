@@ -27,3 +27,11 @@ class BasePeriodFormset(forms.BaseInlineFormSet):
                     raise forms.ValidationError('Intervaller kan ikke overlappe hverandre.')
 
             times.append((start, end))
+
+
+class BaseCommentForm(forms.ModelForm):
+    class Meta:
+        fields = ('comment',)
+        widgets = {
+            'comment': forms.Textarea(attrs={'placeholder': 'Din kommentar...'}),
+        }

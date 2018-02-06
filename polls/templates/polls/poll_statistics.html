@@ -1,0 +1,56 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel='stylesheet' type='text/css' href='{% static 'polls/css/poll_statistics.css' %}' />
+{% endblock stylesheets %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'polls/js/poll_statistics.js' %}" deref></script>
+{% endblock javascript %}
+
+{% block main %}
+<section>
+    <h1>{{ poll.title }}</h1>
+
+    <div class='options'>
+        {% for option in poll.options.all %}
+        <label>
+            {# We set the first as checked, but the browser might overrule it #}
+            <input class='option-selector' name='option' type='radio'
+                {% if forloop.first %} checked='checked' {% endif %}/>
+            <span>{{ option.title }}</span>
+        </label>
+        {% endfor %}
+    </div>
+
+    <div class='statistics-container'>
+        {% for option in poll.options.all %}
+        <div class='statistics'>
+            <table>
+                <tr>
+                    <th>Instrument</th>
+                    <th>Antall</th>
+                </tr>
+
+                {% for instrument in option.instruments %}
+                <tr>
+                    <td>{{ instrument.name }}</td>
+                    <td>{{ instrument.count }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <ul>
+                {% for member in option.members.all %}
+                <li>{{ member.get_full_name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock main %}
