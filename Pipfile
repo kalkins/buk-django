@@ -14,8 +14,7 @@ docutils = "==0.13.1"
 
 [dev-packages]
 mysqlclient = "==1.3.10"
-
-[coverage]
+codecov = "*"
 
 [requires]
 python_version = "3.6"

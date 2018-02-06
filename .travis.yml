@@ -7,8 +7,8 @@ services:
 
 # Install dependencies
 install:
-    - pip install -r requirements.txt
-    - pip install -r requirements_mysql.txt
+    - pip install pipenv
+    - pipenv install --dev --deploy
 
 # Prepare the working environment
 before_script:
@@ -17,5 +17,7 @@ before_script:
 
 # Run tests
 script:
-    - python manage.py makemigrations --check
-    - python manage.py test
+    - coverage run --source='.' manage.py test
+
+after_success:
+    - codecov
