@@ -39,7 +39,7 @@ class PollOption(models.Model):
     Store an option for a :model:`members.Poll`,
     and the users that choose it.
     """
-    poll = models.ForeignKey(Poll, related_name='options')
+    poll = models.ForeignKey(Poll, related_name='options', on_delete=models.CASCADE)
     members = models.ManyToManyField(Member)
     title = models.CharField('tittel', max_length=20)
 

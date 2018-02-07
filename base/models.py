@@ -77,7 +77,7 @@ class EditableContentImage(models.Model):
 
 class BaseComment(models.Model):
     """An abstract implementation of a comment."""
-    poster = models.ForeignKey('members.Member')
+    poster = models.ForeignKey('members.Member', on_delete=models.CASCADE)
     comment = models.TextField('kommentar')
     created = models.DateTimeField(auto_now_add=True)
 
