@@ -18,7 +18,13 @@
 
     <div class='post'>
         <div class='header'>
-            <span class='poster'>{{ post.poster }}</span>
+            <span class='poster'>
+				{% if post %}
+				{{ post.poster }}
+				{% else %}
+				Ukjent
+				{% endif %}
+			</span>
             <span class='timestamp'>{{ post.created }}</span>
         </div>
 

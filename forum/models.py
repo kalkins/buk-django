@@ -32,8 +32,8 @@ class Post(models.Model):
     content = models.TextField('innlegg')
     forum = models.CharField('forum', max_length=10,
                              choices=FORUM_CHOICES, default=VARIOUS)
-    poster = models.ForeignKey(Member)
-    poll = models.OneToOneField(Poll, null=True)
+    poster = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
+    poll = models.OneToOneField(Poll, null=True, on_delete=models.SET_NULL)
     created = models.DateTimeField(auto_now_add=True)
     last_activity = models.DateTimeField(auto_now=True)
 
@@ -74,7 +74,7 @@ class Post(models.Model):
 
 class ForumComment(BaseComment):
     """Store a comment for a :model:`forum.Post`."""
-    post = models.ForeignKey(Post, related_name='comments')
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         """
