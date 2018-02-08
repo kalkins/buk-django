@@ -25,10 +25,12 @@ def random_string(length):
     return ''.join(random.choices(string.ascii_uppercase, k=length))
 
 
-def generate_member():
-    local_test_member = dict(test_member)
-    local_test_member['email'] = '{}@{}.com'.format(random_string(5), random_string(7))
-    return Member.objects.create_user(**local_test_member)
+def generate_member(**kwargs):
+    return Member.objects.create_user(**{
+        **test_member,
+        'email': '{}@{}.com'.format(random_string(5), random_string(7)),
+        **kwargs,
+    })
 
 
 class MemberTestCase(TestCase):
@@ -36,19 +38,17 @@ class MemberTestCase(TestCase):
         test_member['instrument'] = Instrument.objects.create(name='Testolin')
 
     def test_create(self):
-        member = Member.objects.create_user(**test_member)
+        member = generate_member()
         self.assertEqual(member.membership_periods.count(), 1)
         self.assertEqual(member.membership_periods.first().start, test_member['joined_date'])
         self.assertIsNone(member.membership_periods.first().end)
 
     def test_create_without_joined_date(self):
-        local_test_member = dict(test_member)
-        del local_test_member['joined_date']
-        member = Member.objects.create(**local_test_member)
+        member = generate_member(joined_date=None)
         self.assertEqual(member.membership_periods.count(), 0)
 
     def test_is_active(self):
-        member = Member.objects.create_user(**test_member)
+        member = generate_member()
         self.assertTrue(member.is_active)
         period = member.membership_periods.first()
         period.end = date.today()
@@ -109,15 +109,20 @@ class PercussionGroupTestCase(TestCase):
     def setUp(self):
         test_member['instrument'] = Instrument.objects.create(name='Testolin')
 
-    def get_leader(self):
-        return generate_member()
+    def group_with_leader(self, leader=None):
+        """
+        Creates a new percussion group, with a leader.
+
+        The new group is not automatically saved.
+        """
+        return self.cls(leader=(leader if leader else generate_member()))
 
     def test_add_groups(self):
-        group1 = self.cls(leader=self.get_leader())
+        group1 = self.group_with_leader()
         group1.save()
         self.assertEqual(group1.name, 'Gruppe 1')
 
-        group2 = self.cls(leader=self.get_leader())
+        group2 = self.group_with_leader()
         group2.save()
         self.assertEqual(group2.name, 'Gruppe 2')
 
@@ -131,11 +136,11 @@ class PercussionGroupTestCase(TestCase):
         self.assertEqual(group2.name, 'Gruppe 2')
 
     def test_remove_groups(self):
-        group1 = self.cls(leader=self.get_leader())
+        group1 = self.group_with_leader()
         group1.save()
-        group2 = self.cls(leader=self.get_leader())
+        group2 = self.group_with_leader()
         group2.save()
-        group3 = self.cls(leader=self.get_leader())
+        group3 = self.group_with_leader()
         group3.save()
 
         self.assertEqual(group3.name, 'Gruppe 3')
@@ -144,17 +149,17 @@ class PercussionGroupTestCase(TestCase):
         self.assertEqual(group3.name, 'Gruppe 2')
 
     def test_delete_and_add(self):
-        group1 = self.cls(leader=self.get_leader())
+        group1 = self.group_with_leader()
         group1.save()
-        group2 = self.cls(leader=self.get_leader())
+        group2 = self.group_with_leader()
         group2.save()
-        group3 = self.cls(leader=self.get_leader())
+        group3 = self.group_with_leader()
         group3.save()
 
         self.assertEqual(group3.name, 'Gruppe 3')
         group3.delete()
 
-        group4 = self.cls(leader=self.get_leader())
+        group4 = self.group_with_leader()
         group4.save()
         self.assertEqual(group4.name, 'Gruppe 3')
 
@@ -177,7 +182,7 @@ class PercussionGroupTestCase(TestCase):
         member = generate_member()
         member.save()
 
-        group = self.cls(leader=member)
+        group = self.group_with_leader(member)
         group.save()
 
         self.assertEqual(group.leader, member)
