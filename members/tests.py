@@ -26,6 +26,12 @@ def random_string(length):
 
 
 def generate_member(**kwargs):
+    if 'instrument' not in kwargs:
+        if Instrument.objects.all().count():
+            kwargs['instrument'] = Instrument.objects.first()
+        else:
+            kwargs['instrument'] = Instrument.objects.create(name='Generated instrument')
+
     return Member.objects.create_user(**{
         **test_member,
         'email': '{}@{}.com'.format(random_string(5), random_string(7)),
@@ -34,9 +40,6 @@ def generate_member(**kwargs):
 
 
 class MemberTestCase(TestCase):
-    def setUp(self):
-        test_member['instrument'] = Instrument.objects.create(name='Testolin')
-
     def test_create(self):
         member = generate_member()
         self.assertEqual(member.membership_periods.count(), 1)
@@ -63,8 +66,7 @@ class MemberTestCase(TestCase):
 
 class MakeSuperuserTestCase(TestCase):
     def setUp(self):
-        test_member['instrument'] = Instrument.objects.create(name='Testolin')
-        self.member = Member.objects.create_user(**test_member)
+        self.member = generate_member()
 
     def test_failure(self):
         email = 'test@testcase.test'
@@ -105,9 +107,6 @@ class MakeSuperuserTestCase(TestCase):
 
 class PercussionGroupTestCase(TestCase):
     cls = PercussionGroup
-
-    def setUp(self):
-        test_member['instrument'] = Instrument.objects.create(name='Testolin')
 
     def group_with_leader(self, leader=None):
         """
