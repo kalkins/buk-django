@@ -61,7 +61,7 @@ class PollOptionTestCase(TestCase):
 
     def test_create_without_poll(self):
         title = 'Option title'
-        with self.assertRaisesMessage(IntegrityError, 'NOT NULL constraint failed'):
+        with self.assertRaisesMessage(IntegrityError, 'poll_id'):
             PollOption.objects.create(title=title)
 
     def test_instruments(self):
