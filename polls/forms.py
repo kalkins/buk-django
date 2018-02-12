@@ -47,9 +47,11 @@ class PollAnswerForm(forms.Form):
         return super().clean()
 
     def save(self):
-        if self.is_valid():
+        if not self.errors:
             for option in self.fields['options'].queryset.all():
                 option.members.remove(self.member)
 
             option = self.cleaned_data['options']
             option.members.add(self.member)
+        else:
+            raise ValueError('Data doesn\'t validate')

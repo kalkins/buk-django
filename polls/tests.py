@@ -136,6 +136,25 @@ class PollAnswerFormTestCase(TestCase):
         form = PollAnswerForm(poll=self.poll1, member=self.member1)
         self.assertEqual(form.fields['options'].initial, self.option1)
 
+    def test_save(self):
+        form = PollAnswerForm(
+            poll=self.poll1,
+            member=self.member1,
+            data={
+                'options': self.option1.pk,
+            }
+        )
+        form.save()
+        self.assertIn(self.member1, PollOption.objects.get(pk=self.option1.pk).members.all())
+
+        form = PollAnswerForm(
+            poll=self.poll2,
+            member=self.member2,
+            data={}
+        )
+        with self.assertRaisesMessage(ValueError, 'Data doesn\'t validate'):
+            form.save()
+
     def test_validation(self):
         form = PollAnswerForm(
             poll=self.poll1,
