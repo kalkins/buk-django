@@ -44,7 +44,7 @@ class PollAnswerFormView(SingleObjectMixin, MultiFormView):
         }
 
     def process_poll_answer_form(self, form):
-        form.save(self.request.user)
+        form.save()
 
 
 class PollStatistics(LoginRequiredMixin, DetailView):

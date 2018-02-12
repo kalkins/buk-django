@@ -20,26 +20,36 @@ class PollAnswerForm(forms.Form):
     options = forms.ModelChoiceField(queryset=None, widget=forms.RadioSelect, empty_label=None)
 
     def __init__(self, *args, **kwargs):
-        member = kwargs.pop('member')
-        poll = kwargs.pop('poll')
+        if 'member' not in kwargs:
+            raise ValueError('The constructor must be passed both a member object')
+        if 'poll' not in kwargs:
+            raise ValueError('The constructor must be passed both a poll object')
+
+        self.member = kwargs.pop('member')
+        self.poll = kwargs.pop('poll')
         super(PollAnswerForm, self).__init__(*args, **kwargs)
 
-        self.fields['options'].queryset = poll.options
+        self.fields['options'].queryset = self.poll.options
 
-        if poll.is_past_deadline:
+        if self.poll.is_past_deadline:
             self.fields['options'].disabled = True
 
-        for option in poll.options.all():
-            if member in option.members.all():
+        for option in self.poll.options.all():
+            if self.member in option.members.all():
                 self.fields['options'].initial = option
                 break
         else:
             self.fields['options'].initial = None
 
-    def save(self, member):
+    def clean(self):
+        if self.poll.is_past_deadline:
+            raise forms.ValidationError('Fristen for påmeldingen har passert')
+        return super().clean()
+
+    def save(self):
         if self.is_valid():
             for option in self.fields['options'].queryset.all():
-                option.members.remove(member)
+                option.members.remove(self.member)
 
             option = self.cleaned_data['options']
-            option.members.add(member)
+            option.members.add(self.member)
