@@ -5,8 +5,9 @@ from datetime import date
 from django.test import TestCase
 from django.core.management import call_command
 from django.utils.six import StringIO
+from django.contrib.auth.models import Group
 
-from .models import Member, Instrument, PercussionGroup
+from .models import Member, Instrument, PercussionGroup, BoardPosition
 
 test_member = {
     'email': 'test@example.com',
@@ -187,3 +188,80 @@ class PercussionGroupTestCase(TestCase):
 
         group.refresh_from_db()
         self.assertIsNone(group.leader)
+
+class BoardPositionTestCase(TestCase):
+    def setUp(self):
+        test_member['instrument'] = Instrument.objects.create(name='Testolin')
+
+    def test_str(self):
+        holder = generate_member();
+
+        board_position = BoardPosition(title="Testansvarlig", holder=holder)
+        self.assertEqual(board_position.__str__(), "Testansvarlig")
+
+    def test_holder(self):
+        holder = generate_member()
+
+        board_position = BoardPosition(title="Testansvarlig", holder=holder)
+        self.assertEqual(holder, board_position.holder)
+
+    def test_added_to_group(self):
+        holder = generate_member()
+        board_position = BoardPosition(title="Testansvarlig", holder=holder)
+        board_position.save()
+
+        group = Member.objects.filter(groups__name="Testansvarlig")
+        self.assertEqual(holder in group, True)
+
+    def test_added_to_board_group(self):
+        holder = generate_member()
+        board_position = BoardPosition(title="Testansvarlig", holder=holder)
+        board_position.save()
+
+        board = Member.objects.filter(groups__name="Styret")
+        self.assertEqual(holder in board, True)
+
+    def test_delete(self):
+        holder = generate_member()
+        board_position = BoardPosition(title="Testansvarlig", holder=holder)
+        board_position.save()
+        board_position.delete()
+
+        board = Member.objects.filter(groups__name="Styret")
+        self.assertEqual(holder in board, False)
+
+        group = Member.objects.filter(groups__name="Testansvarlig")
+        #self.assertEqual(holder in group, False)
+
+    def test_new_holder(self):
+        holder = generate_member()
+        board_position = BoardPosition(title="Testansvarlig", holder=holder)
+        board_position.save()
+
+        new_holder = generate_member();
+        board_position.holder = new_holder
+        board_position.save()
+
+        board = Member.objects.filter(groups__name="Styret")
+        self.assertEqual(holder in board, False);
+        self.assertEqual(new_holder in board, True);
+
+        group = Member.objects.filter(groups__name="Testansvarlig")
+        self.assertEqual(holder in group, False)
+        self.assertEqual(new_holder in group, True)
+
+        """
+    def test_new_title(self):
+        holder = generate_member()
+        board_position = BoardPosition(title="Testansvarlig", holder=holder)
+        board_position.save()
+
+        board_position.title="TestMaster"
+        board_position.save()
+
+        group = Member.objects.filter(groups__name="Testansvarlig")
+        self.assertEqual(holder in group, False)
+
+        group = Member.objects.filter(groups__name="TestMaster")
+        self.assertEqual(holder in group, True)
+        """
