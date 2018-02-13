@@ -25,3 +25,6 @@ local_settings.py
 *.sqlite3
 *.sql
 db/
+
+#mac placement-files
+.DS_Store
