@@ -2,9 +2,80 @@ from django.db import models
 from django.urls import reverse
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser,
-                                        PermissionsMixin, Group)
+                                        PermissionsMixin, Group, Permission)
 
 from base.models import Period
+
+
+class InheritanceGroup(Group):
+    """
+    A group that allow inheritance of permissions.
+
+    The groups that a group will inherit from is given
+    by the `parents` field.
+
+    The permissions that this group has independently
+    from its parents are given by the `own_permissions` field.
+
+    The standard `permissions` field will contain the groups own
+    permissions, and those it has inherited. This field should not
+    be altered, as any change will get overwritten.
+    """
+
+    parents = models.ManyToManyField(
+        'self',
+        related_name='sub_groups',
+        symmetrical=False,
+        blank=True,
+    )
+
+    own_permissions = models.ManyToManyField(
+        Permission,
+        blank=True,
+    )
+
+    def update_permissions(self):
+        """Update the permissions of this and all sub groups."""
+        permissions = list(self.own_permissions.all())
+
+        for parent in self.parents.all():
+            permissions += list(parent.permissions.all())
+
+        self.permissions.set(permissions)
+
+        for sub in self.sub_groups.all():
+            sub.update_permissions()
+
+    def get_sub_groups(self):
+        """Return a queryset of all groups that inherits from this group."""
+        subs = self.sub_groups.all()
+
+        for sub in self.sub_groups.all():
+            subs = subs.union(sub.get_sub_groups())
+
+        return subs
+
+    def get_all_parents(self):
+        """Return a queryset of all groups that this group inherits from."""
+        parents = self.parents.all()
+
+        for parent in self.parents.all():
+            parents = parents.union(parent.get_all_parents())
+
+        return parents
+
+    def get_available_parents(self):
+        """
+        Return a queryset of all groups that can be a parent to this group.
+
+        This excludes any group that inherits from this group, as that would
+        cause a circular dependency.
+        """
+        parents = InheritanceGroup.objects.exclude(pk=self.pk)
+        for sub in self.get_sub_groups():
+            parents = parents.exclude(pk=sub.pk)
+
+        return parents
 
 
 class Instrument(models.Model):
@@ -326,7 +397,7 @@ class BoardPosition(models.Model):
         max_length=255,
         unique=True,
     )
-    group = models.OneToOneField(Group, on_delete=models.CASCADE, editable=False, null=True)
+    group = models.OneToOneField(InheritanceGroup, on_delete=models.CASCADE, editable=False, null=True)
     order = models.IntegerField(
             'rekkefølge',
             default=0,
@@ -346,10 +417,10 @@ class BoardPosition(models.Model):
         Also add the related :model:`members.Member` to the
         group related to the board.
         """
-        board, _ = Group.objects.get_or_create(name='Styret')
+        board, _ = InheritanceGroup.objects.get_or_create(name='Styret')
 
         if not self.group:
-            self.group = Group.objects.create(name=self.title)
+            self.group = InheritanceGroup.objects.create(name=self.title)
 
         if self.pk:
             prev = BoardPosition.objects.get(pk=self.pk)
@@ -369,7 +440,7 @@ class BoardPosition(models.Model):
         Delete the object, and remove the related
         :model:`members.Member` from the related group.
         """
-        Group.objects.get(name='Styret').user_set.remove(self.holder)
+        InheritanceGroup.objects.get(name='Styret').user_set.remove(self.holder)
         super(BoardPosition, self).delete(*args, **kwargs)
 
 
@@ -408,7 +479,7 @@ class Committee(models.Model):
         related_name='committees',
         blank=True,
     )
-    group = models.OneToOneField(Group, on_delete=models.CASCADE, editable=False, null=True)
+    group = models.OneToOneField(InheritanceGroup, on_delete=models.CASCADE, editable=False, null=True)
     email = models.EmailField(
         verbose_name='e-post',
         max_length=255,
@@ -455,7 +526,7 @@ class Committee(models.Model):
                 if self.name != prev.name:
                     self.group.update(name=self.name)
         else:
-            self.group = Group.objects.create(name=self.name)
+            self.group = InheritanceGroup.objects.create(name=self.name)
 
         super(Committee, self).save(*args, **kwargs)
 
