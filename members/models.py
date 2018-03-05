@@ -382,7 +382,7 @@ class LeavePeriod(Period):
         member.save()
 
 
-class BoardPosition(models.Model):
+class BoardPosition(InheritanceGroup):
     """Store a member of the board (styret)."""
     holder = models.OneToOneField(
         Member,
@@ -390,14 +390,12 @@ class BoardPosition(models.Model):
         related_name='board_position',
         verbose_name='innehaver',
     )
-    title = models.CharField('tittel', max_length=50, unique=True)
     description = models.TextField('beskrivelse', blank=True, default='')
     email = models.EmailField(
         verbose_name='e-post',
         max_length=255,
         unique=True,
     )
-    group = models.OneToOneField(InheritanceGroup, on_delete=models.CASCADE, editable=False, null=True)
     order = models.IntegerField(
             'rekkefølge',
             default=0,
@@ -406,9 +404,10 @@ class BoardPosition(models.Model):
     class Meta:
         verbose_name = 'styreverv'
         verbose_name_plural = 'styreverv'
+        ordering = ('order',)
 
     def __str__(self):
-        return self.title
+        return self.name
 
     def save(self, *args, **kwargs):
         """
@@ -417,34 +416,11 @@ class BoardPosition(models.Model):
         Also add the related :model:`members.Member` to the
         group related to the board.
         """
-        board, _ = InheritanceGroup.objects.get_or_create(name='Styret')
-
-        if not self.group:
-            self.group = InheritanceGroup.objects.create(name=self.title)
-
-        if self.pk:
-            prev = BoardPosition.objects.get(pk=self.pk)
-            if self.title != prev.title:
-                self.group.update(name=self.title)
-            if self.holder != prev.holder:
-                board.user_set.remove(prev.holder)
-
-        board.user_set.add(self.holder)
-
         super(BoardPosition, self).save(*args, **kwargs)
-
-        self.group.user_set.set([self.holder])
-
-    def delete(self, *args, **kwargs):
-        """
-        Delete the object, and remove the related
-        :model:`members.Member` from the related group.
-        """
-        InheritanceGroup.objects.get(name='Styret').user_set.remove(self.holder)
-        super(BoardPosition, self).delete(*args, **kwargs)
+        self.user_set.set([self.holder])
 
 
-class Committee(models.Model):
+class Committee(InheritanceGroup):
     """
     Store a committee.
 
@@ -455,7 +431,6 @@ class Committee(models.Model):
     To get the :model:`members.Member` object of the leader,
     use the ``leader`` property.
     """
-    name = models.CharField('navn', max_length=50, unique=True)
     leader_board = models.OneToOneField(
         BoardPosition,
         on_delete=models.PROTECT,
@@ -473,13 +448,6 @@ class Committee(models.Model):
         blank=True,
         null=True,
     )
-    members = models.ManyToManyField(
-        Member,
-        verbose_name='medlemmer',
-        related_name='committees',
-        blank=True,
-    )
-    group = models.OneToOneField(InheritanceGroup, on_delete=models.CASCADE, editable=False, null=True)
     email = models.EmailField(
         verbose_name='e-post',
         max_length=255,
@@ -499,9 +467,15 @@ class Committee(models.Model):
         return self.leader_board.holder if self.leader_board_id else self.leader_member
     leader.fget.short_description = 'leder'
 
+    @property
+    def members(self):
+        """Return the members of the committee, excluding the leader."""
+        return self.user_set.exclude(pk=self.leader.pk)
+
     class Meta:
         verbose_name = 'komite'
         verbose_name_plural = 'komiteer'
+        ordering = ('order',)
 
     def __str__(self):
         return self.name
@@ -509,27 +483,11 @@ class Committee(models.Model):
     def clean(self):
         if not (self.leader_board_id or self.leader_member_id):
             raise ValidationError('En komite må ha en leder')
-        if self.leader_board:
-            self.leader_member = None
+        elif self.leader_board and self.leader_member:
+            raise ValidationError('En komite kan bare ha én leder')
 
     def save(self, *args, **kwargs):
-        """
-        Save the object to the database, adding its members
-        to the related group in the process.
-
-        If there's no related group, one is created with the
-        same name as the committee.
-        """
-        if self.group:
-            if self.pk:
-                prev = Committee.objects.get(pk=self.pk)
-                if self.name != prev.name:
-                    self.group.update(name=self.name)
-        else:
-            self.group = InheritanceGroup.objects.create(name=self.name)
-
+        """Save the object to the database."""
+        self.full_clean()
         super(Committee, self).save(*args, **kwargs)
-
-        self.group.user_set.set(self.members.all())
-        self.group.user_set.add(self.leader)
-        self.members.remove(self.leader)
+        self.user_set.add(self.leader)

@@ -49,7 +49,7 @@ class PostTestCase(TestCase):
         position.title = 'Tester'
         position.email = 'test@testing.com'
         position.save()
-        position.group.permissions.add(
+        position.permissions.add(
             Permission.objects.get(codename='view_board_forum')
         )
 
