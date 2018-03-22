@@ -12,10 +12,8 @@ from django.contrib.contenttypes.models import ContentType
 
 from .models import Member, Instrument, PercussionGroup, BoardPosition, InheritanceGroup, Committee
 
-
 def random_string(length):
     return ''.join(random.choices(string.ascii_uppercase, k=length))
-
 
 def generate_member_attrs(**kwargs):
     """
@@ -204,7 +202,7 @@ class PercussionGroupTestCase(TestCase):
         member.save()
 
         group.refresh_from_db()
-        self.assertIsNone(group.leader)
+        self.assertIsNone(group.leader)    
 
 
 class InheritanceGroupTestCase(TestCase):
@@ -441,7 +439,7 @@ class BoardPositionTestCase(TestCase):
         self.assertEqual(holder in group, False)
         self.assertEqual(new_holder in group, True)
 
-        """
+    """
     def test_new_title(self):
         holder = generate_member()
         board_position = BoardPosition(title="Testansvarlig", holder=holder)
@@ -455,7 +453,7 @@ class BoardPositionTestCase(TestCase):
 
         group = Member.objects.filter(groups__name="TestMaster")
         self.assertEqual(holder in group, True)
-        """
+    """
 
 
 class CommitteeTestCase(TestCase):
@@ -519,6 +517,18 @@ class CommitteeTestCase(TestCase):
         com.leader_member = None
         com.leader_board = pos
         self.assertEqual(com.leader, holder)
+
+    def test_change_from_boardPosition_to_leader(self):
+        holder = generate_member()
+        board_position = BoardPosition.objects.create(name="Testansvarlig", holder=holder)
+        committee = Committee.objects.create(name="com", leader_board = board_position, email='com@example.com')
+        new_leader = generate_member()
+        committee.leader_member = new_leader
+        committee.leader_board = None
+        committee.save()
+        self.assertEqual(committee.leader, new_leader)
+        self.assertNotEqual(committee.leader, holder)
+
 
     def test_members(self):
         member1 = generate_member()
