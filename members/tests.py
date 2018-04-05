@@ -407,21 +407,7 @@ class BoardPositionTestCase(TestCase):
         holder = generate_member()
         board_position = BoardPosition(name="Testansvarlig", holder=holder)
         board_position.save()
-
-        board = Member.objects.filter(groups__name="Styret")
         self.assertEqual(holder in board_position.user_set.all(), True)
-
-    def test_delete(self):
-        holder = generate_member()
-        board_position = BoardPosition(name="Testansvarlig", holder=holder)
-        board_position.save()
-        board_position.delete()
-
-        board = Member.objects.filter(groups__name="Styret")
-        self.assertEqual(holder in board, False)
-
-        group = Member.objects.filter(groups__name="Testansvarlig")
-        #self.assertEqual(holder in group, False)
 
     def test_new_holder(self):
         holder = generate_member()
@@ -438,22 +424,6 @@ class BoardPositionTestCase(TestCase):
         group = Member.objects.filter(groups__name="Testansvarlig")
         self.assertEqual(holder in group, False)
         self.assertEqual(new_holder in group, True)
-
-    """
-    def test_new_title(self):
-        holder = generate_member()
-        board_position = BoardPosition(title="Testansvarlig", holder=holder)
-        board_position.save()
-
-        board_position.title="TestMaster"
-        board_position.save()
-
-        group = Member.objects.filter(groups__name="Testansvarlig")
-        self.assertEqual(holder in group, False)
-
-        group = Member.objects.filter(groups__name="TestMaster")
-        self.assertEqual(holder in group, True)
-    """
 
 
 class CommitteeTestCase(TestCase):
