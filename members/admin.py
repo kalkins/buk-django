@@ -97,17 +97,16 @@ class InstrumentAdmin(admin.ModelAdmin):
 
 
 class BoardPositionAdmin(admin.ModelAdmin):
-    list_display = ('title', 'holder', 'email')
-    ordering = ('order', 'title')
+    list_display = ('name', 'holder', 'email')
+    ordering = ('order', 'name')
 
 
 class CommitteeAdmin(admin.ModelAdmin):
     list_display = ('name', 'leader', 'member_count')
     ordering = ('order', 'name')
-    filter_horizontal = ('members',)
 
     def member_count(self, obj):
-        return obj.members.count()
+        return obj.user_set.count()
     member_count.short_description = 'Antall medlemmer'
 
 

@@ -15,7 +15,7 @@ class UserCanAccessForumMixin(UserPassesTestMixin):
     def test_func(self, *args, **kwargs):
         user = self.request.user
 
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
 
         kwargs = self.request.resolver_match.kwargs

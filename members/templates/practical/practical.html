@@ -16,7 +16,7 @@
     <h3>Styret</h3>
     {% for position in board_positions %}
     <p>
-        <b>{{ position.title }}:</b>
+        <b>{{ position.name }}:</b>
         <a href='{{ position.holder.get_absolute_url }}'>
             {{ position.holder.get_full_name }}
         </a>
