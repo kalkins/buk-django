@@ -22,6 +22,8 @@ from django.views.generic import RedirectView
 
 from base import views as base_views
 from members import forms as member_forms, views as member_views
+from misc import views as misc_views
+
 from polls import views as poll_views
 
 urlpatterns = [
@@ -46,31 +48,14 @@ urlpatterns = [
         auth_views.password_reset_confirm, name='password_reset_confirm'),
     url(r'^reset/done/$', auth_views.password_reset_complete,
         name='password_reset_complete'),
-    url(r'^medlem/(?P<pk>[0-9]+)$', member_views.MemberDetail.as_view(),
-        name='member_detail'),
-    url(r'^medlem/(?P<pk>[0-9]+)/endre$', member_views.ChangeMember.as_view(),
-        name='member_change'),
-    url(r'^medlem/ny$', member_views.AddMember.as_view(), name='member_add'),
-    url(r'^medlemmer/$', member_views.MemberList.as_view(),
-        {'show_all': False}, name='member_list'),
-    url(r'^medlemmer/alle$', member_views.MemberList.as_view(),
-        {'show_all': True}, name='member_list_all'),
-    url(r'^medlemmer/statistikk$', member_views.MemberStatistics.as_view(),
-        name='member_statistics'),
-    url(r'^påmelding/(?P<pk>[0-9]+)$', poll_views.PollStatistics.as_view(),
-        name='poll_statistics'),
-    url(r'^praktisk$', member_views.Practical.as_view(), name='practical'),
+    url(r'^medlem/', include('members.urls.member-urls')),
+    url(r'^medlemmer/', include('members.urls.members-urls')),
+    url(r'^slagverkgrupper/', include('members.urls.percussion_group-urls')),
+    url(r'^praktisk/', include('misc.urls.practical-urls')),
+    url(r'^forum/', include('forum.urls')),
+    url(r'^påmelding/', include('polls.urls')),
     url(r'^endre-innhold/$', base_views.EditableContentSave.as_view()),
     url(r'^endre-innhold/bilde$', base_views.EditableContentSaveImage.as_view()),
-    url(r'^slagverkgrupper/$', member_views.PercussionGroupList.as_view(),
-        name='percussion_group_list'),
-    url(r'^slagverkgrupper/ny$', member_views.AddPercussionGroup.as_view(),
-        name='percussion_group_add'),
-    url(r'^slagverkgrupper/(?P<pk>[0-9]+)/endre$', member_views.ChangePercussionGroup.as_view(),
-        name='percussion_group_change'),
-    url(r'^slagverkgrupper/(?P<pk>[0-9]+)/slett$', member_views.DeletePercussionGroup.as_view(),
-        name='percussion_group_delete'),
-    url(r'^forum/', include('forum.urls')),
 ]
 
 if settings.DEBUG:

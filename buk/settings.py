@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'utils.views',
     'base',
     'members',
+    'misc',
     'polls',
     'forum',
     'legacy',
