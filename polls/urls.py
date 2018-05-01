@@ -1,6 +1,6 @@
-from django.conf.urls import url, include
+from django.urls import path
 from polls import views
 
 urlpatterns = [
-    url(r'^(?P<pk>[0-9]+)$', views.PollStatistics.as_view(), name='poll_statistics'),
+    path('<int:pk>', views.PollStatistics.as_view(), name='poll_statistics'),
 ]

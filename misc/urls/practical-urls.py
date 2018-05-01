@@ -1,6 +1,6 @@
-from django.conf.urls import url, include
+from django.urls import path
 from misc import views
 
 urlpatterns = [
-    url(r'^$', views.Practical.as_view(), name='practical'),
+    path('', views.Practical.as_view(), name='practical'),
 ]

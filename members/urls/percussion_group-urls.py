@@ -1,13 +1,13 @@
-from django.conf.urls import url, include
+from django.urls import path
 from members import views
 
 urlpatterns = [
-    url(r'^$', views.PercussionGroupList.as_view(),
+    path('', views.PercussionGroupList.as_view(),
         name='percussion_group_list'),
-    url(r'^ny$', views.AddPercussionGroup.as_view(),
+    path('ny', views.AddPercussionGroup.as_view(),
         name='percussion_group_add'),
-    url(r'^(?P<pk>[0-9]+)/endre$', views.ChangePercussionGroup.as_view(),
+    path('<int:pk>/endre', views.ChangePercussionGroup.as_view(),
         name='percussion_group_change'),
-    url(r'^(?P<pk>[0-9]+)/slett$', views.DeletePercussionGroup.as_view(),
+    path('<int:pk>/slett', views.DeletePercussionGroup.as_view(),
         name='percussion_group_delete'),
 ]
