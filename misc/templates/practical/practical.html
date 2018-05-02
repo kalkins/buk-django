@@ -28,7 +28,7 @@
     <h3>{{ committee.name }}:</h3>
     <p>
         {% if committee.leader_board_id %}
-        {{ committee.leader_board.title }};&nbsp;
+        {{ committee.leader_board.title }}
         {% endif %}
 
         <a href='{{ committee.leader.get_absolute_url }}'>
