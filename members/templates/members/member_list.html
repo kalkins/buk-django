@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'members/css/member_list.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'members/css/member-list.css' %}" />
 {% endblock stylesheets %}
 
 {% block main %}
@@ -58,7 +58,7 @@
                 {{ member.board_position.title }}
             </a>
             {% endif %}
-            
+
             {% if member.is_on_leave %}
             <span class='tag on_leave'>Permisjon</span>
             {% endif %}
