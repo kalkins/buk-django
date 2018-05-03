@@ -102,8 +102,44 @@ class BoardPositionAdmin(admin.ModelAdmin):
 
 
 class CommitteeAdmin(admin.ModelAdmin):
+    readonly_fields = ('inherited_permissions',)
+    filter_horizontal = ('parents', 'own_permissions')
     list_display = ('name', 'leader', 'member_count')
     ordering = ('order', 'name')
+
+    fieldsets = (
+        (None, {
+            'fields': ('name',),
+        }),
+        (None, {
+            'description': 'Lederen for komiteen. Bare én av disse kan bli satt',
+            'fields': ('leader_board', 'leader_member')
+        }),
+        ('Rettigheter', {
+            'classes': ('collapse',),
+            'fields': ('parents', 'own_permissions'),
+        }),
+        ('Arvede rettigheter', {
+            'description': """
+                Rettigheter som er arvet fra overgrupper, ikke inkludert de som
+                overlapper med rettighetene til denne komiteen.
+            """,
+            'classes': ('collapse',),
+            'fields': ('inherited_permissions',),
+        }),
+    )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+
+        if obj:
+            form.base_fields['parents'].queryset = obj.get_available_parents()
+
+        return form
+
+    def inherited_permissions(self, obj):
+        return '\n'.join(map(str, obj.inherited_permissions))
+    inherited_permissions.short_description = 'Arvede rettigheter'
 
     def member_count(self, obj):
         return obj.user_set.count()
