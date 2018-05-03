@@ -25,3 +25,8 @@ javascripts_dir = "/"
 # preferred_syntax = :sass
 # and then run:
 # sass-convert -R --from scss --to sass sass scss && rm -rf sass && mv scss sass
+
+# Make Compass look in these folders when importing css
+add_import_path "base/static/"
+add_import_path "forum/static/"
+add_import_path "members/static/"
