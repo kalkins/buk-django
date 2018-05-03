@@ -355,40 +355,6 @@ class MemberStatistics(PermissionRequiredMixin, TemplateView):
         return tables
 
 
-class Practical(LoginRequiredMixin, TemplateView):
-    """
-    Display a page with practical information about the marching band,
-    and a list of the board and committees and their members.
-
-    The practical information can be edited inline using TinyMCE.
-
-    **Context**
-
-    ``content``
-        The practical information.
-
-    ``board_positions``
-        A list of board members.
-
-    ``committees``
-        A list of committees.
-
-    **Template**
-
-    :template:`practical/practical.html`
-    """
-    template_name = 'practical/practical.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(Practical, self).get_context_data(**kwargs)
-        context['content'] = EditableContent.objects.get_or_create(name='practical')[0].text
-
-        context['board_positions'] = BoardPosition.objects.all()
-        context['committees'] = Committee.objects.all()
-
-        return context
-
-
 class PercussionGroupList(LoginRequiredMixin, ListView):
     """
     Display a list of all percussion groups, including members,
