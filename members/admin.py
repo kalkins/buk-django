@@ -25,6 +25,7 @@ class MemberForm(forms.ModelForm):
         fields = ('email',)
 
 
+@admin.register(Member)
 class UserAdmin(BaseUserAdmin):
     form = MemberForm
     add_form = MemberForm
@@ -68,6 +69,7 @@ class UserAdmin(BaseUserAdmin):
     ]
 
 
+@admin.register(Instrument)
 class InstrumentAdmin(admin.ModelAdmin):
     list_display = ('name', 'group_leader', 'order')
     search_fields = ('name', 'group_leader')
@@ -96,11 +98,13 @@ class InstrumentAdmin(admin.ModelAdmin):
         return form
 
 
+@admin.register(BoardPosition)
 class BoardPositionAdmin(admin.ModelAdmin):
     list_display = ('name', 'holder', 'email')
     ordering = ('order', 'name')
 
 
+@admin.register(Committee)
 class CommitteeAdmin(admin.ModelAdmin):
     readonly_fields = ('inherited_permissions',)
     filter_horizontal = ('parents', 'own_permissions')
@@ -146,16 +150,10 @@ class CommitteeAdmin(admin.ModelAdmin):
     member_count.short_description = 'Antall medlemmer'
 
 
+@admin.register(PercussionGroup)
 class PercussionGroupAdmin(admin.ModelAdmin):
     list_display = ('name', 'leader', 'member_count')
 
     def member_count(self, obj):
         return obj.members.count()
     member_count.short_description = 'Antall medlemmer'
-
-
-admin.site.register(Member, UserAdmin)
-admin.site.register(Instrument, InstrumentAdmin)
-admin.site.register(BoardPosition, BoardPositionAdmin)
-admin.site.register(Committee, CommitteeAdmin)
-admin.site.register(PercussionGroup, PercussionGroupAdmin)
