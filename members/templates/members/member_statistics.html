@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'members/css/member_statistics.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'members/css/member-statistics.css' %}" />
 {% endblock stylesheets %}
 
 {% block main %}
@@ -58,7 +58,7 @@
             <input type='submit' class='modernbutton' value='Eksporter til excel' name='csv'/>
         </form>
     </div>
-    
+
     {% for table in tables %}
     <div class='table'>
         <h1>{{ table.name }}</h1>

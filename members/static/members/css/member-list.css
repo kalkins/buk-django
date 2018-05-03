@@ -1,0 +1,64 @@
+/* line 1, _member-tag.sass */
+.tag {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 0.2em 0.5em;
+  margin-left: 0.5em;
+}
+
+/* line 7, _member-tag.sass */
+.group_leader {
+  background-color: green;
+}
+
+/* line 10, _member-tag.sass */
+.on_leave {
+  background-color: #ccc;
+  color: black;
+}
+
+/* line 14, _member-tag.sass */
+.quit {
+  background-color: black;
+}
+
+/* line 5, member-list.sass */
+section div:first-child h2 {
+  display: inline-block;
+}
+/* line 7, member-list.sass */
+section div:first-child h3 {
+  display: inline-block;
+  float: right;
+  margin-top: 1.6em;
+}
+/* line 11, member-list.sass */
+section div:first-child h3 a {
+  margin-left: 1em;
+}
+/* line 13, member-list.sass */
+section .change_member {
+  visibility: hidden;
+  float: right;
+}
+/* line 17, member-list.sass */
+section .change_member {
+  float: right;
+  margin-right: 1em;
+  visibility: visible;
+}
+/* line 21, member-list.sass */
+section .member {
+  margin-bottom: 1.5em;
+  margin-left: 2em;
+}
+/* line 22, member-list.sass */
+section .member .phone {
+  float: right;
+  margin-right: 1em;
+}
+/* line 29, member-list.sass */
+section h3 {
+  margin-top: 3em;
+  margin-bottom: 1.5em;
+}
