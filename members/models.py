@@ -27,11 +27,13 @@ class InheritanceGroup(Group):
         related_name='sub_groups',
         symmetrical=False,
         blank=True,
+        verbose_name='Overgrupper',
     )
 
     own_permissions = models.ManyToManyField(
         Permission,
         blank=True,
+        verbose_name='Rettigheter',
     )
 
     def update_permissions(self):
