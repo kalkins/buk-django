@@ -69,7 +69,15 @@ section .member .phone {
   float: right;
   margin-right: 1em;
 }
-/* line 27, member-list.sass */
+/* line 26, member-list.sass */
+section .member .fa-edit {
+  width: 1.3em;
+}
+/* line 28, member-list.sass */
+section .member .fa-phone {
+  width: 1.2em;
+}
+/* line 31, member-list.sass */
 section h3 {
   margin-top: 3em;
   margin-bottom: 1.5em;

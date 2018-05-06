@@ -68,14 +68,12 @@
             {% endif %}
 
             <a class='phone' href='tel:{{ member.phone }}'>
-                <i class='fa fa-phone'></i>
-                {{ member.phone }}
+                <span class='fa fa-phone'></span>{{ member.phone }}
             </a>
 
             {% if perms.members.change_member %}
             <a class='change_member' href='{% url 'member_change' member.pk %}'>
-                <i class='fa fa-edit'></i>
-                Endre
+                <span class='fa fa-edit'></span>Endre
             </a>
             {% endif %}
         </div>
