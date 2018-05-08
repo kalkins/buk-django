@@ -25,6 +25,7 @@ class MemberForm(forms.ModelForm):
         fields = ('email',)
 
 
+@admin.register(Member)
 class UserAdmin(BaseUserAdmin):
     form = MemberForm
     add_form = MemberForm
@@ -68,6 +69,7 @@ class UserAdmin(BaseUserAdmin):
     ]
 
 
+@admin.register(Instrument)
 class InstrumentAdmin(admin.ModelAdmin):
     list_display = ('name', 'group_leader', 'order')
     search_fields = ('name', 'group_leader')
@@ -96,30 +98,62 @@ class InstrumentAdmin(admin.ModelAdmin):
         return form
 
 
+@admin.register(BoardPosition)
 class BoardPositionAdmin(admin.ModelAdmin):
     list_display = ('name', 'holder', 'email')
     ordering = ('order', 'name')
 
 
+@admin.register(Committee)
 class CommitteeAdmin(admin.ModelAdmin):
+    readonly_fields = ('inherited_permissions',)
+    filter_horizontal = ('parents', 'own_permissions')
     list_display = ('name', 'leader', 'member_count')
     ordering = ('order', 'name')
+
+    fieldsets = (
+        (None, {
+            'fields': ('name',),
+        }),
+        (None, {
+            'description': 'Lederen for komiteen. Bare én av disse kan bli satt',
+            'fields': ('leader_board', 'leader_member')
+        }),
+        ('Rettigheter', {
+            'classes': ('collapse',),
+            'fields': ('parents', 'own_permissions'),
+        }),
+        ('Arvede rettigheter', {
+            'description': """
+                Rettigheter som er arvet fra overgrupper, ikke inkludert de som
+                overlapper med rettighetene til denne komiteen.
+            """,
+            'classes': ('collapse',),
+            'fields': ('inherited_permissions',),
+        }),
+    )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+
+        if obj:
+            form.base_fields['parents'].queryset = obj.get_available_parents()
+
+        return form
+
+    def inherited_permissions(self, obj):
+        return '\n'.join(map(str, obj.inherited_permissions))
+    inherited_permissions.short_description = 'Arvede rettigheter'
 
     def member_count(self, obj):
         return obj.user_set.count()
     member_count.short_description = 'Antall medlemmer'
 
 
+@admin.register(PercussionGroup)
 class PercussionGroupAdmin(admin.ModelAdmin):
     list_display = ('name', 'leader', 'member_count')
 
     def member_count(self, obj):
         return obj.members.count()
     member_count.short_description = 'Antall medlemmer'
-
-
-admin.site.register(Member, UserAdmin)
-admin.site.register(Instrument, InstrumentAdmin)
-admin.site.register(BoardPosition, BoardPositionAdmin)
-admin.site.register(Committee, CommitteeAdmin)
-admin.site.register(PercussionGroup, PercussionGroupAdmin)
