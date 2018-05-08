@@ -22,42 +22,62 @@
   background-color: black;
 }
 
-/* line 5, member-list.sass */
+/* line 3, ../../../../base/static/base/css/table/_table.sass */
+.row {
+  margin: 0px;
+  padding: 1em;
+  padding-right: 0;
+}
+
+/* line 8, ../../../../base/static/base/css/table/_table.sass */
+.row:nth-child(even) {
+  background-color: rgba(41, 49, 61, 0.6);
+}
+
+/* line 11, ../../../../base/static/base/css/table/_table.sass */
+.row:nth-child(odd) {
+  background-color: rgba(41, 49, 61, 0.3);
+}
+
+/* line 6, member-list.sass */
 section div:first-child h2 {
   display: inline-block;
 }
-/* line 7, member-list.sass */
+/* line 8, member-list.sass */
 section div:first-child h3 {
   display: inline-block;
   float: right;
   margin-top: 1.6em;
 }
-/* line 11, member-list.sass */
+/* line 12, member-list.sass */
 section div:first-child h3 a {
   margin-left: 1em;
 }
-/* line 13, member-list.sass */
+/* line 14, member-list.sass */
 section .change_member {
   visibility: hidden;
   float: right;
 }
-/* line 17, member-list.sass */
+/* line 18, member-list.sass */
 section .change_member {
   float: right;
   margin-right: 1em;
   visibility: visible;
 }
-/* line 21, member-list.sass */
-section .member {
-  margin-bottom: 1.5em;
-  margin-left: 2em;
-}
-/* line 22, member-list.sass */
+/* line 23, member-list.sass */
 section .member .phone {
   float: right;
   margin-right: 1em;
 }
-/* line 29, member-list.sass */
+/* line 26, member-list.sass */
+section .member .fa-edit {
+  width: 1.3em;
+}
+/* line 28, member-list.sass */
+section .member .fa-phone {
+  width: 1.2em;
+}
+/* line 31, member-list.sass */
 section h3 {
   margin-top: 3em;
   margin-bottom: 1.5em;
