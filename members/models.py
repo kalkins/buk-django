@@ -233,6 +233,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
         on_delete=models.SET_NULL,
         related_name='members',
         verbose_name='slagverkgruppe',
+        blank=True,
         null=True,
     )
     birthday = models.DateField('fødselsdato', help_text='Datoer skrives på formen YYYY-MM-DD')

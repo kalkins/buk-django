@@ -126,14 +126,13 @@ class ChangeMember(UserPassesTestMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        response = super(ChangeMember, self).form_valid(form)
         context = self.get_context_data()
         membership_formset = context['membership_period_formset']
         leave_formset = context['leave_period_formset']
-        if membership_formset.is_valid() and leave_formset.is_valid():
+        if form.is_valid() and membership_formset.is_valid() and leave_formset.is_valid():
             membership_formset.save()
             leave_formset.save()
-            return response
+            return super(ChangeMember, self).form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
