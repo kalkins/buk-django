@@ -95,7 +95,7 @@ class MakeSuperuserTestCase(TestCase):
         self.assertFalse(self.member.is_admin)
         self.assertFalse(self.member.is_superuser)
 
-        call_command('makesuperuser', self.member.email)
+        call_command('makesuperuser', self.member.email, stdout=StringIO())
         self.member.refresh_from_db()
 
         self.assertTrue(self.member.is_admin)
@@ -105,7 +105,7 @@ class MakeSuperuserTestCase(TestCase):
         self.assertFalse(self.member.is_admin)
         self.assertFalse(self.member.is_superuser)
 
-        call_command('makesuperuser', self.member.email, remove=True)
+        call_command('makesuperuser', self.member.email, remove=True, stdout=StringIO())
         self.member.refresh_from_db()
 
         self.assertFalse(self.member.is_admin)
@@ -202,7 +202,7 @@ class PercussionGroupTestCase(TestCase):
         member.save()
 
         group.refresh_from_db()
-        self.assertIsNone(group.leader)    
+        self.assertIsNone(group.leader)
 
 
 class InheritanceGroupTestCase(TestCase):

@@ -27,11 +27,13 @@ class InheritanceGroup(Group):
         related_name='sub_groups',
         symmetrical=False,
         blank=True,
+        verbose_name='Overgrupper',
     )
 
     own_permissions = models.ManyToManyField(
         Permission,
         blank=True,
+        verbose_name='Rettigheter',
     )
 
     def update_permissions(self):
@@ -231,6 +233,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
         on_delete=models.SET_NULL,
         related_name='members',
         verbose_name='slagverkgruppe',
+        blank=True,
         null=True,
     )
     birthday = models.DateField('fødselsdato', help_text='Datoer skrives på formen YYYY-MM-DD')

@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
 {{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'members/css/member_list.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'members/css/member-list.css' %}" />
 {% endblock stylesheets %}
 
 {% block main %}
@@ -45,7 +45,7 @@
     <div>
         {% for member in members %}
         {% ifchanged %}<h3>{{ member.instrument.name }}</h3>{% endifchanged %}
-        <div class='member'>
+        <div class='member row'>
             <a class='name' href='{{ member.get_absolute_url}}' >{{ member.get_full_name }}</a>
 
             {% if member.is_group_leader %}
@@ -58,7 +58,7 @@
                 {{ member.board_position.title }}
             </a>
             {% endif %}
-            
+
             {% if member.is_on_leave %}
             <span class='tag on_leave'>Permisjon</span>
             {% endif %}
@@ -68,14 +68,12 @@
             {% endif %}
 
             <a class='phone' href='tel:{{ member.phone }}'>
-                <i class='fa fa-phone'></i>
-                {{ member.phone }}
+                <span class='fa fa-phone'></span>{{ member.phone }}
             </a>
 
             {% if perms.members.change_member %}
             <a class='change_member' href='{% url 'member_change' member.pk %}'>
-                <i class='fa fa-edit'></i>
-                Endre
+                <span class='fa fa-edit'></span>Endre
             </a>
             {% endif %}
         </div>
