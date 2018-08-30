@@ -35,4 +35,3 @@ class BasePeriodFormsetTestCase(TestCase):
         period.end = now
         self.assertTrue(year_ago.__str__() in period.__str__())
         self.assertTrue(now.__str__() in period.__str__())
-        print(period)
