@@ -9,104 +9,99 @@
 
 {% block main %}
 <section>
-    <div class='navline'>
-        <h2 class='back-link'>
-            <a href='{% url 'member_list' %}' title='Vis medlemsliste'>
-                <i class='fa fa-chevron-left'></i>
-                Medlemmer
-            </a>
-        </h2>
+    <a class='back-button' href='{% url 'member_list' %}' title='Vis medlemsliste'>
+        <span class='fa fa-chevron-left'></span>Medlemmer
+    </a>
 
-        {% if perms.members.change_member or user == member %}
-        <a href='{% url 'member_change' member.pk %}'>
-            <i class='fa fa-edit'></i>
-            Endre
-        </a>
+
+    {% if perms.members.change_member or user == member %}
+    <a class='action-link' href='{% url 'member_change' member.pk %}'>
+        <span class='fa fa-edit'></span>Endre
+    </a>
+    {% endif %}
+    
+    <h1>{{ member.get_full_name }}</h1>
+
+    <p>
+        <strong>Instrument:</strong>
+        {{ member.instrument.name }}
+
+        {% if member.is_group_leader %}
+        <span class='tag gruppeleder'>Gruppeleder</span>
         {% endif %}
-    </div>
+    </p>
+    <p>
+        <strong>Status:</strong>
+        {{ member.status }}
+    </p>
 
-    <div>
-        <h1>{{ member.get_full_name }}</h1>
-        <p>
-            <strong>Instrument:</strong>
-            {{ member.instrument.name }}
+    {% if user.is_authenticated %}
+    <p>
+        <strong>Født:</strong>
+        {{ member.birthday }}
+    </p>
 
-            {% if member.is_group_leader %}
-            <span class='tag gruppeleder'>Gruppeleder</span>
-            {% endif %}
-        </p>
-        <p>
-            <strong>Status:</strong>
-            {{ member.status }}
-        </p>
+    {# If the member has only been a member for one period of time #}
+    {% if member.membership_periods.count == 1 %}
+    {% with period=member.membership_periods.first %}
+    <p>
+        <strong>Startet i BUK:</strong>
+        {{ period.start }}
+    </p>
+    {% if period.end != None %}
+    <p>
+        <strong>Sluttet i BUK:</strong>
+        {{ period.end }}
+    </p>
+    {% endif %}
+    {% endwith %}
 
-        {% if user.is_authenticated %}
-        <p>
-            <strong>Født:</strong>
-            {{ member.birthday }}
-        </p>
+    {# If the member has come back after quitting #}
+    {% else %}
+    <p>
+        <strong>Medlemskapsperioder:</strong>
+        {% for period in member.membership_periods.all %}
+        <br />{{ period }}
+        {% endfor %}
+    </p>
+    {% endif %}
 
-        {# If the member has only been a member for one period of time #}
-        {% if member.membership_periods.count == 1 %}
-        {% with period=member.membership_periods.first %}
-        <p>
-            <strong>Startet i BUK:</strong>
-            {{ period.start }}
-        </p>
-        {% if period.end != None %}
-        <p>
-            <strong>Sluttet i BUK:</strong>
-            {{ period.end }}
-        </p>
-        {% endif %}
-        {% endwith %}
+    <p>
+        <strong>Studie/yrke:</strong>
+        {{ member.occupation }}
+    </p>
+    {% endif %}
 
-        {# If the member has come back after quitting #}
-        {% else %}
-        <p>
-            <strong>Medlemskapsperioder:</strong>
-            {% for period in member.membership_periods.all %}
-            <br />{{ period }}
-            {% endfor %}
-        </p>
-        {% endif %}
+    <p>
+        <strong>Kommer fra:</strong>
+        {{ member.origin }}
+    </p>
 
-        <p>
-            <strong>Studie/yrke:</strong>
-            {{ member.occupation }}
-        </p>
-        {% endif %}
+    {% if user.is_authenticated %}
+    <h2>Kontaktinfo</h2>
+    <p>
+        <strong>Mobil:</strong>
+        <a href='tel:{{ member.phone }}'>{{ member.phone }}</a>
+    </p>
+    <p>
+        <strong>E-post:</strong>
+        <a href='mailto:{{ member.email }}'>{{ member.email }}</a>
+    </p>
+    <p>
+        <strong>Adresse:</strong>
+        {{ member.get_full_address }}
+    </p>
+    {% if member.about_me %}
+    <h2>Litt om meg</h2>
+    <p>{{ member.about_me }}</p>
+    {% endif %}
 
-        <p>
-            <strong>Kommer fra:</strong>
-            {{ member.origin }}
-        </p>
+    {% endif %}
 
-        {% if user.is_authenticated %}
-        <h3>Kontaktinfo</h3>
-        <p>
-            <strong>Mobil:</strong>
-            <a href='tel:{{ member.phone }}'>{{ member.phone }}</a>
-        </p>
-        <p>
-            <strong>E-post:</strong>
-            <a href='mailto:{{ member.email }}'>{{ member.email }}</a>
-        </p>
-        <p>
-            <strong>Adresse:</strong>
-            {{ member.get_full_address }}
-        </p>
-        {% if member.about_me %}
-        <h3>Litt om meg</h3>
-        <p>{{ member.about_me }}</p>
-        {% endif %}
+    {% if member.musical_background %}
+    <h2>Musikalsk bakgrunn</h2>
+    <p>{{ member.musical_background }}</p>
+    {% endif %}
 
-        {% endif %}
-
-        {% if member.musical_background %}
-        <h4>Musikalsk bakgrunn</h4>
-        <p>{{ member.musical_background }}</p>
-        {% endif %}
-    </div>
 </section>
 {% endblock main %}
