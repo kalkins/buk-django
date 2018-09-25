@@ -1,19 +1,29 @@
 import random
 import string
 from datetime import date
+import datetime
 
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.forms import modelform_factory
 from django.core.management import call_command
 from django.core.exceptions import ValidationError
 from django.utils.six import StringIO
+from django.utils import timezone
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
 
-from .models import Member, Instrument, PercussionGroup, BoardPosition, InheritanceGroup, Committee
+from .models import Member, Instrument, PercussionGroup, BoardPosition, InheritanceGroup, Committee, MembershipPeriod
+
+from .forms import MemberAddForm, MembershipPeriodFormset, LeavePeriodFormset
+
+from utils.forms import formset_to_post, form_to_post
+
 
 def random_string(length):
     return ''.join(random.choices(string.ascii_uppercase, k=length))
+
 
 def generate_member_attrs(**kwargs):
     """
@@ -44,6 +54,7 @@ def generate_member_attrs(**kwargs):
         test_member['instrument'] = Instrument.objects.first() if Instrument.objects.count() else Instrument.objects.create(name='Generated instrument')
 
     return test_member
+
 
 def generate_member(**kwargs):
     """Same as generate_member_attrs, but actually creates and returns the member"""
@@ -384,7 +395,7 @@ class InheritanceGroupTestCase(TestCase):
 
 class BoardPositionTestCase(TestCase):
     def test_str(self):
-        holder = generate_member();
+        holder = generate_member()
 
         board_position = BoardPosition(name="Testansvarlig", holder=holder)
         self.assertEqual(board_position.__str__(), "Testansvarlig")
@@ -414,12 +425,12 @@ class BoardPositionTestCase(TestCase):
         board_position = BoardPosition(name="Testansvarlig", holder=holder)
         board_position.save()
 
-        new_holder = generate_member();
+        new_holder = generate_member()
         board_position.holder = new_holder
         board_position.save()
 
-        self.assertEqual(holder in board_position.user_set.all(), False);
-        self.assertEqual(new_holder in board_position.user_set.all(), True);
+        self.assertEqual(holder in board_position.user_set.all(), False)
+        self.assertEqual(new_holder in board_position.user_set.all(), True)
 
         group = Member.objects.filter(groups__name="Testansvarlig")
         self.assertEqual(holder in group, False)
@@ -491,14 +502,13 @@ class CommitteeTestCase(TestCase):
     def test_change_from_boardPosition_to_leader(self):
         holder = generate_member()
         board_position = BoardPosition.objects.create(name="Testansvarlig", holder=holder)
-        committee = Committee.objects.create(name="com", leader_board = board_position, email='com@example.com')
+        committee = Committee.objects.create(name="com", leader_board=board_position, email='com@example.com')
         new_leader = generate_member()
         committee.leader_member = new_leader
         committee.leader_board = None
         committee.save()
         self.assertEqual(committee.leader, new_leader)
         self.assertNotEqual(committee.leader, holder)
-
 
     def test_members(self):
         member1 = generate_member()
@@ -511,3 +521,175 @@ class CommitteeTestCase(TestCase):
 
         self.assertEqual(set(com.user_set.all()), set([member1, member2, member3, holder]))
         self.assertEqual(set(com.members), set([member1, member2, member3]))
+
+
+class MemberListTestCase(TestCase):
+    def setUp(self):
+        self.member1 = generate_member(first_name="aadne")
+        self.member2 = generate_member(first_name="abalo")
+        self.member2.is_active = False
+        self.member2.save()
+        self.member3 = generate_member(first_name="abba")
+        self.client = Client()
+        self.client.force_login(self.member1)
+
+    def test_get_all_members(self):
+        response = self.client.get(reverse("member_list_all"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["show_all"], True)
+        self.assertEqual(
+            set(response.context["members"]),
+            set([self.member1, self.member2, self.member3]))
+
+    def test_get_active_members(self):
+        response = self.client.get(reverse("member_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["show_all"], False)
+        self.assertEqual(
+            set(response.context["members"]),
+            set([self.member1, self.member3]))
+
+
+class PercussionGroupListTestCase(TestCase):
+    def test_get_list(self):
+        member1 = generate_member()
+        member2 = generate_member()
+        member3 = generate_member(first_name="Bob")
+        member4 = generate_member()
+        member4.is_active = False
+        member4.save()
+        percussion_group = PercussionGroup.objects.create()
+        member2.percussion_group = percussion_group
+        member2.save()
+        self.client = Client()
+        self.client.force_login(member1)
+
+        response = self.client.get(reverse('percussion_group_list'))
+        self.assertTrue(percussion_group in response.context['groups'])
+        self.assertEqual(list(response.context['unassigned']), [member3, member1])
+
+
+class DeletePercussionGroupTestCase(TestCase):
+    def test_delete(self):
+        member = generate_member()
+        member.user_permissions.add(
+            Permission.objects.get(codename="change_percussion_group"))
+        self.client.force_login(member)
+        percussion_group = PercussionGroup.objects.create()
+        self.assertEqual(len(PercussionGroup.objects.all()), 1)
+        response = self.client.get(reverse("percussion_group_delete", args=[percussion_group.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(PercussionGroup.objects.all()), 0)
+
+
+class AddPercussionGroupTestCase(TestCase):
+    def test_delete(self):
+        member = generate_member()
+        member.user_permissions.add(
+            Permission.objects.get(codename="change_percussion_group"))
+        self.client.force_login(member)
+        response = self.client.get(reverse("percussion_group_add"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(PercussionGroup.objects.all()), 1)
+
+
+class MemberAddFormTestCase(TestCase):
+    def test_memberShipPeriod_added(self):
+        member_attributes = generate_member_attrs()
+        today = date.today()
+        member_attributes['joined_date'] = today
+        member_attributes['instrument'] = member_attributes['instrument'].pk
+        form = MemberAddForm(data=member_attributes)
+        if form.is_valid():
+            form.save()
+        else:
+            self.fail("form not valid " + form.errors)
+        self.assertEqual(
+            MembershipPeriod.objects.get(member=form.instance).start, today)
+
+
+class ChangeMemberTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_change_self(self):
+        member = generate_member()
+        self.client.force_login(member)
+        response = self.client.get(reverse("member_change", args=[member.pk]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_change_other_member_with_permission(self):
+        member = generate_member()
+        member.user_permissions.add(
+            Permission.objects.get(codename="change_member"))
+        other_member = generate_member()
+        self.client.force_login(member)
+        response = self.client.get(
+            reverse("member_change", args=[other_member.pk]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_change_without_permission(self):
+        member = generate_member()
+        other_member = generate_member()
+        self.client.force_login(member)
+        response = self.client.get(
+            reverse("member_change", args=[other_member.pk]))
+        self.assertEqual(response.status_code, 302)
+
+    def test_percussion_group_in_form(self):
+        member = generate_member()
+        self.client.force_login(member)
+        first_response = self.client.get(
+            reverse("member_change", args=[member.pk]))
+        self.assertFalse(
+            "percussion_group" in first_response.context["form"].fields)
+
+        member.user_permissions.add(
+            Permission.objects.get(codename="change_percussion_group"))
+        second_response = self.client.get(
+            reverse("member_change", args=[member.pk]))
+        self.assertTrue(
+            "percussion_group" in second_response.context["form"].fields)
+
+    def test_get_context_data_on_get(self):
+        member = generate_member()
+        self.client.force_login(member)
+        response = self.client.get(reverse("member_change", args=[member.pk]))
+        self.assertTrue('membership_period_formset' in response.context.keys())
+        self.assertTrue('leave_period_formset' in response.context.keys())
+
+    def test_valid_form(self):
+        now = timezone.now().date()
+        year_from_now = now + datetime.timedelta(days=365)
+        membership_period_formset = MembershipPeriodFormset(initial=[
+            {"start": now,
+             "end": year_from_now}
+        ])
+        leave_period_formset = LeavePeriodFormset(initial=[
+            {"start": year_from_now,
+             "end": now}
+        ])  # There's an error here
+
+        member = generate_member()
+        fields = ['email', 'first_name', 'last_name', 'instrument', 'phone',
+                  'birthday', 'address', 'zip_code', 'city', 'origin', 'occupation',
+                  'has_car', 'has_towbar', 'musical_background', 'about_me']
+        formclass = modelform_factory(Member, fields=fields)
+        member_form = formclass(instance=member)
+        member_form_data = form_to_post(member_form)
+
+        post_data = {**formset_to_post(membership_period_formset), **formset_to_post(leave_period_formset), **member_form_data}
+
+        self.client.force_login(member)
+        response = self.client.post(reverse("member_change", args=[member.pk]), post_data)
+        self.assertEqual(response.status_code, 200)  # form is not valid
+
+        leave_period_formset = LeavePeriodFormset(initial=[
+            {"start": now,
+             "end": year_from_now}
+        ])  # Error is fixed
+
+        post_data = {**formset_to_post(membership_period_formset), **formset_to_post(leave_period_formset), **member_form_data}
+
+        response = self.client.post(reverse("member_change", args=[member.pk]), post_data)
+        self.assertEqual(response.status_code, 302)  # form is valid and user is redirected
