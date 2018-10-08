@@ -9,75 +9,64 @@
 
 {% block main %}
 <section>
-    <div>
-        <h2>Medlemmer</h2>
-        <h3>
-          <div>
-              {% if perms.members.statistics %}
-              <a href='{% url 'member_statistics' %}'>
-                  <i class='fa fa-line-chart'></i>
-                  Statistikk
-              </a>
-              {% endif %}
 
-              {% if perms.members.add_member %}
-              <a href='{% url 'member_add' %}'>
-                  <i class='fa fa-plus'></i>
-                  Legg til ny
-              </a>
-              {% endif %}
+    {% if perms.members.statistics %}
+    <a class='action-link' href='{% url 'member_statistics' %}'>
+        <span class='fa fa-line-chart'></span>Statistikk
+    </a>
+    {% endif %}
 
-              {% if show_all %}
-              <a href='{% url 'member_list' %}'>
-                  <i class='fa fa-user'></i>
-                  Vis kun aktive
-              </a>
-              {% else %}
-              <a href='{% url 'member_list_all' %}'>
-                  <i class='fa fa-users'></i>
-                  Vis også sluttede
-              </a>
-              {% endif %}
-          </div>
-        </h2>
+    {% if perms.members.add_member %}
+    <a class='action-link' href='{% url 'member_add' %}'>
+        <span class='fa fa-plus'></span>Legg til ny
+    </a>
+    {% endif %}
+
+    {% if show_all %}
+    <a class='action-link' href='{% url 'member_list' %}'>
+        <span class='fa fa-user'></span>Vis kun aktive
+    </a>
+    {% else %}
+    <a class='action-link' href='{% url 'member_list_all' %}'>
+        <span class='fa fa-users'></span>Vis også sluttede
+    </a>
+    {% endif %}
+    <h1>Medlemmer</h1>
+
+    {% for member in members %}
+    {% ifchanged %}<h2>{{ member.instrument.name }}</h2>{% endifchanged %}
+    <div class='member row'>
+        <a class='name' href='{{ member.get_absolute_url}}' >{{ member.get_full_name }}</a>
+
+        {% if member.is_group_leader %}
+        <span class='tag group_leader'>Gruppeleder</span>
+        {% endif %}
+
+        {% if member.board_position %}
+        <a class='email' href='mailto:{{ member.board_position.email }}'>
+            <i class='fa fa-envelope-o' title='Send e-post'></i>
+            {{ member.board_position.title }}
+        </a>
+        {% endif %}
+
+        {% if member.is_on_leave %}
+        <span class='tag on_leave'>Permisjon</span>
+        {% endif %}
+
+        {% if not member.is_active %}
+        <span class='tag quit'>Sluttet</span>
+        {% endif %}
+
+        <a class='float-right action-link' href='tel:{{ member.phone }}'>
+            <span class='fa fa-phone'></span>{{ member.phone }}
+        </a>
+
+        {% if perms.members.change_member %}
+        <a class='float-right action-link' href='{% url 'member_change' member.pk %}'>
+            <span class='fa fa-edit'></span>Endre
+        </a>
+        {% endif %}
     </div>
-
-    <div>
-        {% for member in members %}
-        {% ifchanged %}<h3>{{ member.instrument.name }}</h3>{% endifchanged %}
-        <div class='member row'>
-            <a class='name' href='{{ member.get_absolute_url}}' >{{ member.get_full_name }}</a>
-
-            {% if member.is_group_leader %}
-            <span class='tag group_leader'>Gruppeleder</span>
-            {% endif %}
-
-            {% if member.board_position %}
-            <a class='email' href='mailto:{{ member.board_position.email }}'>
-                <i class='fa fa-envelope-o' title='Send e-post'></i>
-                {{ member.board_position.title }}
-            </a>
-            {% endif %}
-
-            {% if member.is_on_leave %}
-            <span class='tag on_leave'>Permisjon</span>
-            {% endif %}
-
-            {% if not member.is_active %}
-            <span class='tag quit'>Sluttet</span>
-            {% endif %}
-
-            <a class='phone' href='tel:{{ member.phone }}'>
-                <span class='fa fa-phone'></span>{{ member.phone }}
-            </a>
-
-            {% if perms.members.change_member %}
-            <a class='change_member' href='{% url 'member_change' member.pk %}'>
-                <span class='fa fa-edit'></span>Endre
-            </a>
-            {% endif %}
-        </div>
-        {% endfor %}
-    </div>
+    {% endfor %}
 </section>
 {% endblock main %}

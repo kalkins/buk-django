@@ -8,6 +8,7 @@
 
 // Variables and settings
 @import 'variables/_breakpoints.scss';
+@import 'variables/_color-palette.sass';
 
 // Components
 @import 'fonts/_fonts.scss';
@@ -16,4 +17,6 @@
 @import 'body/_body.scss';
 @import 'header/_nav.scss';
 @import 'sections/_sections';
-@import 'form/_form.scss';
+
+// Other components
+@import 'components/_import-components.sass'

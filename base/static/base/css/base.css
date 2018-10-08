@@ -18,8 +18,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* line 7, textstyle/_headers.scss */
+h1 {
+  font-size: 0;
+  font-size: 2em;
+  margin-top: 0;
+}
+
+/* line 13, textstyle/_headers.scss */
 h2 {
-  font-size: 1.8em;
+  font-size: 1.5em;
 }
 
 /* line 1, textstyle/_paragraph.scss */
@@ -172,11 +179,11 @@ body > section:nth-of-type(2n+1) {
   color: white;
 }
 
-/* line 1, form/_textinput.scss */
+/* line 1, components/form/_textinput.scss */
 label.moderntextinput {
   position: relative;
 }
-/* line 4, form/_textinput.scss */
+/* line 4, components/form/_textinput.scss */
 label.moderntextinput input {
   width: 10em;
   font-size: 1.05em;
@@ -187,7 +194,7 @@ label.moderntextinput input {
   margin-bottom: 0.5em;
   padding-right: 2em;
 }
-/* line 8, form/_textinput.scss */
+/* line 8, components/form/_textinput.scss */
 label.moderntextinput i {
   position: absolute;
   bottom: -0.1em;
@@ -195,7 +202,7 @@ label.moderntextinput i {
   margin-right: 0.3em;
 }
 
-/* line 1, form/_button.scss */
+/* line 1, components/form/_button.scss */
 .modernbutton {
   width: 10em;
   font-size: 1.05em;
@@ -205,4 +212,85 @@ label.moderntextinput i {
   padding: 0.5em;
   margin-bottom: 0.5em;
   padding-right: 2em;
+}
+
+/* line 1, components/_buttons.sass */
+.big-link {
+  font-size: 1.5em;
+}
+
+/* line 4, components/_buttons.sass */
+.action-link {
+  display: inline-block;
+  float: right;
+  margin-left: 1em;
+}
+
+/* line 9, components/_buttons.sass */
+.back-button {
+  font-size: 1.3em;
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5em;
+}
+
+/* line 3, components/table/_table.sass */
+.row {
+  margin: 0px;
+  padding: 1em;
+  padding-right: 0;
+}
+
+/* line 8, components/table/_table.sass */
+.row:nth-child(even) {
+  background-color: rgba(41, 49, 61, 0.6);
+}
+
+/* line 11, components/table/_table.sass */
+.row:nth-child(odd) {
+  background-color: rgba(41, 49, 61, 0.3);
+}
+
+/* line 1, components/_icons.sass */
+.fa {
+  width: 1.2em;
+}
+
+/* line 3, components/_icons.sass */
+.fa-edit {
+  width: 1.3em;
+}
+
+/* line 5, components/_icons.sass */
+.fa-phone {
+  width: 1.2em;
+}
+
+/* line 7, components/_icons.sass */
+.fa-line-chart {
+  width: 1.3em;
+}
+
+/* line 1, components/_tags.sass */
+.tag {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 0.2em 0.5em;
+  margin-left: 0.5em;
+}
+
+/* line 8, components/_tags.sass */
+.group_leader {
+  background-color: green;
+}
+
+/* line 11, components/_tags.sass */
+.on_leave {
+  background-color: #ccc;
+  color: black;
+}
+
+/* line 15, components/_tags.sass */
+.quit {
+  background-color: black;
 }
