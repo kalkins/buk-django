@@ -507,7 +507,6 @@ class ChangeCommittee(PermissionRequiredMixin, TemplateView):
     http_method_names = ['get', 'post']
 
     def post(self, request, pk):
-        print(request.POST)
         if 'leader' not in request.POST or 'members[]' not in request.POST:
             raise Http404
 
@@ -537,9 +536,7 @@ class ChangeCommittee(PermissionRequiredMixin, TemplateView):
         context = super(ChangeCommittee, self).get_context_data(**kwargs)
         context['committee'] = get_object_or_404(Committee, pk=kwargs['pk'])
         context['other_groups'] = Committee.objects.exclude(pk=kwargs['pk'])
-        print(context["other_groups"][0].user_set.all())
         context['not_in_group'] = Member.objects\
                                         .exclude(groups__pk=kwargs['pk'])\
                                         .order_by('is_on_leave', 'first_name', 'last_name')
-
         return context
