@@ -438,7 +438,7 @@ class Committee(InheritanceGroup):
         BoardPosition,
         on_delete=models.PROTECT,
         verbose_name='leder i styret',
-        related_name='leader_of',
+        related_name='committee_leader_of',
         blank=True,
         null=True,
         help_text='Lederen for komiteen. Denne eller den under må være satt, men ikke begge.',
@@ -447,7 +447,7 @@ class Committee(InheritanceGroup):
         Member,
         on_delete=models.PROTECT,
         verbose_name='leder medlem',
-        related_name='leader_of',
+        related_name='committee_leader_of',
         blank=True,
         null=True,
     )
@@ -469,6 +469,15 @@ class Committee(InheritanceGroup):
         """Return the :model:`members.Member` object of the leader."""
         return self.leader_board.holder if self.leader_board_id else self.leader_member
     leader.fget.short_description = 'leder'
+
+    @property
+    def ordered_members(self):
+        """
+        Return a list of members of the committe ordered by leader,
+        whether the member is on leave, first name and last name, in that order.
+        """
+        return self.user_set.all().order_by('committee_leader_of', 'is_on_leave',
+                                            'first_name', 'last_name')
 
     @property
     def members(self):

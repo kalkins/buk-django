@@ -476,3 +476,70 @@ class ChangePercussionGroup(PermissionRequiredMixin, TemplateView):
                                       .order_by('is_on_leave', 'first_name', 'last_name')
 
         return context
+
+
+class ChangeCommittee(PermissionRequiredMixin, TemplateView):
+    """
+    Display a form for editing a Committe.
+
+    The form list all members and allows for picking out individual
+    members of the current group, and its leader.
+
+    The form must rely on AJAX to submit the data.
+
+    **Context**
+    ``committee``
+        The commmittee currently being edited.
+
+    ``other_commmittees``
+        A list of the other commmittees.
+
+    ``unassigned``
+        A list of the members who are not assigned to a commmittee.
+
+    **Template**
+
+    :model:`committees/change.html`
+    """
+
+    permission_required = 'members.change_committee'
+    template_name = 'committees/change.html'
+    http_method_names = ['get', 'post']
+
+    def post(self, request, pk):
+        print(request.POST)
+        if 'leader' not in request.POST or 'members[]' not in request.POST:
+            raise Http404
+
+        leader = request.POST['leader']
+        committee_to_change = get_object_or_404(Committee, pk=pk)
+        committee_to_change.leader_member_id = leader
+        committee_to_change.save()
+
+        # Remove old members
+        old_members = Member.objects.filter(groups__pk=committee_to_change.pk)
+        for member in old_members:
+            member.groups.remove(committee_to_change)
+
+        # Add new ones
+        new_member_pks = request.POST.getlist('members[]')
+        new_member_pks.append(leader)
+        new_members = Member.objects.filter(pk__in=new_member_pks)
+        for member in new_members:
+            member.groups.add(committee_to_change)
+
+        return JsonResponse({
+            'success': True,
+            'next': reverse('change_committee', kwargs={'pk': pk}),
+        })
+
+    def get_context_data(self, **kwargs):
+        context = super(ChangeCommittee, self).get_context_data(**kwargs)
+        context['committee'] = get_object_or_404(Committee, pk=kwargs['pk'])
+        context['other_groups'] = Committee.objects.exclude(pk=kwargs['pk'])
+        print(context["other_groups"][0].user_set.all())
+        context['not_in_group'] = Member.objects\
+                                        .exclude(groups__pk=kwargs['pk'])\
+                                        .order_by('is_on_leave', 'first_name', 'last_name')
+
+        return context

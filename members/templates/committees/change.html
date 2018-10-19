@@ -1,0 +1,73 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+    {{ block.super }}
+    <link rel='stylesheet' type='text/css' href='{% static 'percussion_groups/css/change.css' %}' />
+{% endblock stylesheets %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'percussion_groups/js/change.js' %}" deref></script>
+{% endblock javascript %}
+
+{% block main %}
+    <section>
+	<div class='navline'>
+            <h2 class='back-link'>
+		<a href='{% url 'practical' %}' title='Styret og komiteer'>
+                    <i class='fa fa-chevron-left'></i>
+                    komiteer
+		</a>
+            </h2>
+	</div>
+
+	<h1>Endre {{ committee.name }}</h1>
+	<p>
+            <span class='group-leader'>GL</span> = Gruppeleder
+            <span class='has-car'>B</span> = Har tilgang til bil
+            <span class='has-towbar'>H</span> = Har tilgang til bil med hengerfeste
+            <span class='is-on-leave'>P</span> = Er i permisjon
+	</p>
+
+	<button class='save-button'>Lagre</button>
+
+	<table class='member-list'>
+            <tr class='table-header'>
+		<td colspan='5'>{{ committee.name }}</td>
+            </tr>
+            {% if not committee.ordered_members %}
+		<tr>
+		    <td colspan='5'>Ingen medlemmer</td>
+		</tr>
+            {% else %}
+		{% for member in committee.ordered_members.all %}
+		    {% include 'committees/change_list_item.html' with member=member current=True committee=committee %}
+		{% endfor %}
+            {% endif %}
+
+            <tr class='table-header'>
+		<td colspan='5'>Medlemmer uten gruppe</td>
+            </tr>
+            {% if not_in_group %}
+		{% for member in not_in_group %}
+		    {% include 'committees/change_list_item.html' with member=member %}
+		{% endfor %}
+            {% endif %}
+
+            {% for other in other_groups %}
+		<tr class='table-header'>
+		    <td colspan='5'>{{ other.name }}</td>
+		</tr>
+		{% if other.ordered_members %}
+		    {% for member in other.ordered_members.all %}
+			{% include 'committees/change_list_item.html' with member=member committee=other %}
+		    {% endfor %}
+		{% else %}
+		    <td colspan='5'>Ingen medlemmer</td>
+		{% endif %}
+            {% endfor %}
+	</table>
+    </section>
+{% endblock main %}
