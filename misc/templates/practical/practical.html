@@ -37,16 +37,14 @@
         {% endif %}
 
         <a href='{{ committee.leader.get_absolute_url }}'>
-            {{ committee.leader.get_full_name }}
-        </a>
+            {{ committee.leader.get_full_name }}</a>
         &nbsp;(leder)
     </p>
 
     {% for member in committee.members.all %}
     <p>
         <a href='{{ member.get_absolute_url }}'>
-            {{ member.get_full_name }}
-        </a>
+	    {{ member.get_full_name }}</a>
         &nbsp;(medlem)
     </p>
     {% endfor %}
