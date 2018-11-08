@@ -234,11 +234,10 @@ label.moderntextinput i {
   margin-bottom: 0.5em;
 }
 
-/* line 3, components/table/_table.sass */
+/* line 4, components/table/_table.sass */
 .row {
   margin: 0px;
   padding: 1em;
-  padding-right: 0;
 }
 
 /* line 8, components/table/_table.sass */

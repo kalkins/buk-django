@@ -1,12 +1,31 @@
 @import base/css/variables/_color-palette.sass
 
+// Div's as rows
 .row
     margin: 0px
     padding: 1em
-    padding-right: 0
 
 .row:nth-child(even)
     background-color: $even-row
 
 .row:nth-child(odd)
     background-color: $odd-row
+
+//Table as table
+th
+    text-align: left
+tr
+    height: 3em
+
+tr:nth-child(even)
+    background-color: $even-row
+
+tr:nth-child(odd)
+    background-color: $odd-row
+
+//Forms should not look like tables
+form
+    tr:nth-child(even)
+        background-color: initial
+    tr:nth-child(odd)
+        background-color: initial
