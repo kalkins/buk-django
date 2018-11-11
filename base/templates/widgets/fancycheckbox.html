@@ -1,4 +1,4 @@
-<div class="checkbox_container">
-  <input type="checkbox" id="{{ widget.name }}" name="{{ widget.name }}" value="{{ widget.value|stringformat:'s' }}" checked="checked">
-  <label class="checkmark" for="{{ widget.name}}"></label>
-</div>
+<input type="checkbox" class="oldnotfancycheckbox" id="{{ widget.name }}" name="{{ widget.name }}" value="{{ widget.value|stringformat:'s' }}">
+<label class="checkbox-container" for="{{ widget.name}}">
+  <div class="fancy-checkbox"><div class="checkmark"></div></div>
+</label>

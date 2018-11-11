@@ -12,20 +12,15 @@
     background-color: $odd-row
 
 //Table as table
+table
+    border-collapse: collapse
+th, td
+    padding: 1em
 th
     text-align: left
-tr
-    height: 3em
 
 tr:nth-child(even)
     background-color: $even-row
 
 tr:nth-child(odd)
     background-color: $odd-row
-
-//Forms should not look like tables
-form
-    tr:nth-child(even)
-        background-color: initial
-    tr:nth-child(odd)
-        background-color: initial

@@ -179,39 +179,107 @@ body > section:nth-of-type(2n+1) {
   color: white;
 }
 
-/* line 1, components/form/_textinput.scss */
-label.moderntextinput {
-  position: relative;
-}
-/* line 4, components/form/_textinput.scss */
-label.moderntextinput input {
-  width: 10em;
-  font-size: 1.05em;
-  font-family: 'Droid Sans', Helvetica, Arial, sans-serif;
-  vertical-align: middle;
-  border: 1px solid gray;
-  padding: 0.5em;
-  margin-bottom: 0.5em;
-  padding-right: 2em;
-}
-/* line 8, components/form/_textinput.scss */
-label.moderntextinput i {
-  position: absolute;
-  bottom: -0.1em;
-  right: 0.4em;
-  margin-right: 0.3em;
+/* Hide the browser's default checkbox */
+/* line 2, components/form/_checkbox-radiobutton.sass */
+.oldnotfancycheckbox {
+  display: none;
+  width: initial;
 }
 
-/* line 1, components/form/_button.scss */
-.modernbutton {
-  width: 10em;
+/* line 6, components/form/_checkbox-radiobutton.sass */
+.checkbox-container {
+  /* Customize the container */
+  position: relative;
+  display: block;
+  width: fit-content;
+  height: 1em;
+  cursor: pointer;
+  padding-left: 1.5em;
   font-size: 1.05em;
-  font-family: 'Droid Sans', Helvetica, Arial, sans-serif;
+  /* Create a custom checkbox */
+  /* Style the checkmark/indicator */
+  /* When the checkbox is checked, add a background */
+  /* Create the checkmark/indicator (hidden when not checked) */
+}
+/* line 17, components/form/_checkbox-radiobutton.sass */
+.checkbox-container .fancy-checkbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1em;
+  width: 1em;
+  background-color: #222933;
+  display: inline-block;
+  border: solid #fff 2px;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* line 34, components/form/_checkbox-radiobutton.sass */
+.checkbox-container .checkmark {
+  display: inline-block;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+/* line 50, components/form/_checkbox-radiobutton.sass */
+.checkbox-container .checkmark {
+  visibility: hidden;
+}
+
+/* Show the checkmark when checked */
+/* line 56, components/form/_checkbox-radiobutton.sass */
+input:checked ~ .checkbox-container .checkmark {
+  visibility: visible;
+}
+
+/* On mouse-over, add a grey background color */
+/* line 61, components/form/_checkbox-radiobutton.sass */
+.checkbox-container:hover .fancy-checkbox {
+  background-color: #29313d;
+}
+
+/* line 5, components/form/_form.scss */
+form tr:nth-child(even), form tr:nth-child(odd) {
+  background-color: initial;
+  margin-bottom: 1em;
+  height: auto;
+}
+/* line 10, components/form/_form.scss */
+form th, form td {
+  padding: 0.5em 1em 0.5em 0;
+}
+
+/* line 15, components/form/_form.scss */
+input, select, textarea, button {
+  width: 15em;
+  font-size: 1.05em;
   vertical-align: middle;
-  border: 1px solid gray;
+  border: 2px solid #fff;
   padding: 0.5em;
-  margin-bottom: 0.5em;
-  padding-right: 2em;
+  background-color: #222933;
+  color: #fff;
+}
+
+/* line 25, components/form/_form.scss */
+input:focus {
+  background-color: #29313d;
+}
+
+/* line 29, components/form/_form.scss */
+input[type="submit"] {
+  width: 10em;
+}
+
+/* line 33, components/form/_form.scss */
+input[type="submit"]:hover {
+  background-color: #29313d;
 }
 
 /* line 1, components/_buttons.sass */
@@ -247,6 +315,31 @@ label.moderntextinput i {
 
 /* line 11, components/table/_table.sass */
 .row:nth-child(odd) {
+  background-color: rgba(41, 49, 61, 0.3);
+}
+
+/* line 15, components/table/_table.sass */
+table {
+  border-collapse: collapse;
+}
+
+/* line 17, components/table/_table.sass */
+th, td {
+  padding: 1em;
+}
+
+/* line 19, components/table/_table.sass */
+th {
+  text-align: left;
+}
+
+/* line 22, components/table/_table.sass */
+tr:nth-child(even) {
+  background-color: rgba(41, 49, 61, 0.6);
+}
+
+/* line 25, components/table/_table.sass */
+tr:nth-child(odd) {
   background-color: rgba(41, 49, 61, 0.3);
 }
 
