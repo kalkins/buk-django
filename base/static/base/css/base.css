@@ -62,7 +62,7 @@ body {
   overflow-x: hidden;
   background-color: #222933;
 }
-@media (min-width: 800px) {
+@media (max-width: 800px) {
   /* line 4, body/_body.scss */
   body {
     padding-top: 4rem;
