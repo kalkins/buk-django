@@ -24,28 +24,33 @@
         {% endfor %}
     </ul>
 
-	<table class='posts'>
+    <a class='action-link, big-link' href='{{ new_post_url }}'>
+        <i class='fa fa-edit'></i>
+        Ny post
+    </a>
+
+    <table class='posts'>
         {% for post in posts %}
-		<tr>
-		    <td>
-			    <i class='fa fa-envelope-o'></i>
-		    </td>
-			<td>
-                <a class='post-title' href='{{ post.get_absolute_url }}'>
-				    {{ post.title }}
-				</a>
-			</td>
-			<td>
-			    <div class='post-info'>
-				    <p class='poster-name'>
-					    {{ post.poster.get_full_name }}
-					</p>
-					<p class='post-timestamp'>
-					    {{ post.created }}
-					</p>
-				</div>
-			</td>
-        </tr>
+	    <tr>
+		<td>
+		    <i class='fa fa-envelope-o'></i>
+		</td>
+		<td>
+                    <a class='post-title' href='{{ post.get_absolute_url }}'>
+			{{ post.title }}
+		    </a>
+		</td>
+		<td>
+		    <div class='post-info'>
+			<p class='poster-name'>
+			    {{ post.poster.get_full_name }}
+			</p>
+			<p class='post-timestamp'>
+			    {{ post.created }}
+			</p>
+		    </div>
+		</td>
+            </tr>
         {% endfor %}
     </table>
 </section>

@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse
 
 from utils.views import MultiFormView
 from polls.views import PollCreateFormView, PollAnswerFormView
@@ -56,6 +57,9 @@ class PostForm(MultiFormView):
 class PostCreate(UserCanAccessForumMixin, PollCreateFormView, PostForm):
     template_name = 'forum/post_create.html'
 
+    def get_post_form_initial(self):
+        return {'forum': self.kwargs['forum']}
+
 
 class PostUpdate(UserCanAccessForumMixin, SingleObjectMixin, PollCreateFormView, PostForm):
     model = Post
@@ -106,6 +110,7 @@ class PostList(UserCanAccessForumMixin, ListView):
                 break
 
         context['forums'] = Post.FORUM_CHOICES
+        context['new_post_url'] = reverse('forum_post_create', args=[self.kwargs['forum']])
 
         return context
 
@@ -123,5 +128,6 @@ class AllPostList(UserCanAccessForumMixin, ListView):
 
         context['forum_name'] = 'All'
         context['forums'] = Post.FORUM_CHOICES
+        context['new_post_url'] = reverse('forum_post_create', args=['diverse'])
 
         return context

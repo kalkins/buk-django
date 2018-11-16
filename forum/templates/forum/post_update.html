@@ -14,7 +14,7 @@
     <form method='POST'>
         {% csrf_token %}
         <table>
-            {{ form.as_table }}
+            {{ post_form.as_table }}
         </table>
 
         {% include 'polls/poll_form.html' %}
