@@ -11,14 +11,13 @@
 <section>
     <ul class='forums'>
 	<li>
-            <a href='{% url 'all_forum_post_list' %}'>
+            <a href='{% url 'all_forum_post_list' %}' class='forum-list-current'>
                 Alle
             </a>
         </li>
         {% for forum in forums %}
         <li>
-            <a href='{% url 'forum_post_list' forum.0 %}'
-			   {% if forum.1 == forum_name %} class='forum-list-current' {% endif %}>
+            <a href='{% url 'forum_post_list' forum.0 %}'>
                 {{ forum.1 }}
             </a>
         </li>

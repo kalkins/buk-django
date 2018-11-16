@@ -106,6 +106,22 @@ class PostList(UserCanAccessForumMixin, ListView):
                 break
 
         context['forums'] = Post.FORUM_CHOICES
-        context['posts'] = Post.objects.filter(forum=self.forum)
+
+        return context
+
+
+class AllPostList(UserCanAccessForumMixin, ListView):
+    model = Post
+    context_object_name = 'posts'
+    template_name = 'forum/all_post_list.html'
+
+    def get_queryset(self):
+        return Post.objects.all().prefetch_related('poster')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AllPostList, self).get_context_data(*args, **kwargs)
+
+        context['forum_name'] = 'All'
+        context['forums'] = Post.FORUM_CHOICES
 
         return context
