@@ -18,12 +18,12 @@ input, select, textarea,button {
     vertical-align: middle;
     border: 2px solid $secondary;
     padding: 0.5em;
-    background-color: $main;
+    background-color: $primary;
     color: $secondary;
 }
 
 input:focus {
-    background-color: $main-light
+    background-color: $primary-highlight
 }
 
 input[type="submit"] {
@@ -31,5 +31,5 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: $main-light
+    background-color: $primary-highlight
 }

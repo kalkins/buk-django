@@ -1,0 +1,13 @@
+body > section {
+    padding: $section-padding;
+
+    &:nth-of-type(2n) {
+        background-color: $light-section-bg-color;
+        color: $light-section-text-color;
+    }
+
+    &:nth-of-type(2n+1) {
+        background-color: $dark-section-bg-color;
+        color: $dark-section-text-color;
+    }
+}

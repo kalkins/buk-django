@@ -1,0 +1,19 @@
+// Div's as rows
+.row
+    margin: 0px
+    padding: 1em
+
+//Table as table
+table
+    border-collapse: collapse
+th, td
+    padding: 1em
+th
+    text-align: left
+
+//Colors
+tr:nth-child(even), .row:nth-child(even)
+    background-color: $primary-even-row
+
+tr:nth-child(odd), .row:nth-child(odd)
+    background-color: $primary-odd-row
