@@ -23,7 +23,7 @@ input, select, textarea,button {
 }
 
 input:focus {
-    background-color: $primary-highlight
+    background-color: $primary-highlight;
 }
 
 input[type="submit"] {
@@ -31,5 +31,5 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: $primary-highlight
+    background-color: $primary-highlight;
 }
