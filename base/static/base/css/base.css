@@ -1,4 +1,4 @@
-/* line 1, common/_body.scss */
+/* line 1, common-base/_body.scss */
 body {
   padding-top: 4rem;
   margin: 0;
@@ -7,22 +7,22 @@ body {
   background-color: #222933;
 }
 @media (max-width: 800px) {
-  /* line 1, common/_body.scss */
+  /* line 1, common-base/_body.scss */
   body {
     padding-top: 4rem;
   }
 }
 
-/* line 1, common/_sections.scss */
+/* line 1, common-base/_sections.scss */
 body > section {
   padding: 2em 9%;
 }
-/* line 4, common/_sections.scss */
+/* line 4, common-base/_sections.scss */
 body > section:nth-of-type(2n) {
   background-color: white;
   color: black;
 }
-/* line 9, common/_sections.scss */
+/* line 9, common-base/_sections.scss */
 body > section:nth-of-type(2n+1) {
   background-color: #222933;
   color: white;
@@ -40,7 +40,7 @@ body > section:nth-of-type(2n+1) {
   font-family: 'Nunito';
   src: url("/static/base/fonts/Nunito/Nunito-Regular.ttf") format("truetype");
 }
-/* line 1, common/header/_nav.scss */
+/* line 1, common-base/header/_nav.scss */
 nav.menu-full, nav.menu-collapsed {
   z-index: 1000;
   text-align: center;
@@ -51,12 +51,12 @@ nav.menu-full, nav.menu-collapsed {
   font-family: Nunito, "Helvetica Neue", Helvetica, Arial, sans-serif;
   cursor: pointer;
 }
-/* line 11, common/header/_nav.scss */
+/* line 11, common-base/header/_nav.scss */
 nav.menu-full a:link, nav.menu-full a:active, nav.menu-full a:visited, nav.menu-full a:hover, nav.menu-collapsed a:link, nav.menu-collapsed a:active, nav.menu-collapsed a:visited, nav.menu-collapsed a:hover {
   color: #222933;
 }
 
-/* line 1, common/header/_nav-full.scss */
+/* line 1, common-base/header/_nav-full.scss */
 nav.menu-full {
   width: 100%;
   height: 4rem;
@@ -67,32 +67,32 @@ nav.menu-full {
   background-color: white;
 }
 @media (max-width: 800px) {
-  /* line 1, common/header/_nav-full.scss */
+  /* line 1, common-base/header/_nav-full.scss */
   nav.menu-full {
     display: none;
   }
 }
-/* line 14, common/header/_nav-full.scss */
+/* line 14, common-base/header/_nav-full.scss */
 nav.menu-full > *:not(.dropdown) {
   display: inline-block;
   padding: 0 1.5vw;
 }
-/* line 18, common/header/_nav-full.scss */
+/* line 18, common-base/header/_nav-full.scss */
 nav.menu-full > *:not(.dropdown):not(:first-child) {
   margin-left: 0em;
 }
 
 @media (min-width: 800px) {
-  /* line 1, common/header/_nav-collapsed.scss */
+  /* line 1, common-base/header/_nav-collapsed.scss */
   nav.menu-collapsed {
     display: none;
   }
 }
-/* line 6, common/header/_nav-collapsed.scss */
+/* line 6, common-base/header/_nav-collapsed.scss */
 nav.menu-collapsed > input[type='checkbox'] {
   display: none;
 }
-/* line 10, common/header/_nav-collapsed.scss */
+/* line 10, common-base/header/_nav-collapsed.scss */
 nav.menu-collapsed > label {
   display: block;
   position: fixed;
@@ -106,16 +106,16 @@ nav.menu-collapsed > label {
   background-color: white;
   cursor: pointer;
 }
-/* line 24, common/header/_nav-collapsed.scss */
+/* line 24, common-base/header/_nav-collapsed.scss */
 nav.menu-collapsed > label span::after {
   margin-left: 0.3em;
   content: "MENY";
 }
-/* line 31, common/header/_nav-collapsed.scss */
+/* line 31, common-base/header/_nav-collapsed.scss */
 nav.menu-collapsed > input:checked ~ label span::after {
   content: "LUKK";
 }
-/* line 35, common/header/_nav-collapsed.scss */
+/* line 35, common-base/header/_nav-collapsed.scss */
 nav.menu-collapsed > div {
   position: fixed;
   top: 4rem;
@@ -125,24 +125,24 @@ nav.menu-collapsed > div {
   background-color: white;
   overflow-y: scroll;
 }
-/* line 44, common/header/_nav-collapsed.scss */
+/* line 44, common-base/header/_nav-collapsed.scss */
 nav.menu-collapsed > div * {
   display: block;
   width: 100%;
 }
-/* line 50, common/header/_nav-collapsed.scss */
+/* line 50, common-base/header/_nav-collapsed.scss */
 nav.menu-collapsed > input:checked ~ div {
   left: 0;
 }
 
 /* Hide the browser's default checkbox */
-/* line 2, common/components/forms/_checkbox-radiobutton.sass */
+/* line 2, common-base/elements/forms/_checkbox-radiobutton.sass */
 .oldnotfancycheckbox {
   display: none;
   width: initial;
 }
 
-/* line 6, common/components/forms/_checkbox-radiobutton.sass */
+/* line 6, common-base/elements/forms/_checkbox-radiobutton.sass */
 .checkbox-container {
   /* Customize the container */
   position: relative;
@@ -157,7 +157,7 @@ nav.menu-collapsed > input:checked ~ div {
   /* When the checkbox is checked, add a background */
   /* Create the checkmark/indicator (hidden when not checked) */
 }
-/* line 17, common/components/forms/_checkbox-radiobutton.sass */
+/* line 17, common-base/elements/forms/_checkbox-radiobutton.sass */
 .checkbox-container .fancy-checkbox {
   position: absolute;
   top: 0;
@@ -173,7 +173,7 @@ nav.menu-collapsed > input:checked ~ div {
   -ms-user-select: none;
   user-select: none;
 }
-/* line 34, common/components/forms/_checkbox-radiobutton.sass */
+/* line 34, common-base/elements/forms/_checkbox-radiobutton.sass */
 .checkbox-container .checkmark {
   display: inline-block;
   width: 5px;
@@ -184,35 +184,35 @@ nav.menu-collapsed > input:checked ~ div {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-/* line 50, common/components/forms/_checkbox-radiobutton.sass */
+/* line 50, common-base/elements/forms/_checkbox-radiobutton.sass */
 .checkbox-container .checkmark {
   visibility: hidden;
 }
 
 /* Show the checkmark when checked */
-/* line 56, common/components/forms/_checkbox-radiobutton.sass */
+/* line 56, common-base/elements/forms/_checkbox-radiobutton.sass */
 input:checked ~ .checkbox-container .checkmark {
   visibility: visible;
 }
 
 /* On mouse-over, add a grey background color */
-/* line 61, common/components/forms/_checkbox-radiobutton.sass */
+/* line 61, common-base/elements/forms/_checkbox-radiobutton.sass */
 .checkbox-container:hover .fancy-checkbox {
   background-color: #29313d;
 }
 
-/* line 5, common/components/forms/_form.scss */
+/* line 5, common-base/elements/forms/_form.scss */
 form tr:nth-child(even), form tr:nth-child(odd) {
   background-color: initial;
   margin-bottom: 1em;
   height: auto;
 }
-/* line 10, common/components/forms/_form.scss */
+/* line 10, common-base/elements/forms/_form.scss */
 form th, form td {
   padding: 0.5em 1em 0.5em 0;
 }
 
-/* line 15, common/components/forms/_form.scss */
+/* line 15, common-base/elements/forms/_form.scss */
 input, select, textarea, button {
   width: 15em;
   font-size: 1.05em;
@@ -223,34 +223,34 @@ input, select, textarea, button {
   color: white;
 }
 
-/* line 25, common/components/forms/_form.scss */
+/* line 25, common-base/elements/forms/_form.scss */
 input:focus {
   background-color: #29313d;
 }
 
-/* line 29, common/components/forms/_form.scss */
+/* line 29, common-base/elements/forms/_form.scss */
 input[type="submit"] {
   width: 10em;
 }
 
-/* line 33, common/components/forms/_form.scss */
+/* line 33, common-base/elements/forms/_form.scss */
 input[type="submit"]:hover {
   background-color: #29313d;
 }
 
-/* line 1, common/components/_buttons.sass */
+/* line 1, common-base/elements/_buttons.sass */
 .big-link {
   font-size: 1.5em;
 }
 
-/* line 4, common/components/_buttons.sass */
+/* line 4, common-base/elements/_buttons.sass */
 .action-link {
   display: inline-block;
   float: right;
   margin-left: 1em;
 }
 
-/* line 9, common/components/_buttons.sass */
+/* line 9, common-base/elements/_buttons.sass */
 .back-button {
   font-size: 1.3em;
   display: block;
@@ -258,58 +258,58 @@ input[type="submit"]:hover {
   margin-bottom: 0.5em;
 }
 
-/* line 2, common/components/_table.sass */
+/* line 2, common-base/elements/_table.sass */
 .row {
   margin: 0px;
   padding: 1em;
 }
 
-/* line 7, common/components/_table.sass */
+/* line 7, common-base/elements/_table.sass */
 table {
   border-collapse: collapse;
 }
 
-/* line 9, common/components/_table.sass */
+/* line 9, common-base/elements/_table.sass */
 th, td {
   padding: 1em;
 }
 
-/* line 11, common/components/_table.sass */
+/* line 11, common-base/elements/_table.sass */
 th {
   text-align: left;
 }
 
-/* line 15, common/components/_table.sass */
+/* line 15, common-base/elements/_table.sass */
 tr:nth-child(even), .row:nth-child(even) {
   background-color: rgba(41, 49, 61, 0.6);
 }
 
-/* line 18, common/components/_table.sass */
+/* line 18, common-base/elements/_table.sass */
 tr:nth-child(odd), .row:nth-child(odd) {
   background-color: rgba(41, 49, 61, 0.3);
 }
 
-/* line 1, common/components/_icons.sass */
+/* line 1, common-base/elements/_icons.sass */
 .fa {
   width: 1.2em;
 }
 
-/* line 3, common/components/_icons.sass */
+/* line 3, common-base/elements/_icons.sass */
 .fa-edit {
   width: 1.3em;
 }
 
-/* line 5, common/components/_icons.sass */
+/* line 5, common-base/elements/_icons.sass */
 .fa-phone {
   width: 1.2em;
 }
 
-/* line 7, common/components/_icons.sass */
+/* line 7, common-base/elements/_icons.sass */
 .fa-line-chart {
   width: 1.3em;
 }
 
-/* line 1, common/components/_tags.sass */
+/* line 1, common-base/elements/_tags.sass */
 .tag {
   display: inline-block;
   border-radius: 5px;
@@ -317,57 +317,57 @@ tr:nth-child(odd), .row:nth-child(odd) {
   margin-left: 0.5em;
 }
 
-/* line 8, common/components/_tags.sass */
+/* line 8, common-base/elements/_tags.sass */
 .group_leader {
   background-color: green;
 }
 
-/* line 11, common/components/_tags.sass */
+/* line 11, common-base/elements/_tags.sass */
 .on_leave {
   background-color: #ccc;
   color: black;
 }
 
-/* line 15, common/components/_tags.sass */
+/* line 15, common-base/elements/_tags.sass */
 .quit {
   background-color: black;
 }
 
-/* line 1, common/components/_text.scss */
+/* line 1, common-base/elements/_text.scss */
 p {
   font-weight: 200;
 }
 
-/* line 6, common/components/_text.scss */
+/* line 6, common-base/elements/_text.scss */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Dosis', sans-serif;
   font-weight: 500;
   line-height: 1.1em;
 }
 
-/* line 11, common/components/_text.scss */
+/* line 11, common-base/elements/_text.scss */
 h1 {
   font-size: 0;
   font-size: 2em;
   margin-top: 0;
 }
 
-/* line 16, common/components/_text.scss */
+/* line 16, common-base/elements/_text.scss */
 h2 {
   font-size: 1.5em;
 }
 
-/* line 21, common/components/_text.scss */
+/* line 21, common-base/elements/_text.scss */
 a {
   font-weight: 200;
 }
 
-/* line 24, common/components/_text.scss */
+/* line 24, common-base/elements/_text.scss */
 body > section:nth-of-type(2n) a {
   color: #222933;
 }
 
-/* line 27, common/components/_text.scss */
+/* line 27, common-base/elements/_text.scss */
 body > section:nth-of-type(2n+1) a {
   color: white;
 }
