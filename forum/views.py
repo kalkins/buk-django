@@ -89,7 +89,15 @@ class PostDetail(UserCanAccessForumMixin, PollAnswerFormView):
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
-        return super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        prev = self.request.GET.get('prev')
+        print(prev)
+        if prev:
+            context['back_link'] = reverse(prev)
+        else:
+            forum_link = reverse('forum_post_list', args=[self.kwargs['forum']])
+            context['back_link'] = forum_link
+        return context
 
 
 class PostList(UserCanAccessForumMixin, ListView):
