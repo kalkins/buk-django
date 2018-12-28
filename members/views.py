@@ -10,12 +10,13 @@ from django.views.generic import (DetailView, ListView, CreateView,
 from django.contrib.auth.mixins import (LoginRequiredMixin, PermissionRequiredMixin,
                                         UserPassesTestMixin)
 
-from base.models import EditableContent
+from utils.views import MultiFormView
 
 from .models import (Member, MembershipPeriod, LeavePeriod,
-                     Committee, BoardPosition, PercussionGroup)
+                     Committee, PercussionGroup)
 from .forms import (MemberAddForm, MemberStatisticsForm,
-                    MembershipPeriodFormset, LeavePeriodFormset)
+                    MembershipPeriodFormset, LeavePeriodFormset,
+                    CommitteeChangeForm, CommitteeMembershipFormset)
 
 
 class MemberDetail(DetailView):
@@ -478,65 +479,28 @@ class ChangePercussionGroup(PermissionRequiredMixin, TemplateView):
         return context
 
 
-class ChangeCommittee(PermissionRequiredMixin, TemplateView):
+class ChangeCommittee(PermissionRequiredMixin, MultiFormView):
     """
     Display a form for editing a Committe.
 
     The form list all members and allows for picking out individual
     members of the current group, and its leader.
 
-    The form must rely on AJAX to submit the data.
-
-    **Context**
-    ``committee``
-        The commmittee currently being edited.
-
-    ``other_commmittees``
-        A list of the other commmittees.
-
-    ``unassigned``
-        A list of the members who are not assigned to a commmittee.
-
     **Template**
 
     :model:`committees/change.html`
     """
-
     permission_required = 'members.change_committee'
     template_name = 'committees/change.html'
-    http_method_names = ['get', 'post']
+    success_url = reverse_lazy('practical')
+    batch = True
+    forms = [
+        {'name': 'committee_form', 'form': CommitteeChangeForm},
+        {'name': 'formset', 'form': CommitteeMembershipFormset},
+    ]
 
-    def post(self, request, pk):
-        if 'leader' not in request.POST or 'members[]' not in request.POST:
-            raise Http404
+    def get_committee_form_instance(self):
+        return Committee.objects.get(pk=self.kwargs['pk'])
 
-        leader = request.POST['leader']
-        committee_to_change = get_object_or_404(Committee, pk=pk)
-        committee_to_change.leader_member_id = leader
-        committee_to_change.save()
-
-        # Remove old members
-        old_members = Member.objects.filter(groups__pk=committee_to_change.pk)
-        for member in old_members:
-            member.groups.remove(committee_to_change)
-
-        # Add new ones
-        new_member_pks = request.POST.getlist('members[]')
-        new_member_pks.append(leader)
-        new_members = Member.objects.filter(pk__in=new_member_pks)
-        for member in new_members:
-            member.groups.add(committee_to_change)
-
-        return JsonResponse({
-            'success': True,
-            'next': reverse('change_committee', kwargs={'pk': pk}),
-        })
-
-    def get_context_data(self, **kwargs):
-        context = super(ChangeCommittee, self).get_context_data(**kwargs)
-        context['committee'] = get_object_or_404(Committee, pk=kwargs['pk'])
-        context['other_groups'] = Committee.objects.exclude(pk=kwargs['pk'])
-        context['not_in_group'] = Member.objects\
-                                        .exclude(groups__pk=kwargs['pk'])\
-                                        .order_by('is_on_leave', 'first_name', 'last_name')
-        return context
+    def get_formset_instance(self):
+        return Committee.objects.get(pk=self.kwargs['pk'])

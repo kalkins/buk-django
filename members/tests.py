@@ -438,89 +438,46 @@ class BoardPositionTestCase(TestCase):
 
 
 class CommitteeTestCase(TestCase):
-    def test_unique_leader_board(self):
-        holder = generate_member()
-        pos = BoardPosition.objects.create(name="Pos1", holder=holder)
-        Committee.objects.create(name='Com1', leader_board=pos, email='com1@example.com')
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name='Com2', leader_board=pos, email='com1@example.com')
-
-    def test_unique_leader_member(self):
-        leader = generate_member()
-        Committee.objects.create(name='Com1', leader_member=leader, email='com2@example.com')
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name='Com2', leader_member=leader, email='com2@example.com')
-
     def test_unique_email(self):
         email = 'com@example.com'
         leader1 = generate_member()
         leader2 = generate_member()
-        Committee.objects.create(name='Com1', leader_member=leader1, email=email)
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name='Com2', leader_member=leader2, email=email)
+        Committee.objects.create(name='Com1', leader=leader1, email=email)
+        with self.assertRaises(IntegrityError):
+            Committee.objects.create(name='Com2', leader=leader2, email=email)
 
     def test_unique_name(self):
         name = 'com'
         leader1 = generate_member()
         leader2 = generate_member()
-        Committee.objects.create(name=name, leader_member=leader1, email='com1@example.com')
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name=name, leader_member=leader2, email='com2@example.com')
+        Committee.objects.create(name=name, leader=leader1, email='com1@example.com')
+        with self.assertRaises(IntegrityError):
+            Committee.objects.create(name=name, leader=leader2, email='com2@example.com')
 
     def test_order(self):
-        com3 = Committee.objects.create(name='com3', leader_member=generate_member(), email='com3@example.com', order=3)
-        com1 = Committee.objects.create(name='com1', leader_member=generate_member(), email='com1@example.com', order=1)
-        com4 = Committee.objects.create(name='com4', leader_member=generate_member(), email='com4@example.com', order=4)
-        com2_1 = Committee.objects.create(name='com2_1', leader_member=generate_member(), email='com2_1@example.com', order=2)
-        com0 = Committee.objects.create(name='com0', leader_member=generate_member(), email='com0@example.com')
-        com2_2 = Committee.objects.create(name='com2_2', leader_member=generate_member(), email='com2_2@example.com', order=2)
+        com3 = Committee.objects.create(name='com3', leader=generate_member(), email='com3@example.com', order=3)
+        com1 = Committee.objects.create(name='com1', leader=generate_member(), email='com1@example.com', order=1)
+        com4 = Committee.objects.create(name='com4', leader=generate_member(), email='com4@example.com', order=4)
+        com2_1 = Committee.objects.create(name='com2_1', leader=generate_member(), email='com2_1@example.com', order=2)
+        com0 = Committee.objects.create(name='com0', leader=generate_member(), email='com0@example.com')
+        com2_2 = Committee.objects.create(name='com2_2', leader=generate_member(), email='com2_2@example.com', order=2)
 
         self.assertEqual(list(Committee.objects.all()), [com0, com1, com2_1, com2_2, com3, com4])
 
     def test_no_leader(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(IntegrityError):
             Committee.objects.create(name='com', email='com@example.com')
-
-    def test_multiple_leaders(self):
-        leader_member = generate_member()
-        holder = generate_member()
-        pos = BoardPosition.objects.create(name="Pos1", holder=holder)
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name='com', leader_member=leader_member, leader_board=pos, email='com@example.com')
-
-    def test_leader(self):
-        leader_member = generate_member()
-        holder = generate_member()
-        pos = BoardPosition.objects.create(name="Pos1", holder=holder)
-        com = Committee.objects.create(name='com', leader_member=leader_member, email='com@example.com')
-        self.assertEqual(com.leader, leader_member)
-
-        com.leader_member = None
-        com.leader_board = pos
-        self.assertEqual(com.leader, holder)
-
-    def test_change_from_boardPosition_to_leader(self):
-        holder = generate_member()
-        board_position = BoardPosition.objects.create(name="Testansvarlig", holder=holder)
-        committee = Committee.objects.create(name="com", leader_board=board_position, email='com@example.com')
-        new_leader = generate_member()
-        committee.leader_member = new_leader
-        committee.leader_board = None
-        committee.save()
-        self.assertEqual(committee.leader, new_leader)
-        self.assertNotEqual(committee.leader, holder)
 
     def test_members(self):
         member1 = generate_member()
         member2 = generate_member()
         member3 = generate_member()
-        holder = generate_member()
-        pos = BoardPosition.objects.create(name="Pos1", holder=holder)
-        com = Committee.objects.create(name='com', leader_board=pos, email='com@example.com')
-        com.user_set.add(member1, member2, member3)
+        leader = generate_member()
+        com = Committee.objects.create(name='com', leader=leader, email='com@example.com')
+        com.add_members([member1, member2, member3])
 
-        self.assertEqual(set(com.user_set.all()), set([member1, member2, member3, holder]))
-        self.assertEqual(set(com.members), set([member1, member2, member3]))
+        self.assertEqual(set(com.user_set.all()), set([member1, member2, member3, leader]))
+        self.assertEqual(set(com.members.all()), set([member1, member2, member3]))
 
 
 class MemberListTestCase(TestCase):

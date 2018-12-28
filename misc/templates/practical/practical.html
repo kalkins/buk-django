@@ -24,30 +24,35 @@
     {% endfor %}
 
     {% for committee in committees %}
-    <br />
-    <h3>{{ committee.name }}:</h3>
-    {% if perms.members.change_committee %}
-        <a href='{% url 'change_committee' committee.pk %}'>
-            <span class='fa fa-edit'></span>Endre
-        </a>
-    {% endif %}
-    <p>
-        {% if committee.leader_board_id %}
-        {{ committee.leader_board.title }}
-        {% endif %}
+		<br />
+		<h3>{{ committee.name }}:</h3>
+		{% if perms.members.change_committee %}
+			<a href='{% url 'change_committee' committee.pk %}'>
+				<span class='fa fa-edit'></span>Endre
+			</a>
+		{% endif %}
+		{% if committee.leader %}
+			<p>
+				{{ committee.leader_title }}
 
-        <a href='{{ committee.leader.get_absolute_url }}'>
-            {{ committee.leader.get_full_name }}</a>
-        &nbsp;(leder)
-    </p>
+				<a href='{{ committee.leader.get_absolute_url }}'>
+					{{ committee.leader.get_full_name }}</a>
+				&nbsp;
+			</p>
+		{% endif %}
 
-    {% for member in committee.members.all %}
-    <p>
-        <a href='{{ member.get_absolute_url }}'>
-	    {{ member.get_full_name }}</a>
-        &nbsp;(medlem)
-    </p>
-    {% endfor %}
+		{% for membership in committee.memberships %}
+			<p>
+				{{ membership.title }}
+
+				{% with member=membership.member %}
+					<a href='{{ member.get_absolute_url }}'>
+						{{ member.get_full_name }}
+					</a>
+				{% endwith %}
+				&nbsp;
+			</p>
+		{% endfor %}
     {% endfor %}
 </section>
 {% endblock main %}

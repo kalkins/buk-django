@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser,
                                         PermissionsMixin, Group, Permission)
 
@@ -424,32 +424,21 @@ class BoardPosition(InheritanceGroup):
 
 
 class Committee(InheritanceGroup):
-    """
-    Store a committee.
-
-    A committee can be led by either a member on the board,
-    or a regular member. Therefore one of these must be set,
-    but not both.
-
-    To get the :model:`members.Member` object of the leader,
-    use the ``leader`` property.
-    """
-    leader_board = models.OneToOneField(
-        BoardPosition,
-        on_delete=models.PROTECT,
-        verbose_name='leder i styret',
-        related_name='committee_leader_of',
-        blank=True,
-        null=True,
-        help_text='Lederen for komiteen. Denne eller den under må være satt, men ikke begge.',
-    )
-    leader_member = models.OneToOneField(
+    """Store a committee."""
+    leader = models.ForeignKey(
         Member,
-        on_delete=models.PROTECT,
-        verbose_name='leder medlem',
-        related_name='committee_leader_of',
+        on_delete=models.SET_NULL,
+        verbose_name='leder',
+        related_name='leader_of',
         blank=True,
         null=True,
+    )
+    leader_title = models.CharField('ledertittel', max_length=100, blank=True)
+    members = models.ManyToManyField(
+        Member,
+        verbose_name='medlemmer',
+        related_name='committees',
+        through='CommitteeMembership',
     )
     email = models.EmailField(
         verbose_name='e-post',
@@ -462,14 +451,6 @@ class Committee(InheritanceGroup):
             default=0,
             help_text='Dette angir rekkefølgen komiteene vises i. Lavere tall kommer først.')
 
-    # Use this to get the member object of the leader of the group. Use leader_board
-    # to see the associated board position (if it is set)
-    @property
-    def leader(self):
-        """Return the :model:`members.Member` object of the leader."""
-        return self.leader_board.holder if self.leader_board_id else self.leader_member
-    leader.fget.short_description = 'leder'
-
     @property
     def ordered_members(self):
         """
@@ -480,9 +461,12 @@ class Committee(InheritanceGroup):
                                             'first_name', 'last_name')
 
     @property
-    def members(self):
-        """Return the members of the committee, excluding the leader."""
-        return self.user_set.exclude(pk=self.leader.pk)
+    def memberships(self):
+        """
+        Return a queryset of memberships between this committee and
+        its members.
+        """
+        return self.members.through.objects.filter(committee=self)
 
     class Meta:
         verbose_name = 'komite'
@@ -492,14 +476,41 @@ class Committee(InheritanceGroup):
     def __str__(self):
         return self.name
 
-    def clean(self):
-        if not (self.leader_board_id or self.leader_member_id):
-            raise ValidationError('En komite må ha en leder')
-        elif self.leader_board and self.leader_member:
-            raise ValidationError('En komite kan bare ha én leder')
+    def add_member(self, member, title=None):
+        attrs = {
+            'member': member,
+            'committee': self,
+        }
+        if title:
+            attrs['title'] = title
 
-    def save(self, *args, **kwargs):
-        """Save the object to the database."""
-        self.full_clean()
-        super(Committee, self).save(*args, **kwargs)
-        self.user_set.add(self.leader)
+        self.members.through.objects.create(**attrs)
+
+    def add_members(self, members):
+        for member in members:
+            self.add_member(member)
+
+    def member_titles(self):
+        return self.members.through.objects.filter(committee=self)
+
+
+class CommitteeMembership(models.Model):
+    """
+    An intermediary model between a committee and its members.
+    Stores the title of the member.
+    """
+    committee = models.ForeignKey(
+        Committee,
+        on_delete=models.CASCADE,
+        verbose_name='komite',
+    )
+    member = models.ForeignKey(
+        Member,
+        on_delete=models.CASCADE,
+        verbose_name='medlem',
+    )
+    title = models.CharField('tittel', default='Medlem', max_length=100)
+
+    class Meta:
+        verbose_name = 'komitemedlem'
+        verbose_name_plural = 'komitemedlemmer'

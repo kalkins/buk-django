@@ -15,56 +15,34 @@
 {% block main %}
     <section>
 	<div class='navline'>
-            <h2 class='back-link'>
-		<a href='{% url 'practical' %}' title='Styret og komiteer'>
-                    <i class='fa fa-chevron-left'></i>
-                    komiteer
-		</a>
-            </h2>
+		<h2 class='back-link'>
+			<a href='{% url 'practical' %}' title='Styret og komiteer'>
+				<i class='fa fa-chevron-left'></i>
+				Komiteer
+			</a>
+		</h2>
 	</div>
 
 	<h1>Endre {{ committee.name }}</h1>
-	<p>
-            <span class='is-on-leave'>P</span> = Er i permisjon
-	</p>
 
-	<button class='save-button'>Lagre</button>
+	<form action="" method="POST">
+		{% csrf_token %}
+		<table>
+			{{ committee_form.as_table }}
+		</table>
 
-	<table class='member-list'>
-            <tr class='table-header'>
-		<td colspan='5'>{{ committee.name }}</td>
-            </tr>
-            {% if not committee.ordered_members %}
-		<tr>
-		    <td colspan='5'>Ingen medlemmer</td>
-		</tr>
-            {% else %}
-		{% for member in committee.ordered_members.all %}
-		    {% include 'committees/change_list_item.html' with member=member current=True committee=committee %}
-		{% endfor %}
-            {% endif %}
+		<h2>Medlemmer</h2>
 
-            <tr class='table-header'>
-		<td colspan='5'>Medlemmer uten gruppe</td>
-            </tr>
-            {% if not_in_group %}
-		{% for member in not_in_group %}
-		    {% include 'committees/change_list_item.html' with member=member %}
-		{% endfor %}
-            {% endif %}
+		<table>
+			{% for form in formset %}
+				{{ form }}
+			{% endfor %}
+		</table>
 
-            {% for other in other_groups %}
-		<tr class='table-header'>
-		    <td colspan='5'>{{ other.name }}</td>
-		</tr>
-		{% if other.ordered_members %}
-		    {% for member in other.ordered_members.all %}
-			{% include 'committees/change_list_item.html' with member=member committee=other %}
-		    {% endfor %}
-		{% else %}
-		    <td colspan='5'>Ingen medlemmer</td>
-		{% endif %}
-            {% endfor %}
-	</table>
+		{{ formset.management_form }}
+
+		<input type="submit" class="modernbutton" value="Lagre"></input>
+	</form>
+
     </section>
 {% endblock main %}
