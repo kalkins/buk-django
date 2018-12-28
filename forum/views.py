@@ -91,7 +91,6 @@ class PostDetail(UserCanAccessForumMixin, PollAnswerFormView):
         self.object = self.get_object()
         context = super().get_context_data(**kwargs)
         prev = self.request.GET.get('prev')
-        print(prev)
         if prev:
             context['back_link'] = reverse(prev)
         else:
