@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse
 
 from utils.views import MultiFormView
 from polls.views import PollCreateFormView, PollAnswerFormView
@@ -56,6 +57,9 @@ class PostForm(MultiFormView):
 class PostCreate(UserCanAccessForumMixin, PollCreateFormView, PostForm):
     template_name = 'forum/post_create.html'
 
+    def get_post_form_initial(self):
+        return {'forum': self.kwargs['forum']}
+
 
 class PostUpdate(UserCanAccessForumMixin, SingleObjectMixin, PollCreateFormView, PostForm):
     model = Post
@@ -85,7 +89,14 @@ class PostDetail(UserCanAccessForumMixin, PollAnswerFormView):
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
-        return super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        prev = self.request.GET.get('prev')
+        if prev:
+            context['back_link'] = reverse(prev)
+        else:
+            forum_link = reverse('forum_post_list', args=[self.kwargs['forum']])
+            context['back_link'] = forum_link
+        return context
 
 
 class PostList(UserCanAccessForumMixin, ListView):
@@ -106,6 +117,24 @@ class PostList(UserCanAccessForumMixin, ListView):
                 break
 
         context['forums'] = Post.FORUM_CHOICES
-        context['posts'] = Post.objects.filter(forum=self.forum)
+        context['new_post_url'] = reverse('forum_post_create', args=[self.kwargs['forum']])
+
+        return context
+
+
+class AllPostList(UserCanAccessForumMixin, ListView):
+    model = Post
+    context_object_name = 'posts'
+    template_name = 'forum/all_post_list.html'
+
+    def get_queryset(self):
+        return Post.objects.all().prefetch_related('poster')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AllPostList, self).get_context_data(*args, **kwargs)
+
+        context['forum_name'] = 'All'
+        context['forums'] = Post.FORUM_CHOICES
+        context['new_post_url'] = reverse('forum_post_create', args=['diverse'])
 
         return context
