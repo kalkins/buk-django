@@ -33,7 +33,7 @@
 		{% endif %}
 		{% if committee.leader %}
 			<p>
-				{{ committee.leader_title }}
+				{{ committee.leader_title }} -
 
 				<a href='{{ committee.leader.get_absolute_url }}'>
 					{{ committee.leader.get_full_name }}</a>
@@ -43,7 +43,7 @@
 
 		{% for membership in committee.memberships %}
 			<p>
-				{{ membership.title }}
+				{{ membership.title }} -
 
 				{% with member=membership.member %}
 					<a href='{{ member.get_absolute_url }}'>
