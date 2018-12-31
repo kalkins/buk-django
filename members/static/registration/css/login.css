@@ -1,9 +1,9 @@
-/* line 1, login.scss */
+/* line 4, login.scss */
 section.login {
   height: 100%;
   padding-top: 5em;
 }
-/* line 5, login.scss */
+/* line 8, login.scss */
 section.login > div {
   margin: 1em auto 2em auto;
   padding: 2em;
@@ -11,37 +11,46 @@ section.login > div {
   background-color: white;
   color: black;
 }
-/* line 12, login.scss */
+/* line 15, login.scss */
 section.login > div h2 {
   display: inline-block;
   margin: 0 0 1em 0;
 }
-/* line 17, login.scss */
+/* line 20, login.scss */
 section.login > div #forgot-password-link {
   display: inline-block;
   float: right;
   margin-top: 0.5em;
   color: #222933;
 }
-/* line 24, login.scss */
+/* line 27, login.scss */
 section.login > div form table {
   width: 100%;
 }
-/* line 28, login.scss */
-section.login > div label > input {
-  width: 84%;
-  font-size: 1.5em;
+/* line 31, login.scss */
+section.login > div form td {
+  padding: 0.5em 0;
+  position: relative;
 }
-/* line 33, login.scss */
+/* line 36, login.scss */
+section.login > div input {
+  width: -webkit-fill-available;
+  font-size: 1.5em;
+  border-color: #222933;
+}
+/* line 42, login.scss */
 section.login > div input[type='submit'] {
   width: 100%;
-  display: inline-block;
-  margin: 0.5em 0;
-  padding: 1em;
-  color: white;
-  font-family: 'Cantarell';
-  font-size: 1.5em;
-  background-color: #222933;
-  border-radius: 1em 0;
-  border: 0px;
+  margin-top: 0.5em;
+}
+/* line 47, login.scss */
+section.login > div input:focus, section.login > div input[type='submit']:hover {
+  background-color: #94a0b8;
+}
+/* line 51, login.scss */
+section.login > div .fa {
+  position: absolute;
+  right: 0;
+  top: 0.6em;
+  color: #222933;
 }

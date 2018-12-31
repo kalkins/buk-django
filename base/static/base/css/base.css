@@ -164,9 +164,9 @@ nav.menu-collapsed > input:checked ~ div {
   left: 0;
   height: 1em;
   width: 1em;
-  background-color: #222933;
+  background-color: transparent;
   display: inline-block;
-  border: solid white 2px;
+  border: solid 2px;
   text-align: center;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -178,7 +178,7 @@ nav.menu-collapsed > input:checked ~ div {
   display: inline-block;
   width: 5px;
   height: 10px;
-  border: solid white;
+  border: solid;
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
@@ -195,10 +195,23 @@ input:checked ~ .checkbox-container .checkmark {
   visibility: visible;
 }
 
-/* On mouse-over, add a grey background color */
-/* line 61, common-base/elements/forms/_checkbox-radiobutton.sass */
-.checkbox-container:hover .fancy-checkbox {
+/* On mouse-over, add a background color */
+/* line 62, common-base/elements/forms/_checkbox-radiobutton.sass */
+section:nth-of-type(2n+1) .checkbox-container .fancy-checkbox, section:nth-of-type(2n+1) .checkbox-container .checkmark {
+  border-color: white;
+}
+/* line 65, common-base/elements/forms/_checkbox-radiobutton.sass */
+section:nth-of-type(2n+1) .checkbox-container:hover .fancy-checkbox {
   background-color: #29313d;
+}
+
+/* line 69, common-base/elements/forms/_checkbox-radiobutton.sass */
+section:nth-of-type(2n) .checkbox-container .fancy-checkbox, section:nth-of-type(2n) .checkbox-container .checkmark {
+  border-color: #222933;
+}
+/* line 72, common-base/elements/forms/_checkbox-radiobutton.sass */
+section:nth-of-type(2n) .checkbox-container:hover .fancy-checkbox {
+  background-color: #94a0b8;
 }
 
 /* line 5, common-base/elements/forms/_form.scss */
@@ -217,25 +230,35 @@ input, select, textarea, button {
   width: 15em;
   font-size: 1.05em;
   vertical-align: middle;
-  border: 2px solid white;
+  border: 2px solid;
   padding: 0.5em;
-  background-color: #222933;
-  color: white;
+  background-color: transparent;
+  color: inherit;
 }
 
-/* line 25, common-base/elements/forms/_form.scss */
-input:focus {
-  background-color: #29313d;
+/* line 26, common-base/elements/forms/_form.scss */
+section:nth-of-type(2n+1) input, section:nth-of-type(2n+1) select, section:nth-of-type(2n+1) textarea, section:nth-of-type(2n+1) button {
+  border-color: white;
 }
 
-/* line 29, common-base/elements/forms/_form.scss */
+/* line 32, common-base/elements/forms/_form.scss */
+section:nth-of-type(2n) input, section:nth-of-type(2n) select, section:nth-of-type(2n) textarea, section:nth-of-type(2n) button {
+  border-color: #222933;
+}
+
+/* line 37, common-base/elements/forms/_form.scss */
 input[type="submit"] {
   width: 10em;
 }
 
-/* line 33, common-base/elements/forms/_form.scss */
-input[type="submit"]:hover {
+/* line 42, common-base/elements/forms/_form.scss */
+section:nth-of-type(2n+1) textarea:focus, section:nth-of-type(2n+1) input:focus, section:nth-of-type(2n+1) input[type="submit"]:hover {
   background-color: #29313d;
+}
+
+/* line 48, common-base/elements/forms/_form.scss */
+section:nth-of-type(2n) textarea:focus, section:nth-of-type(2n) input:focus, section:nth-of-type(2n) input[type="submit"]:hover {
+  background-color: #94a0b8;
 }
 
 /* line 1, common-base/elements/_buttons.sass */

@@ -20,9 +20,9 @@
         left: 0
         height: 1em
         width: 1em
-        background-color: $primary
+        background-color: transparent
         display: inline-block
-        border: solid $secondary 2px
+        border: solid 2px
         //border-radius: 2px
         text-align: center
         -webkit-user-select: none
@@ -35,7 +35,7 @@
         display: inline-block
         width: 5px
         height: 10px
-        border: solid $secondary
+        border: solid
         border-width: 0 3px 3px 0
         -webkit-transform: rotate(45deg)
         -ms-transform: rotate(45deg)
@@ -56,7 +56,18 @@ input:checked ~ .checkbox-container
     .checkmark
         visibility: visible
 
-/* On mouse-over, add a grey background color */
-.checkbox-container:hover
-    .fancy-checkbox
-        background-color: $primary-highlight
+/* On mouse-over, add a background color */
+section:nth-of-type(2n+1)
+    .checkbox-container
+        .fancy-checkbox, .checkmark
+            border-color: $secondary
+    .checkbox-container:hover
+        .fancy-checkbox
+            background-color: $primary-highlight
+section:nth-of-type(2n)
+    .checkbox-container
+        .fancy-checkbox, .checkmark
+            border-color: $primary
+    .checkbox-container:hover
+        .fancy-checkbox
+            background-color: $secondary-highlight

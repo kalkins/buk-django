@@ -1,3 +1,6 @@
+@import '../../../../base/static/base/css/variables/_variables.scss';
+@import '_variables.sass';
+
 section.login {
     height: 100%;
     padding-top: 5em;
@@ -5,8 +8,8 @@ section.login {
     > div {
         margin: 1em auto 2em auto;
         padding: 2em;
-        width: 26em;
-        background-color: white;
+        width: $login-box-width;
+        background-color: $secondary;
         color: black;
 
         h2 {
@@ -25,26 +28,31 @@ section.login {
             width: 100%;
         }
 
-        label > input {
-            width: 84%;
+        form td {
+            padding: 0.5em 0;
+            position: relative;
+        }
+
+        input {
+            width: -webkit-fill-available;
             font-size: 1.5em;
+            border-color: $primary;
         }
 
         input[type='submit'] {
             width: 100%;
-            display: inline-block;
-            margin: 0.5em 0;
-            padding: 1em;
+            margin-top: 0.5em;
+        }
 
-            // Foreground
-            color: white;
-            font-family: 'Cantarell';
-            font-size: 1.5em;
+        input:focus, input[type='submit']:hover {
+            background-color: $secondary-highlight;
+        }
 
-            // Background
-            background-color: rgb(34, 41, 51);
-            border-radius: 1em 0;
-            border: 0px;
+        .fa {
+            position: absolute;
+            right: 0;
+            top: 0.6em;
+            color: $primary;
         }
     }
 }
