@@ -37,17 +37,18 @@ section.login > div input {
   width: -webkit-fill-available;
   font-size: 1.5em;
   border-color: #222933;
+  padding-right: 2em;
 }
-/* line 42, login.scss */
+/* line 43, login.scss */
 section.login > div input[type='submit'] {
   width: 100%;
   margin-top: 0.5em;
 }
-/* line 47, login.scss */
+/* line 48, login.scss */
 section.login > div input:focus, section.login > div input[type='submit']:hover {
   background-color: #94a0b8;
 }
-/* line 51, login.scss */
+/* line 52, login.scss */
 section.login > div .fa {
   position: absolute;
   right: 0;
