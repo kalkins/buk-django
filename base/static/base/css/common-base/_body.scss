@@ -1,0 +1,13 @@
+body {
+    // Add some padding to the body equal to the height of the menu
+    // so that the menu doesn't overlap the content on the page
+    @include breakpoint(max-width $collapse-menu) {
+        padding-top: $collapsed-label-height;
+    }
+
+    padding-top: $menu-height;
+    margin: 0;
+    font-family: $standard-font-family;
+    overflow-x: hidden;
+    background-color: $site-background-color;
+}

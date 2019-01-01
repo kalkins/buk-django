@@ -9,7 +9,7 @@
 
 {% block main %}
 <section>
-    <h2>Rediger medlem</h2>
+    <h1>Rediger medlem</h1>
     <form action={{ request.path|urlencode }} method='POST'>
         {% csrf_token %}
         <table>
@@ -29,7 +29,7 @@
                 </td>
             </tr>
         </table>
-        <input class='modernbutton' type='submit' value='Lagre' />
+        <input type='submit' value='Lagre' />
     </form>
 </section>
 {% endblock main %}

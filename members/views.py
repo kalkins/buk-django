@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import (LoginRequiredMixin, PermissionRequiredMi
                                         UserPassesTestMixin)
 
 from base.models import EditableContent
+from base.widget import FancyCheckbox
 
 from .models import (Member, MembershipPeriod, LeavePeriod,
                      Committee, BoardPosition, PercussionGroup)
@@ -108,10 +109,11 @@ class ChangeMember(UserPassesTestMixin, UpdateView):
                   'birthday', 'address', 'zip_code', 'city', 'origin', 'occupation',
                   'has_car', 'has_towbar', 'musical_background', 'about_me']
 
+        widgets={"has_car": FancyCheckbox, "has_towbar": FancyCheckbox}
         if self.request.user.has_perm('members.change_percussion_group'):
             fields.insert(4, 'percussion_group')
 
-        return modelform_factory(Member, fields=fields)
+        return modelform_factory(Member, fields=fields, widgets=widgets)
 
     def get_context_data(self, **kwargs):
         context = super(ChangeMember, self).get_context_data(**kwargs)

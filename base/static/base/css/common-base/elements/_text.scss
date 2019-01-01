@@ -1,15 +1,29 @@
+p {
+    font-weight: 200;
+}
+
+//Headings
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Dosis', sans-serif;
     font-weight: 500;
     line-height: 1.1em;
 }
-
 h1 {
     font-size: 0;
     font-size: 2em;
     margin-top:0;
 }
-
 h2 {
     font-size: 1.5em;
+}
+
+//Links
+a {
+    font-weight: 200;
+}
+body > section:nth-of-type(2n) a {
+    color: rgb(34, 41, 51);
+}
+body > section:nth-of-type(2n+1) a {
+    color: white;
 }
