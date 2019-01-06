@@ -1,4 +1,4 @@
-/* line 1, common-base/_body.scss */
+/* line 1, common-base/_body.sass */
 body {
   padding-top: 4rem;
   margin: 0;
@@ -7,40 +7,40 @@ body {
   background-color: #222933;
 }
 @media (max-width: 800px) {
-  /* line 1, common-base/_body.scss */
+  /* line 1, common-base/_body.sass */
   body {
     padding-top: 4rem;
   }
 }
 
-/* line 1, common-base/_sections.scss */
+/* line 1, common-base/_sections.sass */
 body > section {
   padding: 2em 9%;
 }
-/* line 4, common-base/_sections.scss */
+/* line 4, common-base/_sections.sass */
 body > section:nth-of-type(2n) {
   background-color: white;
   color: black;
 }
-/* line 9, common-base/_sections.scss */
+/* line 8, common-base/_sections.sass */
 body > section:nth-of-type(2n+1) {
   background-color: #222933;
   color: white;
 }
 
 @font-face {
-  font-family: 'Dosis';
+  font-family: "Dosis";
   src: url("/static/base/fonts/Dosis/Dosis.woff2") format("woff2"), url("/static/base/fonts/Dosis/Dosis-Regular.ttf") format("truetype");
 }
 @font-face {
-  font-family: 'Droid Sans';
+  font-family: "Droid Sans";
   src: url("/static/base/fonts/Droid_Sans/Droid_Sans.ttf") format("truetype");
 }
 @font-face {
-  font-family: 'Nunito';
+  font-family: "Nunito";
   src: url("/static/base/fonts/Nunito/Nunito-Regular.ttf") format("truetype");
 }
-/* line 1, common-base/header/_nav.scss */
+/* line 1, common-base/header/_nav.sass */
 nav.menu-full, nav.menu-collapsed {
   z-index: 1000;
   text-align: center;
@@ -51,12 +51,12 @@ nav.menu-full, nav.menu-collapsed {
   font-family: Nunito, "Helvetica Neue", Helvetica, Arial, sans-serif;
   cursor: pointer;
 }
-/* line 11, common-base/header/_nav.scss */
+/* line 11, common-base/header/_nav.sass */
 nav.menu-full a:link, nav.menu-full a:active, nav.menu-full a:visited, nav.menu-full a:hover, nav.menu-collapsed a:link, nav.menu-collapsed a:active, nav.menu-collapsed a:visited, nav.menu-collapsed a:hover {
   color: #222933;
 }
 
-/* line 1, common-base/header/_nav-full.scss */
+/* line 1, common-base/header/_nav-full.sass */
 nav.menu-full {
   width: 100%;
   height: 4rem;
@@ -67,32 +67,32 @@ nav.menu-full {
   background-color: white;
 }
 @media (max-width: 800px) {
-  /* line 1, common-base/header/_nav-full.scss */
+  /* line 1, common-base/header/_nav-full.sass */
   nav.menu-full {
     display: none;
   }
 }
-/* line 14, common-base/header/_nav-full.scss */
+/* line 13, common-base/header/_nav-full.sass */
 nav.menu-full > *:not(.dropdown) {
   display: inline-block;
   padding: 0 1.5vw;
 }
-/* line 18, common-base/header/_nav-full.scss */
+/* line 17, common-base/header/_nav-full.sass */
 nav.menu-full > *:not(.dropdown):not(:first-child) {
   margin-left: 0em;
 }
 
 @media (min-width: 800px) {
-  /* line 1, common-base/header/_nav-collapsed.scss */
+  /* line 1, common-base/header/_nav-collapsed.sass */
   nav.menu-collapsed {
     display: none;
   }
 }
-/* line 6, common-base/header/_nav-collapsed.scss */
+/* line 5, common-base/header/_nav-collapsed.sass */
 nav.menu-collapsed > input[type='checkbox'] {
   display: none;
 }
-/* line 10, common-base/header/_nav-collapsed.scss */
+/* line 8, common-base/header/_nav-collapsed.sass */
 nav.menu-collapsed > label {
   display: block;
   position: fixed;
@@ -106,16 +106,16 @@ nav.menu-collapsed > label {
   background-color: white;
   cursor: pointer;
 }
-/* line 24, common-base/header/_nav-collapsed.scss */
+/* line 22, common-base/header/_nav-collapsed.sass */
 nav.menu-collapsed > label span::after {
   margin-left: 0.3em;
   content: "MENY";
 }
-/* line 31, common-base/header/_nav-collapsed.scss */
+/* line 26, common-base/header/_nav-collapsed.sass */
 nav.menu-collapsed > input:checked ~ label span::after {
   content: "LUKK";
 }
-/* line 35, common-base/header/_nav-collapsed.scss */
+/* line 29, common-base/header/_nav-collapsed.sass */
 nav.menu-collapsed > div {
   position: fixed;
   top: 4rem;
@@ -125,12 +125,12 @@ nav.menu-collapsed > div {
   background-color: white;
   overflow-y: scroll;
 }
-/* line 44, common-base/header/_nav-collapsed.scss */
+/* line 38, common-base/header/_nav-collapsed.sass */
 nav.menu-collapsed > div * {
   display: block;
   width: 100%;
 }
-/* line 50, common-base/header/_nav-collapsed.scss */
+/* line 42, common-base/header/_nav-collapsed.sass */
 nav.menu-collapsed > input:checked ~ div {
   left: 0;
 }
@@ -205,27 +205,27 @@ section:nth-of-type(2n+1) .checkbox-container:hover .fancy-checkbox {
   background-color: #29313d;
 }
 
-/* line 69, common-base/elements/forms/_checkbox-radiobutton.sass */
+/* line 70, common-base/elements/forms/_checkbox-radiobutton.sass */
 section:nth-of-type(2n) .checkbox-container .fancy-checkbox, section:nth-of-type(2n) .checkbox-container .checkmark {
   border-color: #222933;
 }
-/* line 72, common-base/elements/forms/_checkbox-radiobutton.sass */
+/* line 73, common-base/elements/forms/_checkbox-radiobutton.sass */
 section:nth-of-type(2n) .checkbox-container:hover .fancy-checkbox {
   background-color: #94a0b8;
 }
 
-/* line 5, common-base/elements/forms/_form.scss */
+/* line 5, common-base/elements/forms/_form.sass */
 form tr:nth-child(even), form tr:nth-child(odd) {
   background-color: initial;
   margin-bottom: 1em;
   height: auto;
 }
-/* line 10, common-base/elements/forms/_form.scss */
+/* line 9, common-base/elements/forms/_form.sass */
 form th, form td {
   padding: 0.5em 1em 0.5em 0;
 }
 
-/* line 15, common-base/elements/forms/_form.scss */
+/* line 12, common-base/elements/forms/_form.sass */
 input, select, textarea, button {
   width: 15em;
   font-size: 1.05em;
@@ -236,27 +236,27 @@ input, select, textarea, button {
   color: inherit;
 }
 
-/* line 26, common-base/elements/forms/_form.scss */
+/* line 22, common-base/elements/forms/_form.sass */
 section:nth-of-type(2n+1) input, section:nth-of-type(2n+1) select, section:nth-of-type(2n+1) textarea, section:nth-of-type(2n+1) button {
   border-color: white;
 }
 
-/* line 32, common-base/elements/forms/_form.scss */
+/* line 26, common-base/elements/forms/_form.sass */
 section:nth-of-type(2n) input, section:nth-of-type(2n) select, section:nth-of-type(2n) textarea, section:nth-of-type(2n) button {
   border-color: #222933;
 }
 
-/* line 37, common-base/elements/forms/_form.scss */
+/* line 29, common-base/elements/forms/_form.sass */
 input[type="submit"] {
   width: 10em;
 }
 
-/* line 42, common-base/elements/forms/_form.scss */
+/* line 33, common-base/elements/forms/_form.sass */
 section:nth-of-type(2n+1) textarea:focus, section:nth-of-type(2n+1) input:focus, section:nth-of-type(2n+1) input[type="submit"]:hover {
   background-color: #29313d;
 }
 
-/* line 48, common-base/elements/forms/_form.scss */
+/* line 37, common-base/elements/forms/_form.sass */
 section:nth-of-type(2n) textarea:focus, section:nth-of-type(2n) input:focus, section:nth-of-type(2n) input[type="submit"]:hover {
   background-color: #94a0b8;
 }
@@ -356,41 +356,41 @@ tr:nth-child(odd), .row:nth-child(odd) {
   background-color: black;
 }
 
-/* line 1, common-base/elements/_text.scss */
+/* line 1, common-base/elements/_text.sass */
 p {
   font-weight: 200;
 }
 
-/* line 6, common-base/elements/_text.scss */
+/* line 5, common-base/elements/_text.sass */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Dosis', sans-serif;
+  font-family: "Dosis", sans-serif;
   font-weight: 500;
   line-height: 1.1em;
 }
 
-/* line 11, common-base/elements/_text.scss */
+/* line 10, common-base/elements/_text.sass */
 h1 {
   font-size: 0;
   font-size: 2em;
   margin-top: 0;
 }
 
-/* line 16, common-base/elements/_text.scss */
+/* line 15, common-base/elements/_text.sass */
 h2 {
   font-size: 1.5em;
 }
 
-/* line 21, common-base/elements/_text.scss */
+/* line 19, common-base/elements/_text.sass */
 a {
   font-weight: 200;
 }
 
-/* line 24, common-base/elements/_text.scss */
+/* line 22, common-base/elements/_text.sass */
 body > section:nth-of-type(2n) a {
   color: #222933;
 }
 
-/* line 27, common-base/elements/_text.scss */
+/* line 25, common-base/elements/_text.sass */
 body > section:nth-of-type(2n+1) a {
   color: white;
 }

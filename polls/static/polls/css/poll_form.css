@@ -1,20 +1,20 @@
-/* line 1, poll_form.scss */
+/* line 1, poll_form.sass */
 .poll-form-container {
   padding: 2em 0;
 }
-/* line 4, poll_form.scss */
+/* line 3, poll_form.sass */
 .poll-form-container .poll-form {
   padding: 1em 0 0 0;
 }
-/* line 7, poll_form.scss */
+/* line 5, poll_form.sass */
 .poll-form-container .poll-form .seperator {
   font-size: 1.3em;
 }
-/* line 10, poll_form.scss */
+/* line 7, poll_form.sass */
 .poll-form-container .poll-form .seperator > td > * {
   margin: 0.5em;
 }
-/* line 16, poll_form.scss */
+/* line 9, poll_form.sass */
 .poll-form-container #poll-form-toggle:not(:checked) ~ .poll-form {
   display: none;
 }

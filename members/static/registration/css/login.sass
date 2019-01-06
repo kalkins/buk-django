@@ -1,0 +1,49 @@
+@import ../../../../base/static/base/css/variables/_variables
+@import _variables
+
+section.login
+    height: 100%
+    padding-top: 5em
+
+    > div
+        margin: 1em auto 2em auto
+        padding: 2em
+        width: $login-box-width
+        background-color: $secondary
+        color: $text-on-secondary
+
+        h2
+            display: inline-block
+            margin: 0 0 1em 0
+
+        #forgot-password-link
+            display: inline-block
+            float: right
+            margin-top: 0.5em
+            color: rgb(34, 41, 51)
+
+        form table
+            width: 100%
+
+        form td
+            padding: 0.5em 0
+            position: relative
+
+        input
+            width: -webkit-fill-available
+            font-size: 1.5em
+            border-color: $primary
+            padding-right: 2em
+
+        input[type='submit']
+            width: 100%
+            margin-top: 0.5em
+
+        input:focus, input[type='submit']:hover
+            background-color: $secondary-highlight
+
+        .fa
+            position: absolute
+            right: 0
+            top: 0.6em
+            color: $primary

@@ -1,9 +1,9 @@
-/* line 4, login.scss */
+/* line 4, login.sass */
 section.login {
   height: 100%;
   padding-top: 5em;
 }
-/* line 8, login.scss */
+/* line 8, login.sass */
 section.login > div {
   margin: 1em auto 2em auto;
   padding: 2em;
@@ -11,44 +11,44 @@ section.login > div {
   background-color: white;
   color: black;
 }
-/* line 15, login.scss */
+/* line 15, login.sass */
 section.login > div h2 {
   display: inline-block;
   margin: 0 0 1em 0;
 }
-/* line 20, login.scss */
+/* line 19, login.sass */
 section.login > div #forgot-password-link {
   display: inline-block;
   float: right;
   margin-top: 0.5em;
   color: #222933;
 }
-/* line 27, login.scss */
+/* line 25, login.sass */
 section.login > div form table {
   width: 100%;
 }
-/* line 31, login.scss */
+/* line 28, login.sass */
 section.login > div form td {
   padding: 0.5em 0;
   position: relative;
 }
-/* line 36, login.scss */
+/* line 32, login.sass */
 section.login > div input {
   width: -webkit-fill-available;
   font-size: 1.5em;
   border-color: #222933;
   padding-right: 2em;
 }
-/* line 43, login.scss */
+/* line 38, login.sass */
 section.login > div input[type='submit'] {
   width: 100%;
   margin-top: 0.5em;
 }
-/* line 48, login.scss */
+/* line 42, login.sass */
 section.login > div input:focus, section.login > div input[type='submit']:hover {
   background-color: #94a0b8;
 }
-/* line 52, login.scss */
+/* line 45, login.sass */
 section.login > div .fa {
   position: absolute;
   right: 0;

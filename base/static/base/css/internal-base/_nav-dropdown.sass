@@ -1,0 +1,28 @@
+.menu-full .dropdown
+    display: inline-block
+
+    .dropdown-trigger
+        display: none
+
+    .dropdown-label
+        display: block
+        padding: $menu-text-padding
+        height: 100%
+        text-transform: none
+
+    .dropdown-options
+        display: none
+        position: absolute
+        list-style: none
+        line-height: 2.5em
+        text-align: left
+        margin: 0
+        padding: 0
+        background-color: white
+
+    &:hover > .dropdown-options, .dropdown-options:hover, input:checked ~ .dropdown-options
+        display: block
+
+    .dropdown-option
+        padding: 0 1em
+        border-bottom: 1px solid #ccc

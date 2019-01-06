@@ -1,9 +1,9 @@
-/* line 1, poll_statistics.scss */
+/* line 1, poll_statistics.sass */
 .statistics {
   display: none;
 }
 
-/* line 5, poll_statistics.scss */
+/* line 4, poll_statistics.sass */
 .statistics.visible {
   display: initial;
 }

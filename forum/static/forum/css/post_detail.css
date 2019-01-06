@@ -1,8 +1,8 @@
-/* line 1, post_detail.scss */
+/* line 1, post_detail.sass */
 .comment-form {
   padding: 1em 0 0 0;
 }
-/* line 4, post_detail.scss */
+/* line 4, post_detail.sass */
 .comment-form textarea {
   display: block;
   margin-bottom: 1em;

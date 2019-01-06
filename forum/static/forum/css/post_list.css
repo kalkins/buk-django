@@ -1,4 +1,4 @@
-/* line 1, post_list.scss */
+/* line 1, post_list.sass */
 .forums {
   list-style: none;
   display: inline-block;
@@ -6,12 +6,12 @@
   display: flex;
   justify-content: space-around;
 }
-/* line 10, post_list.scss */
+/* line 10, post_list.sass */
 .forums a {
   text-decoration: none;
   font-weight: normal;
 }
-/* line 11, post_list.scss */
+/* line 11, post_list.sass */
 .forums a.forum-list-current {
   text-decoration: underline;
 }
