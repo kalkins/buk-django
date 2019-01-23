@@ -591,7 +591,7 @@ class ChangeMemberTestCase(TestCase):
         self.client.force_login(member)
         response = self.client.get(
             reverse("member_change", args=[other_member.pk]))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
 
     def test_percussion_group_in_form(self):
         member = generate_member()

@@ -1,0 +1,15 @@
+nav.menu-collapsed {
+    font-size: $internal-menu-font-size;
+}
+
+nav.menu-collapsed > div {
+    font-size: $internal-menu-collapsed-font-size;
+
+    * {
+        margin: $internal-menu-collapsed-item-margin;
+
+        &:first-child {
+            margin: $internal-menu-collapsed-first-margin;
+        }
+    }
+}

@@ -40,7 +40,7 @@ class Post(models.Model):
     class Meta:
         verbose_name = 'forumpost'
         verbose_name_plural = 'forumposter'
-        ordering = ('last_activity', 'created')
+        ordering = ('-last_activity', '-created')
         permissions = (
             ('view_board_forum', 'Kan se styreforumet'),
         )

@@ -11,17 +11,16 @@
 <section>
     <ul class='forums'>
 	<li>
-            <a href='{% url 'all_forum_post_list' %}'>
+            <a href='{% url 'all_forum_post_list' %}' class='forum-list-current'>
                 Alle
             </a>
         </li>
         {% for forum in forums %}
-            <li>
-		<a href='{% url 'forum_post_list' forum.0 %}'
-		   {% if forum.1 == forum_name %} class='forum-list-current' {% endif %}>
-                    {{ forum.1 }}
-		</a>
-            </li>
+        <li>
+            <a href='{% url 'forum_post_list' forum.0 %}'>
+                {{ forum.1 }}
+            </a>
+        </li>
         {% endfor %}
     </ul>
 
@@ -37,7 +36,7 @@
 		    <i class='fa fa-envelope-o'></i>
 		</td>
 		<td>
-                    <a class='post-title' href='{{ post.get_absolute_url }}'>
+                    <a class='post-title' href='{{ post.get_absolute_url }}?prev=all_forum_post_list'>
 			{{ post.title }}
 		    </a>
 		</td>
@@ -52,10 +51,13 @@
 			<p class='post-timestamp'>
 			    sist endret {{ post.last_activity }}
 			</p>
+			<p class='post-timestamp'>
+			    postet i {{ post.forum }}
+			</p>
 			<hr>
 		    </div>
 		</td>
-	    </tr>
+            </tr>
         {% endfor %}
     </table>
 </section>

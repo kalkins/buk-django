@@ -1,0 +1,35 @@
+nav.menu-full {
+    font-size: $public-menu-font-size;
+
+    .menu_icon {
+        padding: 0;
+
+        img {
+            position: relative;
+            max-width: $public-menu-icon-max-width;
+            vertical-align: middle;
+            margin: $public-menu-icon-margin;
+            padding: 0;
+        }
+    }
+}
+
+nav.menu-collapsed > div {
+    font-size: $public-menu-collapsed-font-size;
+
+    * {
+        margin: $public-menu-collapsed-item-margin;
+    }
+
+    .menu_icon {
+        padding: 0;
+
+        img {
+            height: initial;
+            display: block;
+            margin: $public-menu-collapsed-icon-margin;
+            max-width: $public-menu-collapsed-icon-max-width;
+            padding: 0;
+        }
+    }
+}

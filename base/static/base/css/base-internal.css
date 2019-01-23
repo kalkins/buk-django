@@ -1,19 +1,37 @@
-/* line 1, header/_dropdown.scss */
+/* line 1, internal-base/_nav.scss */
+nav.menu-collapsed {
+  font-size: 1.4vw;
+}
+
+/* line 5, internal-base/_nav.scss */
+nav.menu-collapsed > div {
+  font-size: 4vmin;
+}
+/* line 8, internal-base/_nav.scss */
+nav.menu-collapsed > div * {
+  margin: 1.5em 0 0 0;
+}
+/* line 11, internal-base/_nav.scss */
+nav.menu-collapsed > div *:first-child {
+  margin: 2em 0 0 0;
+}
+
+/* line 1, internal-base/_nav-dropdown.scss */
 .menu-full .dropdown {
   display: inline-block;
 }
-/* line 4, header/_dropdown.scss */
+/* line 4, internal-base/_nav-dropdown.scss */
 .menu-full .dropdown .dropdown-trigger {
   display: none;
 }
-/* line 8, header/_dropdown.scss */
+/* line 8, internal-base/_nav-dropdown.scss */
 .menu-full .dropdown .dropdown-label {
   display: block;
   padding: 0 1.5vw;
   height: 100%;
   text-transform: none;
 }
-/* line 15, header/_dropdown.scss */
+/* line 15, internal-base/_nav-dropdown.scss */
 .menu-full .dropdown .dropdown-options {
   display: none;
   position: absolute;
@@ -24,30 +42,12 @@
   padding: 0;
   background-color: white;
 }
-/* line 26, header/_dropdown.scss */
+/* line 26, internal-base/_nav-dropdown.scss */
 .menu-full .dropdown:hover > .dropdown-options, .menu-full .dropdown .dropdown-options:hover, .menu-full .dropdown input:checked ~ .dropdown-options {
   display: block;
 }
-/* line 30, header/_dropdown.scss */
+/* line 30, internal-base/_nav-dropdown.scss */
 .menu-full .dropdown .dropdown-option {
   padding: 0 1em;
   border-bottom: 1px solid #ccc;
-}
-
-/* line 4, header/_nav-internal.scss */
-nav.menu-collapsed {
-  font-size: 1.4vw;
-}
-
-/* line 8, header/_nav-internal.scss */
-nav.menu-collapsed > div {
-  font-size: 4vmin;
-}
-/* line 11, header/_nav-internal.scss */
-nav.menu-collapsed > div * {
-  margin: 1.5em 0 0 0;
-}
-/* line 14, header/_nav-internal.scss */
-nav.menu-collapsed > div *:first-child {
-  margin: 2em 0 0 0;
 }

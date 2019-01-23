@@ -1,0 +1,73 @@
+/* Hide the browser's default checkbox */
+.oldnotfancycheckbox
+    display: none
+    width: initial
+
+.checkbox-container
+    /* Customize the container */
+    position: relative
+    display: block
+    width: fit-content
+    height: 1em
+    cursor: pointer
+    padding-left: 1.5em
+    font-size: 1.05em
+
+    /* Create a custom checkbox */
+    .fancy-checkbox
+        position: absolute
+        top: 0
+        left: 0
+        height: 1em
+        width: 1em
+        background-color: transparent
+        display: inline-block
+        border: solid 2px
+        //border-radius: 2px
+        text-align: center
+        -webkit-user-select: none
+        -moz-user-select: none
+        -ms-user-select: none
+        user-select: none
+
+    /* Style the checkmark/indicator */
+    .checkmark
+        display: inline-block
+        width: 5px
+        height: 10px
+        border: solid
+        border-width: 0 3px 3px 0
+        -webkit-transform: rotate(45deg)
+        -ms-transform: rotate(45deg)
+        transform: rotate(45deg)
+
+    /* When the checkbox is checked, add a background */
+    //MÅ RETTES!!
+    input:checked ~ .fancy-checkbox
+        // background-color: ?
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark
+        //content: "" var::after checkamrk
+        visibility: hidden
+
+/* Show the checkmark when checked */
+input:checked ~ .checkbox-container
+    .checkmark
+        visibility: visible
+
+/* On mouse-over, add a background color */
+section:nth-of-type(2n+1)
+    .checkbox-container
+        .fancy-checkbox, .checkmark
+            border-color: $secondary
+    .checkbox-container:hover
+        .fancy-checkbox
+            background-color: $primary-highlight
+section:nth-of-type(2n)
+    .checkbox-container
+        .fancy-checkbox, .checkmark
+            border-color: $primary
+    .checkbox-container:hover
+        .fancy-checkbox
+            background-color: $secondary-highlight
