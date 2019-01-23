@@ -7,16 +7,7 @@
 // Compass
 
 // Variables and settings
-@import 'variables/_breakpoints.scss';
-@import 'variables/_color-palette.sass';
+@import 'variables/_variables.scss';
 
 // Components
-@import 'fonts/_fonts.scss';
-@import 'textstyle/_style';
-@import 'html/_html.scss';
-@import 'body/_body.scss';
-@import 'header/_nav.scss';
-@import 'sections/_sections';
-
-// Other components
-@import 'components/_import-components.sass'
+@import 'common-base/_common-base.sass';

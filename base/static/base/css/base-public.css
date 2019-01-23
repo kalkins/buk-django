@@ -1,12 +1,12 @@
-/* line 3, header/_nav-public.scss */
+/* line 1, public-base/_nav.scss */
 nav.menu-full {
   font-size: 1.4vw;
 }
-/* line 6, header/_nav-public.scss */
+/* line 4, public-base/_nav.scss */
 nav.menu-full .menu_icon {
   padding: 0;
 }
-/* line 9, header/_nav-public.scss */
+/* line 7, public-base/_nav.scss */
 nav.menu-full .menu_icon img {
   position: relative;
   max-width: 2em;
@@ -15,19 +15,19 @@ nav.menu-full .menu_icon img {
   padding: 0;
 }
 
-/* line 19, header/_nav-public.scss */
+/* line 17, public-base/_nav.scss */
 nav.menu-collapsed > div {
   font-size: 3.5vh;
 }
-/* line 22, header/_nav-public.scss */
+/* line 20, public-base/_nav.scss */
 nav.menu-collapsed > div * {
   margin: 4vh 0 0 0;
 }
-/* line 26, header/_nav-public.scss */
+/* line 24, public-base/_nav.scss */
 nav.menu-collapsed > div .menu_icon {
   padding: 0;
 }
-/* line 29, header/_nav-public.scss */
+/* line 27, public-base/_nav.scss */
 nav.menu-collapsed > div .menu_icon img {
   height: initial;
   display: block;
