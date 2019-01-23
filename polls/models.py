@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.urls import reverse
 
-from members.models import Member, Instrument
+from members.models import Member, InstrumentGroup
 
 
 class Poll(models.Model):
@@ -57,7 +57,7 @@ class PollOption(models.Model):
         """
         result = []
 
-        for instrument in Instrument.objects.all():
+        for instrument in InstrumentGroup.objects.all():
             count = self.members.filter(instrument=instrument).count()
             if count:
                 result.append({'name': instrument.name, 'count': count})

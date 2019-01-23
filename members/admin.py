@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import (Member, Instrument, MembershipPeriod,
+from .models import (Member, InstrumentGroup, MembershipPeriod,
                      LeavePeriod, Committee, BoardPosition,
                      PercussionGroup)
 
@@ -69,7 +69,7 @@ class UserAdmin(BaseUserAdmin):
     ]
 
 
-@admin.register(Instrument)
+@admin.register(InstrumentGroup)
 class InstrumentAdmin(admin.ModelAdmin):
     list_display = ('name', 'group_leader', 'order')
     search_fields = ('name', 'group_leader')

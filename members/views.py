@@ -40,7 +40,7 @@ class MemberList(LoginRequiredMixin, ListView):
     """
     Display a list of :model:`members.Member`.
 
-    The list is sorted by :model:`members.Instrument`, group leader,
+    The list is sorted by :model:`members.InstrumentGroup`, group leader,
     first name and last name.
 
     **Arguments**

@@ -14,7 +14,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
-from .models import Member, Instrument, PercussionGroup, BoardPosition, InheritanceGroup, Committee, MembershipPeriod
+from .models import Member, InstrumentGroup, PercussionGroup, BoardPosition, InheritanceGroup, Committee, MembershipPeriod
 
 from .forms import MemberAddForm, MembershipPeriodFormset, LeavePeriodFormset
 
@@ -51,7 +51,7 @@ def generate_member_attrs(**kwargs):
     }
 
     if 'instrument' not in test_member:
-        test_member['instrument'] = Instrument.objects.first() if Instrument.objects.count() else Instrument.objects.create(name='Generated instrument')
+        test_member['instrument'] = InstrumentGroup.objects.first() if InstrumentGroup.objects.count() else InstrumentGroup.objects.create(name='Generated instrument')
 
     return test_member
 
@@ -634,7 +634,7 @@ class ChangeMemberTestCase(TestCase):
         self.client.force_login(member)
         response = self.client.get(
             reverse("member_change", args=[other_member.pk]))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
 
     def test_percussion_group_in_form(self):
         member = generate_member()

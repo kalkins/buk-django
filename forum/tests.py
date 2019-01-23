@@ -4,7 +4,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import Permission
 
 from .models import Post
-from members.models import Member, Instrument, BoardPosition
+from members.models import Member, InstrumentGroup, BoardPosition
 from django.urls import reverse
 
 test_member = {
@@ -22,7 +22,7 @@ test_member = {
 
 class PostTestCase(TestCase):
     def setUp(self):
-        test_member['instrument'] = Instrument.objects.create(name='Testolin')
+        test_member['instrument'] = InstrumentGroup.objects.create(name='Testolin')
 
     def test_forum_choices(self):
         """Check that the forum constants haven't changed.
@@ -64,7 +64,7 @@ class PostTestCase(TestCase):
 
 class PostDetailTestCase(TestCase):
     def setUp(self):
-        test_member['instrument'] = Instrument.objects.create(name='Testolin')
+        test_member['instrument'] = InstrumentGroup.objects.create(name='Testolin')
 
     def test_get_context_data(self):
         self.client = Client()
@@ -84,7 +84,7 @@ class PostDetailTestCase(TestCase):
 
 class PostListTestCase(TestCase):
     def setUp(self):
-        test_member['instrument'] = Instrument.objects.create(name='Testolin')
+        test_member['instrument'] = InstrumentGroup.objects.create(name='Testolin')
         self.client = Client()
         self.member = Member.objects.create_user(**test_member)
         self.client.force_login(self.member)

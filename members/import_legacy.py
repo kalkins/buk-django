@@ -4,12 +4,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from legacy.importers import LegacyImporter, ImportSkipRow
 from django.db import connections
 
-from .models import (Member, Instrument, MembershipPeriod, LeavePeriod,
+from .models import (Member, InstrumentGroup, MembershipPeriod, LeavePeriod,
                      BoardPosition)
 
 
 class InstrumentImport(LegacyImporter):
-    model = Instrument
+    model = InstrumentGroup
     table = 'instrument'
     cols = {
         'name': 'instrument',
@@ -82,7 +82,7 @@ class MemberImport(LegacyImporter):
 
         if name and name != 'Støttemedlem' and name != 'Æresmedlem':
             # get_or_create returns the object, and a status code which we ignore
-            return Instrument.objects.get_or_create(name=name)[0]
+            return InstrumentGroup.objects.get_or_create(name=name)[0]
 
         raise ImportSkipRow()
 
@@ -104,7 +104,7 @@ class MemberImport(LegacyImporter):
 
 class GroupLeaderImport(LegacyImporter):
     dependencies = [MemberImport]
-    model = Instrument
+    model = InstrumentGroup
     table = 'medlemmer'
     name = 'gruppeledere'
     cols = {

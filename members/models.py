@@ -80,7 +80,7 @@ class InheritanceGroup(Group):
         return parents
 
 
-class Instrument(models.Model):
+class InstrumentGroup(models.Model):
     """Store an instrument group."""
     name = models.CharField('navn', max_length=30, unique=True)
     group_leader = models.OneToOneField(
@@ -97,8 +97,8 @@ class Instrument(models.Model):
             help_text='Dette angir rekkefølgen instrumentene vises i. Lavere tall kommer først.')
 
     class Meta:
-        verbose_name = 'instrument'
-        verbose_name_plural = 'instrumenter'
+        verbose_name = 'instrumentgruppe'
+        verbose_name_plural = 'instrumentgrupper'
         ordering = ['order', 'name']
 
     def __str__(self):
@@ -163,12 +163,12 @@ class MemberManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, instrument, birthday,
                     phone, address, zip_code, city, password=None, joined_date=None):
         # Allow the instrument parameter to be an object, the primary key, or the name
-        if not isinstance(instrument, Instrument):
+        if not isinstance(instrument, InstrumentGroup):
             try:
-                instrument = Instrument.objects.get(pk=instrument)
+                instrument = InstrumentGroup.objects.get(pk=instrument)
             except ObjectDoesNotExist:
                 try:
-                    instrument = Instrument.objects.get(name=instrument)
+                    instrument = InstrumentGroup.objects.get(name=instrument)
                 except ObjectDoesNotExist:
                     raise ValueError('Ugyldig instrument')
 
@@ -223,7 +223,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField('etternavn', max_length=30)
     phone = models.CharField('mobilnummer', max_length=20)
     instrument = models.ForeignKey(
-        Instrument,
+        InstrumentGroup,
         on_delete=models.PROTECT,
         verbose_name='instrument',
         related_name='players',
