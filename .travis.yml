@@ -12,13 +12,15 @@ install:
 
 # Prepare the working environment
 before_script:
-    - cp buk/local_settings_example.py buk/local_settings.py
     - psql --version
     - psql -c 'create database buk;' -U postgres
 
 # Run tests
 script:
+    - cp buk/local_settings_example_psql.py buk/local_settings.py
     - coverage run --source='.' manage.py test
+    - cp buk/local_settings_example_sqlite.py buk/local_settings.py
+    - ./manage.py test
 
 after_success:
     - codecov
