@@ -28,8 +28,9 @@ class UniformPiece(InventoryItem):
 
 
 class Pants(UniformPiece):
-    def save(self):
+    def save(self, *args, **kwargs):
         self.name = "Bukse størrelse " + self.size
+        super(Pants, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'bukse'
@@ -39,8 +40,9 @@ class Pants(UniformPiece):
 class Jacket(UniformPiece):
     number = models.IntegerField('jakkenummer')
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.name = "Jakke nr. " + self.number
+        super(Jacket, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'jakke'
@@ -48,8 +50,9 @@ class Jacket(UniformPiece):
 
 
 class Hat(UniformPiece):
-    def save(self):
+    def save(self, *args, **kwargs):
         self.name = "Hatt størrelse " + self.size
+        super(Hat, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'hatt'
