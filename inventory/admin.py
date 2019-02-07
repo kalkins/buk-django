@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from inventory.models import Jacket, Hat, Pants, Instrument
+
+admin.site.register(Jacket)
+admin.site.register(Hat)
+admin.site.register(Pants)
+admin.site.register(Instrument)

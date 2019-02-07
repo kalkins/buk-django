@@ -18,6 +18,9 @@ class InventoryItem(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['name']
+
 
 class UniformPiece(InventoryItem):
     size = models.CharField('størrelse', max_length=30)
@@ -27,6 +30,10 @@ class Pants(UniformPiece):
     def save(self):
         self.name = "Bukse størrelse " + self.size
 
+    class Meta:
+        verbose_name = 'bukse'
+        verbose_name_plural = 'bukser'
+
 
 class Jacket(UniformPiece):
     number = models.IntegerField('jakkenummer')
@@ -34,11 +41,21 @@ class Jacket(UniformPiece):
     def save(self):
         self.name = "Jakke nr. " + self.number
 
+    class Meta:
+        verbose_name = 'jakke'
+        verbose_name_plural = 'jakker'
+
 
 class Hat(UniformPiece):
     def save(self):
         self.name = "Hatt størrelse " + self.size
 
+    class Meta:
+        verbose_name = 'hatt'
+        verbose_name_plural = 'hatter'
+
 
 class Instrument(InventoryItem):
-    pass
+    class Meta:
+        verbose_name = 'instrument'
+        verbose_name_plural = 'instrumenter'
