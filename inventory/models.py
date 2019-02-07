@@ -11,7 +11,8 @@ class InventoryItem(models.Model):
         on_delete=models.SET_NULL,
         verbose_name="loaned_to",
         related_name="loaned_from",
-        null=True
+        null=True,
+        blank=True
     )
     loan_description = models.TextField('lånebeskrivelse', blank=True, default='')
 
