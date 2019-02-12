@@ -1,69 +1,21 @@
-import random
-import string
 from datetime import date
 import datetime
 
 from django.test import TestCase, Client
 from django.forms import modelform_factory
 from django.core.management import call_command
-from django.core.exceptions import ValidationError
 from django.utils.six import StringIO
 from django.utils import timezone
-from django.db.utils import IntegrityError
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
-from .models import Member, Instrument, PercussionGroup, BoardPosition, InheritanceGroup, Committee, MembershipPeriod
-
-from .forms import MemberAddForm, MembershipPeriodFormset, LeavePeriodFormset
-
 from utils.forms import formset_to_post, form_to_post
 
-
-def random_string(length):
-    return ''.join(random.choices(string.ascii_uppercase, k=length))
-
-
-def generate_member_attrs(**kwargs):
-    """
-    Generate the attributes needed to create a member.
-
-    If you need the member to have custom attributes
-    you can pass them as keyword parameters.
-
-    If no email is provided a random one is generated.
-
-    If no instrument is provided the first available is
-    choosen, or one is created if no instruments exists.
-    """
-    test_member = {
-        'email': f'{random_string(5)}@{random_string(7)}.com',
-        'first_name': 'Test',
-        'last_name': 'Testson',
-        'joined_date': date(2017, 1, 1),
-        'birthday': date(1996, 3, 5),
-        'phone': '94857205',
-        'address': 'Teststreet 42',
-        'zip_code': '8472',
-        'city': 'Testheim',
-        **kwargs,
-    }
-
-    if 'instrument' not in test_member:
-        test_member['instrument'] = Instrument.objects.first() if Instrument.objects.count() else Instrument.objects.create(name='Generated instrument')
-
-    return test_member
-
-
-def generate_member(**kwargs):
-    """Same as generate_member_attrs, but actually creates and returns the member"""
-    return Member.objects.create_user(**generate_member_attrs(**kwargs))
-
-
-def permission_to_perm(permission):
-    """Find the <app_label>.<codename> string for a permission object"""
-    return '.'.join([permission.content_type.app_label, permission.codename])
+from ..models import Member, PercussionGroup, BoardPosition, InheritanceGroup, MembershipPeriod
+from ..forms import MemberAddForm, MembershipPeriodFormset, LeavePeriodFormset
+from base.tests import permission_to_perm
+from .utils import generate_member, generate_member_attrs
 
 
 class MemberTestCase(TestCase):
@@ -437,49 +389,6 @@ class BoardPositionTestCase(TestCase):
         self.assertEqual(new_holder in group, True)
 
 
-class CommitteeTestCase(TestCase):
-    def test_unique_email(self):
-        email = 'com@example.com'
-        leader1 = generate_member()
-        leader2 = generate_member()
-        Committee.objects.create(name='Com1', leader=leader1, email=email)
-        with self.assertRaises(IntegrityError):
-            Committee.objects.create(name='Com2', leader=leader2, email=email)
-
-    def test_unique_name(self):
-        name = 'com'
-        leader1 = generate_member()
-        leader2 = generate_member()
-        Committee.objects.create(name=name, leader=leader1, email='com1@example.com')
-        with self.assertRaises(IntegrityError):
-            Committee.objects.create(name=name, leader=leader2, email='com2@example.com')
-
-    def test_order(self):
-        com3 = Committee.objects.create(name='com3', leader=generate_member(), email='com3@example.com', order=3)
-        com1 = Committee.objects.create(name='com1', leader=generate_member(), email='com1@example.com', order=1)
-        com4 = Committee.objects.create(name='com4', leader=generate_member(), email='com4@example.com', order=4)
-        com2_1 = Committee.objects.create(name='com2_1', leader=generate_member(), email='com2_1@example.com', order=2)
-        com0 = Committee.objects.create(name='com0', leader=generate_member(), email='com0@example.com')
-        com2_2 = Committee.objects.create(name='com2_2', leader=generate_member(), email='com2_2@example.com', order=2)
-
-        self.assertEqual(list(Committee.objects.all()), [com0, com1, com2_1, com2_2, com3, com4])
-
-    def test_no_leader(self):
-        with self.assertRaises(IntegrityError):
-            Committee.objects.create(name='com', email='com@example.com')
-
-    def test_members(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        member3 = generate_member()
-        leader = generate_member()
-        com = Committee.objects.create(name='com', leader=leader, email='com@example.com')
-        com.add_members([member1, member2, member3])
-
-        self.assertEqual(set(com.user_set.all()), set([member1, member2, member3, leader]))
-        self.assertEqual(set(com.members.all()), set([member1, member2, member3]))
-
-
 class MemberListTestCase(TestCase):
     def setUp(self):
         self.member1 = generate_member(first_name="aadne")
@@ -505,49 +414,6 @@ class MemberListTestCase(TestCase):
         self.assertEqual(
             set(response.context["members"]),
             set([self.member1, self.member3]))
-
-
-class PercussionGroupListTestCase(TestCase):
-    def test_get_list(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        member3 = generate_member(first_name="Bob")
-        member4 = generate_member()
-        member4.is_active = False
-        member4.save()
-        percussion_group = PercussionGroup.objects.create()
-        member2.percussion_group = percussion_group
-        member2.save()
-        self.client = Client()
-        self.client.force_login(member1)
-
-        response = self.client.get(reverse('percussion_group_list'))
-        self.assertTrue(percussion_group in response.context['groups'])
-        self.assertEqual(list(response.context['unassigned']), [member3, member1])
-
-
-class DeletePercussionGroupTestCase(TestCase):
-    def test_delete(self):
-        member = generate_member()
-        member.user_permissions.add(
-            Permission.objects.get(codename="change_percussion_group"))
-        self.client.force_login(member)
-        percussion_group = PercussionGroup.objects.create()
-        self.assertEqual(len(PercussionGroup.objects.all()), 1)
-        response = self.client.get(reverse("percussion_group_delete", args=[percussion_group.pk]))
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(len(PercussionGroup.objects.all()), 0)
-
-
-class AddPercussionGroupTestCase(TestCase):
-    def test_delete(self):
-        member = generate_member()
-        member.user_permissions.add(
-            Permission.objects.get(codename="change_percussion_group"))
-        self.client.force_login(member)
-        response = self.client.get(reverse("percussion_group_add"))
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(len(PercussionGroup.objects.all()), 1)
 
 
 class MemberAddFormTestCase(TestCase):
@@ -650,141 +516,3 @@ class ChangeMemberTestCase(TestCase):
 
         response = self.client.post(reverse("member_change", args=[member.pk]), post_data)
         self.assertEqual(response.status_code, 302)  # form is valid and user is redirected
-
-
-class ChangePercussionGroupTestCase(TestCase):
-    def setUp(self):
-        self.member = generate_member()
-        self.member.user_permissions.add(
-            Permission.objects.get(codename="change_percussion_group"))
-        self.client.force_login(self.member)
-
-    def test_context(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        member3 = generate_member()
-        percussion_group1 = PercussionGroup.objects.create()
-        member1.percussion_group = percussion_group1
-        member1.save()
-        percussion_group2 = PercussionGroup.objects.create()
-        member2.percussion_group = percussion_group2
-        member2.save()
-
-        response = self.client.get(reverse("percussion_group_change", args=[percussion_group1.pk]))
-        self.assertTrue(percussion_group2 in response.context['other_groups'])
-        self.assertTrue(percussion_group1 not in response.context['other_groups'])
-        self.assertTrue(member3 in response.context['unassigned'])
-        self.assertTrue(member2 not in response.context['unassigned'])
-        self.assertTrue(member1 not in response.context['unassigned'])
-
-    def test_add_member_via_post(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        member3 = generate_member()
-        percussion_group = PercussionGroup.objects.create()
-
-        post_data = {'leader': [str(member1.pk)], 'members[]': [str(member2.pk), str(member1.pk)]}
-        self.client.post(reverse("percussion_group_change", args=[percussion_group.pk]), post_data)
-        percussion_group_members = Member.objects.filter(percussion_group=percussion_group)
-        self.assertTrue(member1 in percussion_group_members)
-        self.assertTrue(member2 in percussion_group_members)
-        self.assertTrue(member3 not in percussion_group_members)
-
-    def test_remove_member_and_change_leader_via_post(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        percussion_group = PercussionGroup.objects.create()
-
-        member2.percussion_group = percussion_group
-        member2.save()
-
-        # This post should remove member1 and set member2 as leader
-        post_data = {'leader': [str(member2.pk)], 'members[]': [str(member2.pk)]}
-        self.client.post(reverse("percussion_group_change", args=[percussion_group.pk]), post_data)
-        percussion_group_members = Member.objects.filter(percussion_group=percussion_group)
-        self.assertTrue(member1 not in percussion_group_members)
-        self.assertTrue(member2 in percussion_group_members)
-
-    def test_illegal_post_data(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        percussion_group = PercussionGroup.objects.create()
-
-        post_data = {'members[]': [str(member2.pk)]}  # should also contain leader
-        response = self.client.post(reverse("percussion_group_change", args=[percussion_group.pk]), post_data)
-        self.assertEqual(response.status_code, 404)
-
-        post_data = {'leader': [str(member1.pk)]}  # should also contain members[]
-        self.client.post(reverse("percussion_group_change", args=[percussion_group.pk]), post_data)
-        self.assertEqual(response.status_code, 404)
-
-
-class ChangeCommitteeTestCase(TestCase):
-    def setUp(self):
-        self.member = generate_member()
-        self.member.user_permissions.add(
-            Permission.objects.get(codename="change_committee"))
-        self.client.force_login(self.member)
-
-    def test_permission(self):
-        member = generate_member()
-        self.client.force_login(member)
-        committee = Committee.objects.create(name='Com1', leader_member=member, email='com1@example.com')
-        response = self.client.get(reverse("change_committee", args=[committee.pk]))
-        self.assertEqual(response.status_code, 302)
-
-        member.user_permissions.add(
-            Permission.objects.get(codename="change_committee"))
-        member.save()
-        response = self.client.get(reverse("change_committee", args=[committee.pk]))
-        self.assertEqual(response.status_code, 200)
-
-    def test_context(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        member3 = generate_member()
-        committee1 = Committee.objects.create(name='Com1', leader_member=member1, email='com1@example.com')
-        committee2 = Committee.objects.create(name='Com2', leader_member=member2, email='com2@example.com')
-        response = self.client.get(reverse("change_committee", args=[committee1.pk]))
-        self.assertTrue(committee2 in response.context['other_groups'])
-        self.assertTrue(committee1 not in response.context['other_groups'])
-        self.assertTrue(member2 in response.context['not_in_group'])
-        self.assertTrue(member3 in response.context['not_in_group'])
-        self.assertTrue(member1 not in response.context['not_in_group'])
-
-    def test_add_member_via_post(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        member3 = generate_member()
-        committee = Committee.objects.create(name='Com1', leader_member=member1, email='com1@example.com')
-        post_data = {'leader': [str(member1.pk)], 'members[]': [str(member2.pk), str(member1.pk)]}
-        self.client.post(reverse("change_committee", args=[committee.pk]), post_data)
-        committee_members = Member.objects.filter(groups__pk=committee.pk)
-        self.assertTrue(member1 in committee_members)
-        self.assertTrue(member2 in committee_members)
-        self.assertTrue(member3 not in committee_members)
-
-    def test_remove_member_and_change_leader_via_post(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        committee = Committee.objects.create(name='Com1', leader_member=member1, email='com1@example.com')
-        member2.groups.add(committee)
-
-        # This post should remove member1 and set member2 as leader
-        post_data = {'leader': [str(member2.pk)], 'members[]': [str(member2.pk)]}
-        self.client.post(reverse("change_committee", args=[committee.pk]), post_data)
-        committee_members = Member.objects.filter(groups__pk=committee.pk)
-        self.assertTrue(member1 not in committee_members)
-        self.assertTrue(member2 in committee_members)
-
-    def test_illegal_post_data(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        committee = Committee.objects.create(name='Com1', leader_member=member1, email='com1@example.com')
-        post_data = {'members[]': [str(member2.pk)]}  # should also contain leader
-        response = self.client.post(reverse("change_committee", args=[committee.pk]), post_data)
-        self.assertEqual(response.status_code, 404)
-
-        post_data = {'leader': [str(member2.pk)]}  # should also contain members[]
-        self.client.post(reverse("change_committee", args=[committee.pk]), post_data)
-        self.assertEqual(response.status_code, 404)

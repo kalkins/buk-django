@@ -486,6 +486,9 @@ class Committee(InheritanceGroup):
 
         self.members.through.objects.create(**attrs)
 
+    def remove_member(self, member):
+        self.members.through.objects.filter(member=member).delete()
+
     def add_members(self, members):
         for member in members:
             self.add_member(member)
