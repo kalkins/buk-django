@@ -1,8 +1,10 @@
+import datetime
+
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from .models import Period
-import datetime
+
+from ..models import Period
 
 
 class BasePeriodFormsetTestCase(TestCase):

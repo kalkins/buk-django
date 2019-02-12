@@ -1,69 +1,21 @@
-import random
-import string
 from datetime import date
 import datetime
 
 from django.test import TestCase, Client
 from django.forms import modelform_factory
 from django.core.management import call_command
-from django.core.exceptions import ValidationError
 from django.utils.six import StringIO
 from django.utils import timezone
-from django.db.utils import IntegrityError
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
-from .models import Member, Instrument, PercussionGroup, BoardPosition, InheritanceGroup, Committee, MembershipPeriod
-
-from .forms import MemberAddForm, MembershipPeriodFormset, LeavePeriodFormset
-
 from utils.forms import formset_to_post, form_to_post
 
-
-def random_string(length):
-    return ''.join(random.choices(string.ascii_uppercase, k=length))
-
-
-def generate_member_attrs(**kwargs):
-    """
-    Generate the attributes needed to create a member.
-
-    If you need the member to have custom attributes
-    you can pass them as keyword parameters.
-
-    If no email is provided a random one is generated.
-
-    If no instrument is provided the first available is
-    choosen, or one is created if no instruments exists.
-    """
-    test_member = {
-        'email': f'{random_string(5)}@{random_string(7)}.com',
-        'first_name': 'Test',
-        'last_name': 'Testson',
-        'joined_date': date(2017, 1, 1),
-        'birthday': date(1996, 3, 5),
-        'phone': '94857205',
-        'address': 'Teststreet 42',
-        'zip_code': '8472',
-        'city': 'Testheim',
-        **kwargs,
-    }
-
-    if 'instrument' not in test_member:
-        test_member['instrument'] = Instrument.objects.first() if Instrument.objects.count() else Instrument.objects.create(name='Generated instrument')
-
-    return test_member
-
-
-def generate_member(**kwargs):
-    """Same as generate_member_attrs, but actually creates and returns the member"""
-    return Member.objects.create_user(**generate_member_attrs(**kwargs))
-
-
-def permission_to_perm(permission):
-    """Find the <app_label>.<codename> string for a permission object"""
-    return '.'.join([permission.content_type.app_label, permission.codename])
+from ..models import Member, PercussionGroup, BoardPosition, InheritanceGroup, MembershipPeriod
+from ..forms import MemberAddForm, MembershipPeriodFormset, LeavePeriodFormset
+from base.tests import permission_to_perm
+from .utils import generate_member, generate_member_attrs
 
 
 class MemberTestCase(TestCase):
@@ -437,92 +389,6 @@ class BoardPositionTestCase(TestCase):
         self.assertEqual(new_holder in group, True)
 
 
-class CommitteeTestCase(TestCase):
-    def test_unique_leader_board(self):
-        holder = generate_member()
-        pos = BoardPosition.objects.create(name="Pos1", holder=holder)
-        Committee.objects.create(name='Com1', leader_board=pos, email='com1@example.com')
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name='Com2', leader_board=pos, email='com1@example.com')
-
-    def test_unique_leader_member(self):
-        leader = generate_member()
-        Committee.objects.create(name='Com1', leader_member=leader, email='com2@example.com')
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name='Com2', leader_member=leader, email='com2@example.com')
-
-    def test_unique_email(self):
-        email = 'com@example.com'
-        leader1 = generate_member()
-        leader2 = generate_member()
-        Committee.objects.create(name='Com1', leader_member=leader1, email=email)
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name='Com2', leader_member=leader2, email=email)
-
-    def test_unique_name(self):
-        name = 'com'
-        leader1 = generate_member()
-        leader2 = generate_member()
-        Committee.objects.create(name=name, leader_member=leader1, email='com1@example.com')
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name=name, leader_member=leader2, email='com2@example.com')
-
-    def test_order(self):
-        com3 = Committee.objects.create(name='com3', leader_member=generate_member(), email='com3@example.com', order=3)
-        com1 = Committee.objects.create(name='com1', leader_member=generate_member(), email='com1@example.com', order=1)
-        com4 = Committee.objects.create(name='com4', leader_member=generate_member(), email='com4@example.com', order=4)
-        com2_1 = Committee.objects.create(name='com2_1', leader_member=generate_member(), email='com2_1@example.com', order=2)
-        com0 = Committee.objects.create(name='com0', leader_member=generate_member(), email='com0@example.com')
-        com2_2 = Committee.objects.create(name='com2_2', leader_member=generate_member(), email='com2_2@example.com', order=2)
-
-        self.assertEqual(list(Committee.objects.all()), [com0, com1, com2_1, com2_2, com3, com4])
-
-    def test_no_leader(self):
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name='com', email='com@example.com')
-
-    def test_multiple_leaders(self):
-        leader_member = generate_member()
-        holder = generate_member()
-        pos = BoardPosition.objects.create(name="Pos1", holder=holder)
-        with self.assertRaises(ValidationError):
-            Committee.objects.create(name='com', leader_member=leader_member, leader_board=pos, email='com@example.com')
-
-    def test_leader(self):
-        leader_member = generate_member()
-        holder = generate_member()
-        pos = BoardPosition.objects.create(name="Pos1", holder=holder)
-        com = Committee.objects.create(name='com', leader_member=leader_member, email='com@example.com')
-        self.assertEqual(com.leader, leader_member)
-
-        com.leader_member = None
-        com.leader_board = pos
-        self.assertEqual(com.leader, holder)
-
-    def test_change_from_boardPosition_to_leader(self):
-        holder = generate_member()
-        board_position = BoardPosition.objects.create(name="Testansvarlig", holder=holder)
-        committee = Committee.objects.create(name="com", leader_board=board_position, email='com@example.com')
-        new_leader = generate_member()
-        committee.leader_member = new_leader
-        committee.leader_board = None
-        committee.save()
-        self.assertEqual(committee.leader, new_leader)
-        self.assertNotEqual(committee.leader, holder)
-
-    def test_members(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        member3 = generate_member()
-        holder = generate_member()
-        pos = BoardPosition.objects.create(name="Pos1", holder=holder)
-        com = Committee.objects.create(name='com', leader_board=pos, email='com@example.com')
-        com.user_set.add(member1, member2, member3)
-
-        self.assertEqual(set(com.user_set.all()), set([member1, member2, member3, holder]))
-        self.assertEqual(set(com.members), set([member1, member2, member3]))
-
-
 class MemberListTestCase(TestCase):
     def setUp(self):
         self.member1 = generate_member(first_name="aadne")
@@ -548,49 +414,6 @@ class MemberListTestCase(TestCase):
         self.assertEqual(
             set(response.context["members"]),
             set([self.member1, self.member3]))
-
-
-class PercussionGroupListTestCase(TestCase):
-    def test_get_list(self):
-        member1 = generate_member()
-        member2 = generate_member()
-        member3 = generate_member(first_name="Bob")
-        member4 = generate_member()
-        member4.is_active = False
-        member4.save()
-        percussion_group = PercussionGroup.objects.create()
-        member2.percussion_group = percussion_group
-        member2.save()
-        self.client = Client()
-        self.client.force_login(member1)
-
-        response = self.client.get(reverse('percussion_group_list'))
-        self.assertTrue(percussion_group in response.context['groups'])
-        self.assertEqual(list(response.context['unassigned']), [member3, member1])
-
-
-class DeletePercussionGroupTestCase(TestCase):
-    def test_delete(self):
-        member = generate_member()
-        member.user_permissions.add(
-            Permission.objects.get(codename="change_percussion_group"))
-        self.client.force_login(member)
-        percussion_group = PercussionGroup.objects.create()
-        self.assertEqual(len(PercussionGroup.objects.all()), 1)
-        response = self.client.get(reverse("percussion_group_delete", args=[percussion_group.pk]))
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(len(PercussionGroup.objects.all()), 0)
-
-
-class AddPercussionGroupTestCase(TestCase):
-    def test_delete(self):
-        member = generate_member()
-        member.user_permissions.add(
-            Permission.objects.get(codename="change_percussion_group"))
-        self.client.force_login(member)
-        response = self.client.get(reverse("percussion_group_add"))
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(len(PercussionGroup.objects.all()), 1)
 
 
 class MemberAddFormTestCase(TestCase):

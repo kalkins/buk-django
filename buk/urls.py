@@ -48,6 +48,7 @@ urlpatterns = [
     path('medlem/', include('members.urls.member-urls')),
     path('medlemmer/', include('members.urls.members-urls')),
     path('slagverkgrupper/', include('members.urls.percussion_group-urls')),
+    path('komiteer/', include('members.urls.committee-urls')),
     path('praktisk/', include('misc.urls.practical-urls')),
     path('forum/', include('forum.urls')),
     path('påmelding/', include('polls.urls')),

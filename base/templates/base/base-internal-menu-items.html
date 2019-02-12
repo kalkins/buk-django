@@ -2,9 +2,29 @@
     Medlemmer
 </a>
 
-<a href='{% url 'practical' %}'>
-    Praktisk
-</a>
+<div id='' class='dropdown'>
+    <input id='user-dropdown-trigger' class='dropdown-trigger' type='checkbox' />
+    <label for='user-dropdown-trigger' class='dropdown-label'>
+        <a href='{% url 'practical' %}'>
+            Praktisk
+        </a>
+        <i class='fa fa-caret-down'></i>
+    </label>
+
+    <ul class='dropdown-options'>
+        <li class='dropdown-option'>
+            <a href='{% url 'practical' %}'>
+                Styret og komiteer
+            </a>
+        </li>
+
+        <li class='dropdown-option'>
+            <a href='{% url 'practical' %}'>
+                Fravær
+            </a>
+        </li>
+    </ul>
+</div>
 
 <a href='{% url 'all_forum_post_list' %}'>
 	Forum
