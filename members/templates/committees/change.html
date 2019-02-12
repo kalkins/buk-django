@@ -1,0 +1,48 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+    {{ block.super }}
+    <link rel='stylesheet' type='text/css' href='{% static 'percussion_groups/css/change.css' %}' />
+{% endblock stylesheets %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'percussion_groups/js/change.js' %}" deref></script>
+{% endblock javascript %}
+
+{% block main %}
+    <section>
+	<div class='navline'>
+		<h2 class='back-link'>
+			<a href='{% url 'practical' %}' title='Styret og komiteer'>
+				<i class='fa fa-chevron-left'></i>
+				Komiteer
+			</a>
+		</h2>
+	</div>
+
+	<h1>Endre {{ committee.name }}</h1>
+
+	<form action="" method="POST">
+		{% csrf_token %}
+		<table>
+			{{ committee_form.as_table }}
+		</table>
+
+		<h2>Medlemmer</h2>
+
+		<table>
+			{% for form in formset %}
+				{{ form }}
+			{% endfor %}
+		</table>
+
+		{{ formset.management_form }}
+
+		<input type="submit" class="modernbutton" value="Lagre"></input>
+	</form>
+
+    </section>
+{% endblock main %}

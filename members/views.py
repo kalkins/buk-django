@@ -10,13 +10,15 @@ from django.views.generic import (DetailView, ListView, CreateView,
 from django.contrib.auth.mixins import (LoginRequiredMixin, PermissionRequiredMixin,
                                         UserPassesTestMixin)
 
+from utils.views import MultiFormView
 from base.models import EditableContent
 from base.widget import FancyCheckbox
 
 from .models import (Member, MembershipPeriod, LeavePeriod,
-                     Committee, BoardPosition, PercussionGroup)
+                     Committee, PercussionGroup)
 from .forms import (MemberAddForm, MemberStatisticsForm,
-                    MembershipPeriodFormset, LeavePeriodFormset)
+                    MembershipPeriodFormset, LeavePeriodFormset,
+                    CommitteeChangeForm, CommitteeMembershipFormset)
 
 
 class MemberDetail(DetailView):
@@ -478,3 +480,30 @@ class ChangePercussionGroup(PermissionRequiredMixin, TemplateView):
                                       .order_by('is_on_leave', 'first_name', 'last_name')
 
         return context
+
+
+class ChangeCommittee(PermissionRequiredMixin, MultiFormView):
+    """
+    Display a form for editing a Committe.
+
+    The form list all members and allows for picking out individual
+    members of the current group, and its leader.
+
+    **Template**
+
+    :model:`committees/change.html`
+    """
+    permission_required = 'members.change_committee'
+    template_name = 'committees/change.html'
+    success_url = reverse_lazy('practical')
+    batch = True
+    forms = [
+        {'name': 'committee_form', 'form': CommitteeChangeForm},
+        {'name': 'formset', 'form': CommitteeMembershipFormset},
+    ]
+
+    def get_committee_form_instance(self):
+        return Committee.objects.get(pk=self.kwargs['pk'])
+
+    def get_formset_instance(self):
+        return Committee.objects.get(pk=self.kwargs['pk'])

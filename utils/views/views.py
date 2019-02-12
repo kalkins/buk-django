@@ -111,6 +111,7 @@ class MultiFormView(ContextMixin, TemplateResponseMixin, View):
         Return the nameword arguments for instantiating the form with the given name.
         """
         cls = self.get_form_class(name)
+        has_instance = issubclass(cls, ModelForm) or issubclass(cls, BaseModelFormSet)
 
         try:
             custom_kwargs = getattr(self, f'get_{name}_kwargs')()
@@ -128,7 +129,7 @@ class MultiFormView(ContextMixin, TemplateResponseMixin, View):
             **({
                 # If the form is a ModelForm
                 'instance': self.get_instance(name),
-            } if issubclass(cls, ModelForm) else {
+            } if has_instance else {
                 # If the form isn't a ModelForm
             }),
 
@@ -155,7 +156,13 @@ class MultiFormView(ContextMixin, TemplateResponseMixin, View):
         if not form_class:
             form_class = self.get_form_class(name)
 
-        return form_class(**self.get_form_kwargs(name))
+        try:
+            try:
+                return getattr(self, f'get_{name}_form')(name, form_class)
+            except AttributeError:
+                return getattr(self, f'get_{name}')(name, form_class)
+        except AttributeError:
+            return form_class(**self.get_form_kwargs(name))
 
     def save_form(self, name, form):
         """Save the form with the given name using `save_<form>()`, or form.save()."""

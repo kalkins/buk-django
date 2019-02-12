@@ -3,7 +3,7 @@ from django import forms
 
 from base.forms import BasePeriodFormset
 
-from .models import Member, MembershipPeriod, LeavePeriod
+from .models import Member, MembershipPeriod, LeavePeriod, Committee, CommitteeMembership
 
 
 class MemberAuthenticationForm(AuthenticationForm):
@@ -78,3 +78,36 @@ class MemberStatisticsForm(forms.Form):
             label='Medlemmer i permisjon i hele perioden', label_suffix='', required=False)
     leave_part = forms.BooleanField(
             label='Medlemmer i permisjon i løpet av perioden', label_suffix='', required=False)
+
+
+class CommitteeChangeForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set the queryset for the leader
+        queryset = Member.objects.filter(is_active=True).order_by('first_name', 'last_name')
+        self.fields['leader'].queryset = queryset
+
+    class Meta:
+        model = Committee
+        fields = ['name', 'description', 'email', 'order',
+                  'leader', 'leader_title']
+
+
+class CommitteeMembershipForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set the queryset for the member
+        queryset = Member.objects.filter(is_active=True).order_by('first_name', 'last_name')
+        self.fields['member'].queryset = queryset
+
+    class Meta:
+        model = CommitteeMembership
+        fields = ('member', 'title')
+
+
+CommitteeMembershipFormset = forms.inlineformset_factory(
+    Committee,
+    CommitteeMembership,
+    extra=3,
+    form=CommitteeMembershipForm,
+)

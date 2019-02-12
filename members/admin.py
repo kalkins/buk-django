@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .models import (Member, Instrument, MembershipPeriod,
                      LeavePeriod, Committee, BoardPosition,
-                     PercussionGroup)
+                     PercussionGroup, CommitteeMembership)
 
 
 class MembershipPeriodInline(admin.TabularInline):
@@ -104,20 +104,22 @@ class BoardPositionAdmin(admin.ModelAdmin):
     ordering = ('order', 'name')
 
 
+class CommitteeMemberInline(admin.TabularInline):
+    model = CommitteeMembership
+    extra = 4
+
+
 @admin.register(Committee)
 class CommitteeAdmin(admin.ModelAdmin):
     readonly_fields = ('inherited_permissions',)
     filter_horizontal = ('parents', 'own_permissions')
+    inlines = [CommitteeMemberInline]
     list_display = ('name', 'leader', 'member_count')
     ordering = ('order', 'name')
 
     fieldsets = (
         (None, {
-            'fields': ('name',),
-        }),
-        (None, {
-            'description': 'Lederen for komiteen. Bare én av disse kan bli satt',
-            'fields': ('leader_board', 'leader_member')
+            'fields': ('name', 'leader', 'leader_title'),
         }),
         ('Rettigheter', {
             'classes': ('collapse',),
