@@ -1,0 +1,111 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'activities/css/activity_detail.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section>
+	{% block activity-header %}
+    <h2>{{ activity.title }}</h2>
+
+	{% if perms.activity.add_activity %}
+	<div class="admin">
+		<a class="edit" href="{% url 'activity_update' activity.pk %}">
+			<i class="fa fa-edit"></i>
+			Endre
+		</a>
+		<a class="delete" href="{% url 'activity_delete' activity.pk %}">
+			<i class="fa fa-times"></i>
+			Slett
+		</a>
+	</div>
+	{% endif %}
+	{% endblock activity-header %}
+
+	{% block activity-body %}
+	<div class="content">
+		<div class="base-activity">
+			{% block base-activity %}
+			<div class="description public">
+				{{ activity.description }}
+			</div>
+
+			{% if user.is_authenticated and activity.description_internal %}
+				<div class="description internal">
+					{{ activity.description_internal }}
+				</div>
+			{% endif %}
+
+			<div class="location">
+				<span>Sted:</span>
+				<a href="http://maps.google.com/maps?q={{ activity.location|urlencode }}">
+					{{ activity.location }}
+				</a>
+			</div>
+			{% endblock base-activity %}
+		</div>
+
+		<div class="sub-activity">
+			{% block sub-activity %}{% endblock %}
+		</div>
+
+		<div class="time-periods">
+			{% block time-periods %}
+			<h2>Tidspunkt</h2>
+			{% for period in activity.periods.all %}
+				<div class="time-period">
+					<span class="period-start">
+						Start: {{ period.start }}
+					</span>
+					<br>
+					<span class="period-end">
+						Slutt: {{ period.end }}
+					</span>
+				</div>
+			{% endfor %}
+			{% endblock %}
+		</div>
+
+		{% block activity-helpers %}
+		<div class="helpers">
+			{% block percussion-group %}
+			{% if activity.percussion_group %}
+				<span class="percussion-group">
+					Slagverkbæregruppe: {{ activity.percussion_group }}
+				</span>
+			{% endif %}
+			{% endblock %}
+
+			{% block bakers %}
+			{% if activity.bakers.all %}
+			<div class="bakers">
+				<h2>Kakebakere</h2>
+
+				{% block bakers-list %}
+				<span>
+					{% for baker in activity.bakers.all %}
+						{% if forloop.last %}
+							&nbsp;og&nbsp;
+						{% elif not forloop.first %}
+							,&nbsp;
+						{% endif %}
+
+						<a href="{{ baker.get_absolute_url }}">
+							{{ baker }}
+						</a>
+					{% endfor %}
+				</span>
+				{% endblock %}
+			</div>
+			{% endif %}
+			{% endblock %}
+		</div>
+		{% endblock %}
+	</div>
+	{% endblock activity-body %}
+</section>
+{% endblock main %}

@@ -11,9 +11,10 @@ Django = "*"
 psycopg2 = "*"
 Pillow = "*"
 docutils = "*"
+django-model-utils = "*"
 
 [dev-packages]
-mysqlclient = "*"
+#mysqlclient = "*"
 codecov = "*"
 
 [requires]

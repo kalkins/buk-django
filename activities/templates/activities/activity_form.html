@@ -1,0 +1,54 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'activities/css/activity_form.css' %}" />
+{{ form.media.css }}
+{% endblock stylesheets %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'activities/js/activity_form.js' %}" deref></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}" deref></script>
+{{ form.media.js }}
+{% endblock javascript %}
+
+{% block main %}
+<section>
+    <h2>{% block form_title %}Rediger aktivitet{% endblock %}</h2>
+    <form action={{ request.path|urlencode }} method='POST'>
+        {% csrf_token %}
+
+		{% block main_form %}
+		<div class="main-form">
+			<table>
+				{{ form.as_table }}
+			</table>
+		</div>
+		{% endblock main_form %}
+
+		{% block sub_forms %}
+		<div class="sub-forms">
+			{% for name, sub_form in activity_forms %}
+				<div class="sub-form" data-name="{{ name }}">
+					<table>
+						{{ sub_form.as_table }}
+					</table>
+				</div>
+			{% endfor %}
+		</div>
+		{% endblock sub_forms %}
+
+		<div class="time-periods">
+			<h2>Tidspunkt:</h2>
+			<div>
+				{% include 'base/period_formset.html' with formset=activity_period_formset only %}
+			</div>
+		</div>
+
+		<input class="modernbutton" type="submit" value="{% block form_submit_text %}Lagre{% endblock %}" />
+    </form>
+</section>
+{% endblock main %}

@@ -1,0 +1,17 @@
+{% extends 'activities/activity_detail.html' %}
+
+{% block sub-activity %}
+<div class="ticket-prices">
+	<h2>Billettpriser</h2>
+
+	<div class="ticket-normal">
+		<span>Vanlig:</span>
+		{{ activity.price }}
+	</div>
+
+	<div class="ticket-student">
+		<span>Student:</span>
+		{{ activity.price_student }}
+	</div>
+</div>
+{% endblock %}

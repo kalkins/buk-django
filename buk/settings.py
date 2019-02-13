@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'misc',
     'polls',
     'forum',
+    'activities',
     'legacy',
     'django.contrib.admin',
     'django.contrib.admindocs',

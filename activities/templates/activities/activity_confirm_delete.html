@@ -1,0 +1,22 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'activities/css/activity_list.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+<section>
+    <div>
+        <h2>Slett {{ object }}</h2>
+    </div>
+
+	<form method="post">
+		{% csrf_token %}
+		<p>Er du sikker på at du vil slette "{{ object }}"?</p>
+		<input type="submit" value="Ja">
+	</form>
+</section>
+{% endblock main %}

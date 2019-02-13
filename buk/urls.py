@@ -18,6 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
+from django.views.i18n import JavaScriptCatalog
 from django.urls import re_path, path, include
 
 from base import views as base_views
@@ -26,6 +27,7 @@ from members import forms as member_forms
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='member_list'),
          name='front_page'),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(),
@@ -54,6 +56,7 @@ urlpatterns = [
     path('påmelding/', include('polls.urls')),
     path('endre-innhold/', base_views.EditableContentSave.as_view()),
     path('endre-innhold/bilde', base_views.EditableContentSaveImage.as_view()),
+    path('aktiviteter/', include('activities.urls'))
 ]
 
 if settings.DEBUG:
