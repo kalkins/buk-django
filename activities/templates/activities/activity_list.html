@@ -1,4 +1,4 @@
-{% extends 'base/base-internal.html' %}
+{% extends request.user.is_authenticated|yesno:'base/base-internal.html,base/base-public.html' %}
 
 {% load static %}
 
