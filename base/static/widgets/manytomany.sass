@@ -1,0 +1,120 @@
+@import '../variables/_color-palette.sass'
+
+$full-width: 600px
+$selector-width: 300px
+$search-icon-size: 18px
+
+.selector
+  float: left
+  text-align: center
+
+  h2
+    padding: 8px
+    border: 1px solid #ccc
+    border-radius: 4px 4px 0 0
+    margin: 0
+
+  select
+    width: 100%
+    height: 13em
+    padding: 0 10px
+    margin: 0 0 10px
+    border: 1px solid #ccc
+    border-radius: 0 0 4px 4px
+
+  .selector-chooser
+    float: left
+    width: 22px
+    padding: 0
+    margin: 8em 5px 0
+
+    li
+      list-style: none
+      padding: 3px
+
+    a
+      width: 16px
+      height: 16px
+      display: block
+      overflow: hidden
+      text-indent: -3000px
+
+    .selector-add, .selector-remove
+      opacity: 0.3
+
+      &.active
+        opacity: 1
+
+    .selector-add
+      background: url(/static/admin/img/selector-icons.svg) 0 -96px no-repeat
+
+    .selector-remove
+      background: url(/static/admin/img/selector-icons.svg) 0 -64px no-repeat
+
+  .selector-chooseall, .selector-clearall
+    opacity: 1
+    display: inline-block
+    height: 16px
+    margin: 1px auto 3px
+    line-height: 16px
+    text-decoration: none
+    font-weight: bold
+    color: $text-on-primary
+    opacity: 0.3
+
+    &.active
+      opacity: 0.9
+
+  .selector-chooseall
+    padding: 0 18px 0 0
+    background: url(/static/admin/img/selector-icons.svg) right -160px no-repeat
+
+  .selector-clearall
+    padding: 0 0 0 18px
+    background: url(/static/admin/img/selector-icons.svg) left -128px no-repeat
+
+  .selector-filter
+    background: $secondary
+    border: 1px solid #ccc
+    border-width: 0 1px
+    margin: 0
+    padding: 2px 6px
+    color: $text-on-secondary
+
+    .search-label-icon
+      background: url(/static/admin/img/search.svg) 0 0 no-repeat
+      display: inline-block
+      height: $search-icon-size
+      width: $search-icon-size
+
+    label
+      float: left
+      height: $search-icon-size
+      width: $search-icon-size
+      padding: 5px 0
+      margin: 6px 0 0 5px
+      line-height: 1
+
+    input
+      width: $selector-width - 70px
+      padding: 6px 0
+      margin-left: 4px
+
+      &:focus
+        background-color: white
+
+  .selector-available
+    float: left
+    width: $selector-width
+
+    h2
+      background: $secondary
+      color: $text-on-secondary
+
+  .selector-chosen
+    float: left
+    width: $selector-width
+
+    h2
+      background: $secondary-highlight
+      color: $text-on-secondary

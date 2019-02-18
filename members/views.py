@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import (LoginRequiredMixin, PermissionRequiredMi
 
 from utils.views import MultiFormView
 from base.models import EditableContent
-from base.widget import FancyCheckbox
+from base.widgets import FancyCheckbox
 
 from .models import (Member, MembershipPeriod, LeavePeriod,
                      Committee, PercussionGroup)

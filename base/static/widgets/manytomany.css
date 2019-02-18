@@ -1,0 +1,138 @@
+/* line 7, manytomany.sass */
+.selector {
+  float: left;
+  text-align: center;
+}
+/* line 11, manytomany.sass */
+.selector h2 {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px 4px 0 0;
+  margin: 0;
+}
+/* line 17, manytomany.sass */
+.selector select {
+  width: 100%;
+  height: 13em;
+  padding: 0 10px;
+  margin: 0 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 0 0 4px 4px;
+}
+/* line 25, manytomany.sass */
+.selector .selector-chooser {
+  float: left;
+  width: 22px;
+  padding: 0;
+  margin: 8em 5px 0;
+}
+/* line 31, manytomany.sass */
+.selector .selector-chooser li {
+  list-style: none;
+  padding: 3px;
+}
+/* line 35, manytomany.sass */
+.selector .selector-chooser a {
+  width: 16px;
+  height: 16px;
+  display: block;
+  overflow: hidden;
+  text-indent: -3000px;
+}
+/* line 42, manytomany.sass */
+.selector .selector-chooser .selector-add, .selector .selector-chooser .selector-remove {
+  opacity: 0.3;
+}
+/* line 45, manytomany.sass */
+.selector .selector-chooser .selector-add.active, .selector .selector-chooser .selector-remove.active {
+  opacity: 1;
+}
+/* line 48, manytomany.sass */
+.selector .selector-chooser .selector-add {
+  background: url(/static/admin/img/selector-icons.svg) 0 -96px no-repeat;
+}
+/* line 51, manytomany.sass */
+.selector .selector-chooser .selector-remove {
+  background: url(/static/admin/img/selector-icons.svg) 0 -64px no-repeat;
+}
+/* line 54, manytomany.sass */
+.selector .selector-chooseall, .selector .selector-clearall {
+  opacity: 1;
+  display: inline-block;
+  height: 16px;
+  margin: 1px auto 3px;
+  line-height: 16px;
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
+  opacity: 0.3;
+}
+/* line 65, manytomany.sass */
+.selector .selector-chooseall.active, .selector .selector-clearall.active {
+  opacity: 0.9;
+}
+/* line 68, manytomany.sass */
+.selector .selector-chooseall {
+  padding: 0 18px 0 0;
+  background: url(/static/admin/img/selector-icons.svg) right -160px no-repeat;
+}
+/* line 72, manytomany.sass */
+.selector .selector-clearall {
+  padding: 0 0 0 18px;
+  background: url(/static/admin/img/selector-icons.svg) left -128px no-repeat;
+}
+/* line 76, manytomany.sass */
+.selector .selector-filter {
+  background: white;
+  border: 1px solid #ccc;
+  border-width: 0 1px;
+  margin: 0;
+  padding: 2px 6px;
+  color: black;
+}
+/* line 84, manytomany.sass */
+.selector .selector-filter .search-label-icon {
+  background: url(/static/admin/img/search.svg) 0 0 no-repeat;
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+}
+/* line 90, manytomany.sass */
+.selector .selector-filter label {
+  float: left;
+  height: 18px;
+  width: 18px;
+  padding: 5px 0;
+  margin: 6px 0 0 5px;
+  line-height: 1;
+}
+/* line 98, manytomany.sass */
+.selector .selector-filter input {
+  width: 230px;
+  padding: 6px 0;
+  margin-left: 4px;
+}
+/* line 103, manytomany.sass */
+.selector .selector-filter input:focus {
+  background-color: white;
+}
+/* line 106, manytomany.sass */
+.selector .selector-available {
+  float: left;
+  width: 300px;
+}
+/* line 110, manytomany.sass */
+.selector .selector-available h2 {
+  background: white;
+  color: black;
+}
+/* line 114, manytomany.sass */
+.selector .selector-chosen {
+  float: left;
+  width: 300px;
+}
+/* line 118, manytomany.sass */
+.selector .selector-chosen h2 {
+  background: #94a0b8;
+  color: black;
+}

@@ -82,6 +82,7 @@ class ActivityFormMixin(ActivityMixin, TemplateResponseMixin, ModelFormMixin):
         kwargs['instance'] = instance
 
         form = self.get_form_class()(**kwargs)
+        # Note: This doesn't save many-to-many fields
         instance = form.save(commit=False)
 
         sub_form = sub_form_class(**kwargs)
@@ -90,6 +91,9 @@ class ActivityFormMixin(ActivityMixin, TemplateResponseMixin, ModelFormMixin):
             return self.form_invalid(form)
 
         self.object = sub_form.save()
+        # Now that the instance is saved to the database
+        # we can save the many-to-many fields
+        form.save_m2m()
 
         kwargs['instance'] = self.object
         activity_formset = ActivityPeriodFormset(**kwargs)

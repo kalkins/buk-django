@@ -1,7 +1,7 @@
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from base.forms import BasePeriodFormset
+from base.widgets import ManyToManyWidget
 
 from .models import Activity, ActivityPeriod
 from .activity_wrapper import ActivityWrapper
@@ -22,7 +22,7 @@ class ActivityForm(forms.ModelForm):
         fields = ['title', 'activity_type', 'visibility', 'description',
                   'description_internal', 'location', 'bakers', 'percussion_group']
         widgets = {
-            'bakers': FilteredSelectMultiple(Activity.bakers.field.verbose_name, False),
+            'bakers': ManyToManyWidget(Activity.bakers.field.verbose_name, False),
         }
 
 
