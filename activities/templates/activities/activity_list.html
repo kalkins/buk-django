@@ -64,17 +64,7 @@
 				{{ activity.percussion_group.name }}
 			</td>
 			<td class="bakers">
-				{% for baker in activity.bakers.all %}
-					{% if forloop.last %}
-						&nbsp;og&nbsp;
-					{% elif not forloop.first %}
-						,&nbsp;
-					{% endif %}
-
-					<a href="{{ baker.get_absolute_url }}">
-						{{ baker }}
-					</a>
-				{% endfor %}
+				{% include 'activities/bakers.html' with bakers=activity.bakers.all only %}
 			</td>
 			{% if perms.activity.add_activity %}
 			<td class="admin-options">

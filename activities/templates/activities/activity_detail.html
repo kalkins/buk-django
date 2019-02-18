@@ -86,19 +86,7 @@
 				<h2>Kakebakere</h2>
 
 				{% block bakers-list %}
-				<span>
-					{% for baker in activity.bakers.all %}
-						{% if forloop.last %}
-							&nbsp;og&nbsp;
-						{% elif not forloop.first %}
-							,&nbsp;
-						{% endif %}
-
-						<a href="{{ baker.get_absolute_url }}">
-							{{ baker }}
-						</a>
-					{% endfor %}
-				</span>
+				{% include 'activities/bakers.html' with bakers=activity.bakers.all only %}
 				{% endblock %}
 			</div>
 			{% endif %}

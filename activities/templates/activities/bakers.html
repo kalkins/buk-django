@@ -1,0 +1,15 @@
+<span class="bakers-list">
+	{% for baker in bakers %}
+		{% if not forloop.first %}
+			{% if forloop.last %}
+				&nbsp;og&nbsp;
+			{% else %}
+				,&nbsp;
+			{% endif %}
+		{% endif %}
+
+		<a href="{{ baker.get_absolute_url }}">
+			{{ baker }}
+		</a>
+	{% endfor %}
+</span>
