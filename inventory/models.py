@@ -1,5 +1,6 @@
 from django.db import models
 from members.models import Member
+from django.urls import reverse
 
 
 class InventoryItem(models.Model):
@@ -32,6 +33,9 @@ class Pants(UniformPiece):
         self.name = "Bukse størrelse " + self.size
         super(Pants, self).save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse('pants_detail', args=[self.pk])
+
     class Meta:
         verbose_name = 'bukse'
         verbose_name_plural = 'bukser'
@@ -44,6 +48,9 @@ class Jacket(UniformPiece):
         self.name = "Jakke nr. " + str(self.number)
         super(Jacket, self).save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse('jacket_detail', args=[self.pk])
+
     class Meta:
         verbose_name = 'jakke'
         verbose_name_plural = 'jakker'
@@ -54,12 +61,18 @@ class Hat(UniformPiece):
         self.name = "Hatt størrelse " + self.size
         super(Hat, self).save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse('hat_detail', args=[self.pk])
+
     class Meta:
         verbose_name = 'hatt'
         verbose_name_plural = 'hatter'
 
 
 class Instrument(InventoryItem):
+    def get_absolute_url(self):
+        return reverse('instrument_detail', args=[self.pk])
+
     class Meta:
         verbose_name = 'instrument'
         verbose_name_plural = 'instrumenter'

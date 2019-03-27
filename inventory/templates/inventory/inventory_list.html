@@ -3,28 +3,28 @@
 {% load static %}
 
 {% block stylesheets %}
-    {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'members/css/member-list.css' %}" />
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'members/css/member-list.css' %}" />
 {% endblock stylesheets %}
 
 {% block main %}
     <h2 style="color:yellow">Instrumenter</h2>
     {% for instrument in instruments %}
-	<p style="color:white">{{ instrument }}</p>
+	<a href="{{ instrument.get_absolute_url }}"><p style="color:white">{{ instrument }}</p></a>
     {% endfor %}
 
     <h2 style="color:yellow">Jakker</h2>
     {% for jacket in jackets %}
-	<p style="color:white">{{ jacket }}</p>
+	<a href="{{ jacket.get_absolute_url }}"><p style="color:white">{{ jacket }}</p></a>
     {% endfor %}
 
     <h2 style="color:yellow">Bukser</h2>
     {% for pant in pants %}
-	<p style="color:white">{{ pant }}</p>
+	<a href="{{ pant.get_absolute_url }}"><p style="color:white">{{ pant }}</p></a>
     {% endfor %}
 
     <h2 style="color:yellow">Hatter</h2>
     {% for hat in hats %}
-	<p style="color:white">{{ hat }}</p>
+	<a href="{{ hat.get_absolute_url }}"><p style="color:white">{{ hat }}</p></a>
     {% endfor %}
 {% endblock main %}

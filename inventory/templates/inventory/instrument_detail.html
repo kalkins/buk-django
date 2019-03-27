@@ -1,0 +1,19 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+{% block stylesheets %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'members/css/member-list.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+    <h1 style="color:yellow">{{ instrument.name }}</h1>
+    <p style="color:white">{{ instrument.description }}</p>
+
+    {% if instrument.loaned_out %}
+	<p style="color:white">instrumentet er lånt ut til <a href ="{{ instrument.loaned_to_member.get_absolute_url }}">{{ instrument.loaned_to_member.get_full_name }}</a></p>
+	<p style="color:white">{{ instrument.loan_description }}</p>
+    {% else %}
+	<p style="color:white">instrumentet er ikke lånt ut</p>
+    {% endif %}
+{% endblock main %}

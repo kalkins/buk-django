@@ -1,0 +1,20 @@
+{% extends 'base/base-internal.html' %}
+
+{% load static %}
+{% block stylesheets %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'members/css/member-list.css' %}" />
+{% endblock stylesheets %}
+
+{% block main %}
+    <h1 style="color:yellow">{{ hat.name }}</h1>
+    <h2 style="color:yellow">Størrelse: {{ hat.size }}</h2>
+    <p style="color:white">{{ hat.description }}</p>
+
+    {% if hat.loaned_out %}
+	<p style="color:white">Hatten er lånt ut til <a href ="{{ hat.loaned_to_member.get_absolute_url }}">{{ hat.loaned_to_member.get_full_name }}</a></p>
+	<p style="color:white">{{ hat.loan_description }}</p>
+    {% else %}
+	<p style="color:white">Hatten er ikke lånt ut</p>
+    {% endif %}
+{% endblock main %}

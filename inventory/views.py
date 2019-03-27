@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 from inventory.models import Instrument, Hat, Jacket, Pants
 
 
@@ -11,7 +11,6 @@ class InventoryList(TemplateView):
 
     :template:`inventory/inventory_list.html`
     """
-
     template_name = 'inventory/inventory_list.html'
 
     def get_context_data(self, **kwargs):
@@ -21,3 +20,19 @@ class InventoryList(TemplateView):
         context['jackets'] = Jacket.objects.all()
         context['pants'] = Pants.objects.all()
         return context
+
+
+class InstrumentDetail(DetailView):
+    model = Instrument
+
+
+class JacketDetail(DetailView):
+    model = Jacket
+
+
+class PantsDetail(DetailView):
+    model = Pants
+
+
+class HatDetail(DetailView):
+    model = Hat
