@@ -8,23 +8,51 @@
 {% endblock stylesheets %}
 
 {% block main %}
-    <h2 style="color:yellow">Instrumenter</h2>
-    {% for instrument in instruments %}
-	<a href="{{ instrument.get_absolute_url }}"><p style="color:white">{{ instrument }}</p></a>
-    {% endfor %}
+<h2 style="color:yellow">Instrumenter</h2>
+{% for instrument in instruments %}
+    <p style="color:white">
+	<a href="{{ instrument.get_absolute_url }}">{{ instrument }}</a>
+	{% if instrument.loaned_out %}
+	    - lånt ut til <a href ="{{ instrument.loaned_to_member.get_absolute_url }}">{{ instrument.loaned_to_member.get_full_name }}</a>
+	{% else %}
+	    - ikke lånt ut
+	{% endif %}
+    </p>
+{% endfor %}
 
-    <h2 style="color:yellow">Jakker</h2>
-    {% for jacket in jackets %}
-	<a href="{{ jacket.get_absolute_url }}"><p style="color:white">{{ jacket }}</p></a>
-    {% endfor %}
+<h2 style="color:yellow">Jakker</h2>
+{% for jacket in jackets %}
+    <p style="color:white">
+	<a href="{{ jacket.get_absolute_url }}">{{ jacket }}</a>
+	{% if jacket.loaned_out %}
+	    - lånt ut til <a href ="{{ jacket.loaned_to_member.get_absolute_url }}">{{ jacket.loaned_to_member.get_full_name }}</a>
+	{% else %}
+	    - ikke lånt ut
+	{% endif %}
+    </p>
+{% endfor %}
 
-    <h2 style="color:yellow">Bukser</h2>
-    {% for pant in pants %}
-	<a href="{{ pant.get_absolute_url }}"><p style="color:white">{{ pant }}</p></a>
-    {% endfor %}
+<h2 style="color:yellow">Bukser</h2>
+{% for pant in pants %}
+    <p style="color:white">
+	<a href="{{ pant.get_absolute_url }}">{{ pant }}</a>
+	{% if pant.loaned_out %}
+	    - lånt ut til <a href ="{{ pant.loaned_to_member.get_absolute_url }}">{{ pant.loaned_to_member.get_full_name }}</a>
+	{% else %}
+	    - ikke lånt ut
+	{% endif %}
+    </p>
+{% endfor %}
 
-    <h2 style="color:yellow">Hatter</h2>
-    {% for hat in hats %}
-	<a href="{{ hat.get_absolute_url }}"><p style="color:white">{{ hat }}</p></a>
-    {% endfor %}
+<h2 style="color:yellow">Hatter</h2>
+{% for hat in hats %}
+    <p style="color:white">
+	<a href="{{ hat.get_absolute_url }}">{{ hat }}</a>
+	{% if hat.loaned_out %}
+	    - lånt ut til <a href ="{{ hat.loaned_to_member.get_absolute_url }}">{{ hat.loaned_to_member.get_full_name }}</a>
+	{% else %}
+	    - ikke lånt ut
+	{% endif %}
+    </p>
+{% endfor %}
 {% endblock main %}
