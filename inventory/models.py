@@ -41,7 +41,7 @@ class Jacket(UniformPiece):
     number = models.IntegerField('jakkenummer')
 
     def save(self, *args, **kwargs):
-        self.name = "Jakke nr. " + self.number
+        self.name = "Jakke nr. " + str(self.number)
         super(Jacket, self).save(*args, **kwargs)
 
     class Meta:

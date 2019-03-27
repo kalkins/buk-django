@@ -53,6 +53,7 @@ urlpatterns = [
     path('påmelding/', include('polls.urls')),
     path('endre-innhold/', base_views.EditableContentSave.as_view()),
     path('endre-innhold/bilde', base_views.EditableContentSaveImage.as_view()),
+    path('inventar/', include('inventory.urls')),
 ]
 
 if settings.DEBUG:
