@@ -1,7 +1,6 @@
 from django import forms
 
 from base.forms import BasePeriodFormset
-from base.widgets import ManyToManyWidget
 
 from .models import Activity, ActivityPeriod
 from .activity_wrapper import ActivityWrapper
@@ -21,9 +20,6 @@ class ActivityForm(forms.ModelForm):
         model = Activity
         fields = ['title', 'activity_type', 'visibility', 'description',
                   'description_internal', 'location', 'bakers', 'percussion_group']
-        widgets = {
-            'bakers': ManyToManyWidget(Activity.bakers.field.verbose_name, False),
-        }
 
 
 ActivityPeriodFormset = forms.inlineformset_factory(

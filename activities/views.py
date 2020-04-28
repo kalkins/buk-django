@@ -133,14 +133,29 @@ class ActivityDetailView(ActivityMixin, DetailView):
         activity_wrapper = ActivityWrapper(self.object)
         class_name = activity_wrapper.model.__name__.lower()
 
-        return [
-            activity_wrapper.detail_template,
+        # This defines the order to look for template files
+        template_names = []
+
+        # Prefer the template spesified on the model, if available
+        if activity_wrapper.detail_template is not None:
+            template_names.append(activity_wrapper.detail_template)
+
+        # If not, use a generic name for each type
+        template_names += [
             f'activities/{class_name}_detail.html',
             f'activities/{class_name}.html',
-        ] + super().get_template_names()
+        ]
+
+        # If no other templates are available, use the default one
+        template_names += super().get_template_names()
+
+        return template_names
 
 
 class ActivityListView(ListView):
     model = ActivityPeriod
     template_name = 'activities/activity_list.html'
     context_object_name = 'periods'
+
+    def get_queryset(self):
+        return ActivityPeriod.objects.future_inclusive()

@@ -6,6 +6,12 @@
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'activities/css/activity_form.css' %}" />
 {{ form.media.css }}
+
+{% for name, sub_form in activity_forms %}
+{{ sub_form.media.css }}
+{% endfor %}
+
+{{ activity_period_formset.media.css }}
 {% endblock stylesheets %}
 
 {% block javascript %}
@@ -13,6 +19,12 @@
 <script type="text/javascript" src="{% static 'activities/js/activity_form.js' %}" deref></script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}" deref></script>
 {{ form.media.js }}
+
+{% for name, sub_form in activity_forms %}
+{{ sub_form.media.js }}
+{% endfor %}
+
+{{ activity_period_formset.media.js }}
 {% endblock javascript %}
 
 {% block main %}

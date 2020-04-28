@@ -23,62 +23,62 @@
         </h2>
     </div>
 
-	<table class="activities">
-		<tr>
-			<th colspan="2">Dato:</th>
-			<th>Tid:</th>
-			<th>Arrangement:</th>
-			<th>Sted:</th>
-			<th>Bæring:</th>
-			<th>Kakebaker:</th>
-			{# Admin tools #}
-			<th></th>
-		</tr>
+    <table class="activities">
+	<tr>
+	    <th colspan="2">Dato:</th>
+	    <th>Tid:</th>
+	    <th>Arrangement:</th>
+	    <th>Sted:</th>
+	    <th>Bæring:</th>
+	    <th>Kakebaker:</th>
+	    {# Admin tools #}
+	    <th></th>
+	</tr>
 
         {% for period in periods %}
-		{% with activity=period.activity %}
-		<tr>
-			<td class="day">
-				{# Display the day of the week #}
-				{{ period.start|date:"D"|capfirst }}
-			</td>
-			<td class="date">
-				{# Display date on the form 06 Jan #}
-				{{ period.start|date:"d. M" }}
-			</td>
-			<td class="time">
-				{# Display time on the form 22:10 #}
-				{{ period.start|date:"H:i" }}
-			</td>
-			<td class="title">
+	{% with activity=period.activity %}
+	<tr>
+	    <td class="day">
+		{# Display the day of the week #}
+		{{ period.start|date:"D"|capfirst }}
+	    </td>
+	    <td class="date">
+		{# Display date on the form 06 Jan #}
+		{{ period.start|date:"d. M" }}
+	    </td>
+	    <td class="time">
+		{# Display time on the form 22:10 #}
+		{{ period.start|date:"H:i" }}
+	    </td>
+	    <td class="title">
                 <a class="activity-title" href="{{ activity.get_absolute_url }}">
-				    {{ activity.title }}
-				</a>
-			</td>
-			<td class="location">
-				<a href="http://maps.google.com/maps?q={{ activity.location|urlencode }}">
-					{{ activity.location }}
-				</a>
-			</td>
-			<td class="percussion-group">
-				{{ activity.percussion_group.name }}
-			</td>
-			<td class="bakers">
-				{% include 'activities/bakers.html' with bakers=activity.bakers.all only %}
-			</td>
-			{% if perms.activity.add_activity %}
-			<td class="admin-options">
-				<a class="edit-activity" href="{% url 'activity_update' activity.pk %}">
-					<i class="fa fa-edit" title="Klikk her for å endre"></i>
-				</a>
-				/
-				<a class="delete-activity" href="{% url 'activity_delete' activity.pk %}">
-					<i class="fa fa-times" title="Klikk her for å slette"></i>
-				</a>
-			</td>
-			{% endif %}
+		    {{ activity.title }}
+		</a>
+	    </td>
+	    <td class="location">
+		<a href="http://maps.google.com/maps?q={{ activity.location|urlencode }}">
+		    {{ activity.location }}
+		</a>
+	    </td>
+	    <td class="percussion-group">
+		{{ activity.percussion_group.name }}
+	    </td>
+	    <td class="bakers">
+		{% include 'activities/bakers.html' with bakers=activity.bakers.all only %}
+	    </td>
+	    {% if perms.activity.add_activity %}
+	    <td class="admin-options">
+		<a class="edit-activity" href="{% url 'activity_update' activity.pk %}">
+		    <i class="fa fa-fw fa-edit" title="Klikk her for å endre">
+		</i></a> {# For some reason, if these are split up an underscore is inserted on the page #}
+		/
+		<a class="delete-activity" href="{% url 'activity_delete' activity.pk %}">
+		    <i class="fa fa-fw fa-times" title="Klikk her for å slette"></i>
+		</a>
+	    </td>
+	    {% endif %}
         </tr>
-		{% endwith %}
+	{% endwith %}
         {% endfor %}
     </table>
 </section>

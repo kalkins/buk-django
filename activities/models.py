@@ -3,16 +3,21 @@ from django.urls import reverse
 from model_utils.managers import InheritanceManager
 
 from base.models import Period
+from base.model_fields import CustomManyToManyField, CustomDateTimeField
 from members.models import Member, PercussionGroup
 
 
 class Activity(models.Model):
     objects = InheritanceManager()
 
+    PUBLIC = 'PUB'
+    INTERNAL = 'INT'
+    ADMIN = 'ADM'
+
     visibility_choices = (
-        ('PUB', 'Offentlig'),
-        ('INT', 'Intern'),
-        ('ADM', 'Admin'),
+        (PUBLIC, 'Offentlig'),
+        (INTERNAL, 'Intern'),
+        (ADMIN, 'Admin'),
     )
 
     title = models.CharField('tittel', max_length=150)
@@ -22,7 +27,7 @@ class Activity(models.Model):
                                             help_text='Vises bare for innloggede medlemmer',
                                             blank=True)
     location = models.CharField('sted', max_length=150)
-    bakers = models.ManyToManyField(
+    bakers = CustomManyToManyField(
         Member,
         verbose_name='kakebakere',
         related_name='baker_for',
@@ -70,14 +75,11 @@ class Other(Activity):
 
 
 class ActivityPeriod(Period):
-    start = models.DateTimeField('start')
-    end = models.DateTimeField('slutt', null=True, blank=True)
+    start = CustomDateTimeField('start')
+    end = CustomDateTimeField('slutt', null=True, blank=True)
 
     activity = models.ForeignKey(
         Activity,
         on_delete=models.CASCADE,
         related_name='periods',
     )
-
-    class Meta:
-        ordering = ('-start', 'end')

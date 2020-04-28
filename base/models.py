@@ -2,13 +2,44 @@ import string
 import random
 
 from django.db import models
+from django.utils import timezone
 from django.core.exceptions import ValidationError
+
+from .model_fields import CustomDateField, CustomDateTimeField
+
+
+class PeriodManager(models.Manager):
+    """Return a queryset of all current and future periods."""
+    def future_inclusive(self):
+        now = timezone.now()
+
+        return self.exclude(end__lt=now)
+
+    """Return a queryset of all periods that has not started yet."""
+    def future_exclusive(self):
+        now = timezone.now()
+
+        return self.exclude(start__lt=now)
+
+    """Return a queryset of all past periods."""
+    def past_inclusive(self):
+        now = timezone.now()
+
+        return self.filter(start__lte=now)
+
+    """Return a queryset of all past periods."""
+    def past_exclusive(self):
+        now = timezone.now()
+
+        return self.filter(end__lt=now)
 
 
 class Period(models.Model):
     """Store a period of time."""
-    start = models.DateField('start')
-    end = models.DateField('slutt', null=True, blank=True)
+    start = CustomDateField('start')
+    end = CustomDateField('slutt', null=True, blank=True)
+
+    objects = PeriodManager()
 
     class Meta:
         abstract = True
@@ -79,7 +110,7 @@ class BaseComment(models.Model):
     """An abstract implementation of a comment."""
     poster = models.ForeignKey('members.Member', on_delete=models.CASCADE)
     comment = models.TextField('kommentar')
-    created = models.DateTimeField(auto_now_add=True)
+    created = CustomDateTimeField(auto_now_add=True)
 
     class Meta:
         abstract = True
